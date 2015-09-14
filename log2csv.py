@@ -1,18 +1,18 @@
+import sys
 import json
-import csv
-import mappings
+import glob
 import logging  #remove later
+import mappings
+
 try:
     from collections import OrderedDict
+    #for python 2.6 install ordereddict
 except ImportError:
     from ordereddict import OrderedDict
     
-
-
-#todo:  clean up comments, add arg handling, look at reverts
+#todo:  look at reverts
 
 CHUNKED_ORDER = ['si', 'ei', 'st']#, 'ty', 'sm']
-flat_log = []
 keys = set() # temporary
 
 def rename_keys(log_dict):
@@ -31,51 +31,25 @@ def rename_keys(log_dict):
             keys.add(key)
     return log_dict
         
-def to_file():
+def to_file(flat_log, filename):
     """writes log to file in CSV format"""
+    filename = filename.replace('.txt', '_out.txt')
     
-    with open('output/out.txt', 'w') as f:
+    if 'logs' in filename:
+        filename = filename.replace('logs','output')
+    else:
+        filename = 'output/' + filename
+    
+    with open(filename, 'w') as f:
         for line in flat_log:
             f.write( line + '\n')
-
-def wTest(str):
+    print "finished with",filename
+   
+def write_keys(str):
     with open('keys.txt', 'a') as f:
         f.write(str)
         
-def parse_glog(glog):
-    """parses changelog part of log"""
-    
-    for entry in glog:
-        line = []
-        # ignore None in last index, add dictionary in [0] at end
-        for i in range(1, len(entry) - 1):
-            try:
-                #line += entry[i] + ','
-                line.append(entry[i])
-            except TypeError:
-                line += str(entry[i]) + ','
-
-        #break up multiset into components
-        if 'mts' in entry[0]:
-            lineCopy = [list(line) for i in range(len(entry[0]['mts']))]
-            for i,mts_action in enumerate(entry[0]['mts']):
-                lineCopy[i].append(json.dumps(rename_keys(mts_action)))
-                flat_log.append(lineCopy[i])
-        else:
-            try:
-                line.append(json.dumps(rename_keys(entry[0])))
-            except AttributeError:
-                print "no keys() attribute", sys.exc_info()[0]
-                raise
-            flat_log.append(line)
-        #line += str(entry[0])
-        #line.append(entry[0])
-        #print line
-        #flat_log.append(line)
-    #more_to_file(flat_log)
-    #log_conv(flat_log)
-            
-def parse_log(glog):
+def parse_log(glog, flat_log):
     """parses changelog part of log"""
     flat_log.append('changelog')
     
@@ -102,14 +76,8 @@ def parse_log(glog):
                 print "no keys() attribute", sys.exc_info()[0]
                 raise
             flat_log.append(','.join(str(entry) for entry in line))
-        #line += str(entry[0])
-        #line.append(entry[0])
-        #print line
-        #flat_log.append(line)
-    #more_to_file(flat_log)
-    #log_conv(flat_log)
 
-def parse_snapshot(snapshot):
+def parse_snapshot(snapshot, flat_log):
     """parses snapshot part of log"""
     flat_log.append('chunkedSnapshot')
     snapshot = snapshot[0]
@@ -119,67 +87,62 @@ def parse_snapshot(snapshot):
         snapshot[0]['type'] = snapshot[0].pop('ty')
         snapshot[0]['string'] = snapshot[0].pop('s').replace('\n', '\\n')
         del snapshot[0]['ibi'] #this value is always 1
-        
-        #line.append(action_type)
-        #line.append(snapshot[0])
-        #
-        #for value in snapshot[0].values():
-         #   #line += repr(value) + ','
-          #  try:
-           #     line += value + ','
-            #except TypeError:
-             #   line += str(value) + ','
         flat_log.append(json.dumps(snapshot[0]))
 
     #parse style modifications
     for i in xrange(1, len(snapshot)):
-        #line = ''
         line = []
         try:
             for key in CHUNKED_ORDER:
                 line.append(snapshot[i][key])
-            t1 = mappings.remap(snapshot[i]['ty'])
-            #line.append(mappings.remap(snapshot[i]['ty']))
-            t2 = json.dumps(rename_keys(snapshot[i]['sm']))
-            #line.append(json.dumps(rename_keys(snapshot[i]['sm'])))
-            #print t1,t2
-            line.append(t1)
-            line.append(t2)
+
+            action_type = mappings.remap(snapshot[i]['ty'])
+            line.append(action_type)
+            
+            style_mod = json.dumps(rename_keys(snapshot[i]['sm']))
+            line.append(style_mod)
+            
         except KeyError:
             logging.warning('KeyError, %s missing', key)
-            raise
-            '''
-            try:
-                line += snapshot[i][key] + ','
-            except TypeError:
-                line += str(snapshot[i][key]) + ','
-            except KeyError:
-                print "Key not found"
-                raise    
-        #print type(line)
-        '''
-        #flat_log.append(line[:-1])
+        
         flat_log.append(','.join(str(entry) for entry in line))
         
-def main():
-    filename = 'logs/' + '1_413.txt'
-    logging.basicConfig(filename='logs/error.log', level=logging.DEBUG)
+def main(argv):
+    logging.basicConfig(filename='output/error.log', level=logging.DEBUG)
+    files = []
+    if argv:
+        for arg in argv:
+            files += glob.glob(arg)
+    else:
+        print 'usage: python log2csv.py <inputfiles>  \nMay use wildcards for file.',\
+              ' Ex: python log2csv.py logs/254*.txt'
+        sys.exit(2)
         
-    with open(filename, 'r') as f:
-        data = f.read()
-        if data[0] == ')':
-            data = data[5:]
+    if not files:
+        print 'No files found.  Usage: python log2csv.py <inputfiles>  \nMay use wildcards for file.',\
+              ' Ex: python log2csv.py logs/254*.txt'
+        sys.exit(2)
+        
+    for doc in files:
+        
+        with open(doc, 'r') as f:
+            data = f.read()
+            if data[0] == ')':
+                data = data[5:]
 
-    js = json.loads(data)
-    #js = fix_unicode(js)
-    q0 = 'chunkedSnapshot'
-    q1 = 'changelog'
-    parse_snapshot(js[q0])
-    parse_log(js[q1])
-    to_file()
-    for key in keys:
-        wTest(str(key) + '\n')
-    
+        js = json.loads(data)
+        flat_log = []
+        
+        try:
+            parse_snapshot(js['chunkedSnapshot'], flat_log)
+            parse_log(js['changelog'], flat_log)
+        except KeyError:
+            logging.warning('Key %s missing in parse', key)
+            raise
+        
+        to_file(flat_log, doc)
+        
+        
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
 
