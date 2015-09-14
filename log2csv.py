@@ -1,8 +1,13 @@
 import json
 import csv
 import mappings
-from collections import OrderedDict
 import logging  #remove later
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
+    
+
 
 #todo:  clean up comments, add arg handling, look at reverts
 
@@ -29,7 +34,7 @@ def rename_keys(log_dict):
 def to_file():
     """writes log to file in CSV format"""
     
-    with open('output\\out.txt', 'w') as f:
+    with open('output/out.txt', 'w') as f:
         for line in flat_log:
             f.write( line + '\n')
 
@@ -157,8 +162,8 @@ def parse_snapshot(snapshot):
         flat_log.append(','.join(str(entry) for entry in line))
         
 def main():
-    filename = 'logs\\' + '1_413.txt'
-    logging.basicConfig(filename='logs\\error.log', level=logging.DEBUG)
+    filename = 'logs/' + '1_413.txt'
+    logging.basicConfig(filename='logs/error.log', level=logging.DEBUG)
         
     with open(filename, 'r') as f:
         data = f.read()
