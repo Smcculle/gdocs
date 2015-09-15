@@ -93,6 +93,15 @@ _MAPPINGS = {
     "ds_hi": "?ds_hi", #
     "sugid": "suggestion_id",
     "id": "id",
+    "null": "null",
+    "msfd": "suggestion_field",
+    "usfd": "suggestion_reject",
+    "sas": "suggestion_accept",
+    "rvrt": "revert",
+    "de": "de",
+    "ae": "ae",
+    "te": "te",
+    "mlti": "mlti",
     
     #mostly related to insertion of kix objects in page
     "ls_nest": "?ls_nest", #

@@ -10,7 +10,7 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
     
-#todo:  look at reverts
+#todo:  look at reverts, deep multisets
 
 CHUNKED_ORDER = ['si', 'ei', 'st']#, 'ty', 'sm']
 keys = set() # temporary
@@ -51,34 +51,35 @@ def write_keys(str):
         
 def parse_log(glog, flat_log):
     """parses changelog part of log"""
+    
     flat_log.append('changelog')
     
     for entry in glog:
         line = []
         # ignore None in last index, add dictionary in [0] at end
         for i in range(1, len(entry) - 1):
-            try:
-                #line += entry[i] + ','
-                line.append(entry[i])
-            except TypeError:
-                line += str(entry[i]) + ','
-
+            line.append(entry[i])
+                        
         #break up multiset into components
         if 'mts' in entry[0]:
             lineCopy = [list(line) for i in range(len(entry[0]['mts']))]
-            for i,mts_action in enumerate(entry[0]['mts']):
-                lineCopy[i].append(json.dumps(rename_keys(mts_action)))
+            for i,mts_entry in enumerate(entry[0]['mts']):
+                mts_action = mappings.remap(mts_entry['ty'])
+                lineCopy[i].append(mts_action)
+                lineCopy[i].append(json.dumps(rename_keys(mts_entry)))
                 flat_log.append(','.join(str(entry) for entry in lineCopy[i]))
         else:
             try:
+                action_type = mappings.remap(entry[0]['ty'])
+                line.append(action_type)
                 line.append(json.dumps(rename_keys(entry[0])))
-            except AttributeError:
-                print "no keys() attribute", sys.exc_info()[0]
+            except:
                 raise
             flat_log.append(','.join(str(entry) for entry in line))
 
 def parse_snapshot(snapshot, flat_log):
     """parses snapshot part of log"""
+    
     flat_log.append('chunkedSnapshot')
     snapshot = snapshot[0]
     
@@ -110,6 +111,7 @@ def parse_snapshot(snapshot, flat_log):
 def main(argv):
     logging.basicConfig(filename='output/error.log', level=logging.DEBUG)
     files = []
+    
     if argv:
         for arg in argv:
             files += glob.glob(arg)
@@ -137,7 +139,6 @@ def main(argv):
             parse_snapshot(js['chunkedSnapshot'], flat_log)
             parse_log(js['changelog'], flat_log)
         except KeyError:
-            logging.warning('Key %s missing in parse', key)
             raise
         
         to_file(flat_log, doc)
