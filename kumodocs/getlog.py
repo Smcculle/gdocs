@@ -1,5 +1,5 @@
 import gdata.docs.service
-import ConfigParser, urllib2, os, httplib2
+import ConfigParser, urllib2, os, httplib2, sys
 
 from apiclient.discovery import build
 from oauth2client.file import Storage
@@ -7,11 +7,15 @@ from oauth2client.client import AccessTokenRefreshError, flow_from_clientsecrets
 #***requires oauth2client version 1.3.2***
 from oauth2client.tools import run
 
+#**TODO:  clean, list docs and getting file ID, integrate into kumodd?
+
 
 # Create a client class which will make HTTP requests with Google Docs server.
 #client = gdata.docs.service.DocsService()
 fid = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
-url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/revisions/load?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&start=254&end=276'#&token=AC4w5ViipiO5sN96CUai4LMfK9VWsbLltw%3A1443027271527'
+#url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/revisions/load?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&start=254&end=276'#&token=AC4w5ViipiO5sN96CUai4LMfK9VWsbLltw%3A1443027271527'
+base_url = 'https://docs.google.com/document/d/'
+url_path = '/revisions/load?id='
 '''
 # Query the server for an Atom feed containing a list of your documents.
 documents_feed = client.GetDocumentListFeed()
@@ -24,26 +28,6 @@ for document_entry in documents_feed.entry:
 #response3 = urllib2.urlopen('https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/revisions/load?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&start=356&end=413')
 
 #start below here                            
-def retrieve_revisions(service, file_id):
-  """Retrieve a list of revisions.
-
-  Args:
-  service: Drive API service instance.
-  file_id: ID of the file to retrieve revisions for.
-  Returns:
-  List of revisions.
-  """
-  try:
-    revisions = service.revisions().list(fileId=file_id).execute()
-    if len(revisions.get('items', [])) > 1:
-      #print len(revisions.get('items', []))
-      return revisions.get('items', [])
-    #else:
-    return None
-  except errors.HttpError, error:
-    print 'An error occurred retrieving revisions: %s' % error
-    return None
-
 def get_user_info(service):
   """Print information about the user along with the Drive API settings.
 
@@ -65,6 +49,22 @@ def get_user_info(service):
 def write(msg):
   with open('out.txt', 'w') as f:
     f.write(msg)
+
+def create_URL( fileID, start, end ):
+  """Constructs URL to retrieve the changelog.
+
+  Args:
+    fileID: Google file ID
+    start: starting revision number
+    end: ending revision number
+  Returns:
+    Composite URL for the request
+  """
+  
+  url = base_url + fileID + url_path + fileID + '&start=' + str(start) + '&end=' + str(end)
+  print url
+  return url                                          
+
 #*******************************************************
 config = ConfigParser.ConfigParser()
 config.read('config/config.cfg')
@@ -96,8 +96,10 @@ FLOW = flow_from_clientsecrets(CLIENT_SECRETS,
 storage = Storage(TOKENS)
 credentials = storage.get()
 
+
 if credentials is None or credentials.invalid:
   print "Creds none/invalid"
+  #credentials = run(FLOW, storage) test later
 http = httplib2.Http()
 http = credentials.authorize(http)
 service = build("drive", "v2", http=http)
@@ -109,10 +111,9 @@ else:
 	
 	
 try:
-  #response2 = urllib2.urlopen('https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/revisions/load?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&start=356&end=413&token=AC4w5ViipiO5sN96CUai4LMfK9VWsbLltw%3A1443027271527')
+  url = create_URL(fid, 292, 293)
   resp, content = service._http.request(url)
   print resp
 	    
-except: # catch *all* exceptions
-  e = sys.exc_info()[0]
-  print 'Error:', e
+except: 
+  raise
