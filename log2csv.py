@@ -49,6 +49,29 @@ def write_keys(str):
     with open('keys.txt', 'a') as f:
         f.write(str)
         
+def flat_mts(entry, lineCopy, line):
+    """Tail recursion to flatten multiset entry.  
+
+  Args:
+    entry: an entry in changelog
+    lineCopy: a flattened list of each mts action appended to line
+    line:  shared info for the entry( id, revision, timestamp, etc)
+  Returns:
+    None.  lineCopy contains flattened entries to be appended to log.  
+  """
+    if not 'mts' in entry:
+        new_line = list(line)
+        mts_action = mappings.remap(entry['ty'])
+        new_line.append(mts_action)
+        
+        #action dictionary with descriptive keys
+        new_line.append(json.dumps(rename_keys(entry)))
+        lineCopy.append(new_line)
+    else:
+        for item in entry['mts']:
+            flat_mts(item, lineCopy, line)
+    
+    
 def parse_log(glog, flat_log):
     """parses changelog part of log"""
     
@@ -62,12 +85,18 @@ def parse_log(glog, flat_log):
                         
         #break up multiset into components
         if 'mts' in entry[0]:
+            '''
             lineCopy = [list(line) for i in range(len(entry[0]['mts']))]
             for i,mts_entry in enumerate(entry[0]['mts']):
                 mts_action = mappings.remap(mts_entry['ty'])
                 lineCopy[i].append(mts_action)
                 lineCopy[i].append(json.dumps(rename_keys(mts_entry)))
-                flat_log.append(','.join(str(entry) for entry in lineCopy[i]))
+                flat_log.append('|'.join(str(entry) for entry in lineCopy[i]))
+                '''
+            lineCopy = []
+            flat_mts(entry[0], lineCopy, line)
+            for item in lineCopy:
+                flat_log.append('|'.join(str(col) for col in item))
         else:
             try:
                 action_type = mappings.remap(entry[0]['ty'])
@@ -75,7 +104,7 @@ def parse_log(glog, flat_log):
                 line.append(json.dumps(rename_keys(entry[0])))
             except:
                 raise
-            flat_log.append(','.join(str(entry) for entry in line))
+            flat_log.append('|'.join(str(entry) for entry in line))
 
 def parse_snapshot(snapshot, flat_log):
     """parses snapshot part of log"""
@@ -106,7 +135,7 @@ def parse_snapshot(snapshot, flat_log):
         except KeyError:
             logging.warning('KeyError, %s missing', key)
         
-        flat_log.append(','.join(str(entry) for entry in line))
+        flat_log.append('|'.join(str(entry) for entry in line))
         
 def main(argv):
     logging.basicConfig(filename='output/error.log', level=logging.DEBUG)
@@ -124,9 +153,9 @@ def main(argv):
         print 'No files found.  Usage: python log2csv.py <inputfiles>  \nMay use wildcards for file.',\
               ' Ex: python log2csv.py logs/254*.txt'
         sys.exit(2)
-        
+
+    print files    
     for doc in files:
-        
         with open(doc, 'r') as f:
             data = f.read()
             if data[0] == ')':
