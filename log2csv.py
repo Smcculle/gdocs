@@ -27,7 +27,7 @@ def rename_keys(log_dict):
             if isinstance(log_dict[new_key], dict):
                 log_dict[new_key] = rename_keys(log_dict[new_key])
         except KeyError:
-            logging.warning('KeyError, %s missing', key)
+            logging.warning('KeyError, %s missing in renamekeys', key)
             keys.add(key)
     return log_dict
         
@@ -85,14 +85,6 @@ def parse_log(glog, flat_log):
                         
         #break up multiset into components
         if 'mts' in entry[0]:
-            '''
-            lineCopy = [list(line) for i in range(len(entry[0]['mts']))]
-            for i,mts_entry in enumerate(entry[0]['mts']):
-                mts_action = mappings.remap(mts_entry['ty'])
-                lineCopy[i].append(mts_action)
-                lineCopy[i].append(json.dumps(rename_keys(mts_entry)))
-                flat_log.append('|'.join(str(entry) for entry in lineCopy[i]))
-                '''
             lineCopy = []
             flat_mts(entry[0], lineCopy, line)
             for item in lineCopy:
@@ -131,11 +123,11 @@ def parse_snapshot(snapshot, flat_log):
             
             style_mod = json.dumps(rename_keys(snapshot[i]['sm']))
             line.append(style_mod)
+            flat_log.append('|'.join(str(entry) for entry in line))
             
         except KeyError:
             logging.warning('KeyError, %s missing', key)
-        
-        flat_log.append('|'.join(str(entry) for entry in line))
+            keys.add(key)
         
 def main(argv):
     logging.basicConfig(filename='output/error.log', level=logging.DEBUG)
@@ -153,8 +145,7 @@ def main(argv):
         print 'No files found.  Usage: python log2csv.py <inputfiles>  \nMay use wildcards for file.',\
               ' Ex: python log2csv.py logs/254*.txt'
         sys.exit(2)
-
-    print files    
+    
     for doc in files:
         with open(doc, 'r') as f:
             data = f.read()
