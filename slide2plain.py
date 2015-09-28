@@ -1,4 +1,8 @@
+import os
 import json
+import errno
+
+#todo:  add main, arg handling, better solution to slide/box dict, clean
 
 filename = 'slogs/1_317.txt'
 #filename = 'slogs/deltest.txt'
@@ -16,6 +20,7 @@ box_dict = {}
 #first slide id is 'p'
 box_dict['i0'] = {'slide': 'p', 'string': ''}
 box_dict['i1'] = {'slide': 'p', 'string': ''}
+slide_dict = {'p': ['i0', 'i1']}
 #keep order of slides
 slide_list = ['p']
 
@@ -29,9 +34,16 @@ def add_text(line):
 
 def add_box(line):
     box_attrib = {}
-    box_attrib['slide'] = line[5]
+    slide = line[5]
+    box_id = line[1]
+    box_attrib['slide'] = slide
     box_attrib['string'] = ''
-    box_dict[line[1]] = box_attrib
+    box_dict[box_id] = box_attrib
+
+    if slide in slide_dict:
+        slide_dict[slide].append(box_id)
+    else:
+        slide_dict[slide] = [box_id]
 
 def del_text(line):
     box_dest = line[1]
@@ -49,12 +61,19 @@ def parse_mts(data):
 def add_slide(line):
     print 'add slide:', line
     i = line[2]
-    slide_list.insert(i, line[1])
+    slide_id = line[1]
+    slide_list.insert(i, slide_id)
+    
+    if not slide_id in slide_dict:
+        slide_dict[slide_id] = []
+    
     
 def del_box(line):
     for box in line[1]:
         try:
+            parent = box_dict['slide']
             del box_dict[box]
+            slide_dict['slide'].remove(box)
         except:
             print "key error deleting", box, 'in line = ', line
         
@@ -90,3 +109,24 @@ def parse(line):
 
 for line in data:
     parse(line[0])
+
+def makedir(path):
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+
+based = 'oslide/'
+makedir(based)
+for i,slide in enumerate(slide_list):
+    slidei = 'slide' + str(i) 
+    path = based + slidei + '/'
+    print path
+    makedir(path)
+    for j,box in enumerate(slide_dict[slide]):
+        filename = path + slidei + '_' + 'box' + str(j) + '.txt'
+        print filename
+        with open(filename, 'w') as ofile:
+            ofile.write(box_dict[box]['string'])
+            
