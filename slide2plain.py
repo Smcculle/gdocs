@@ -1,6 +1,6 @@
 import json
 
-filename = 'slogs/1_196.txt'
+filename = 'slogs/1_317.txt'
 with open(filename, 'r') as f:
     data = f.read()
     if data[0] == ')':
@@ -10,28 +10,47 @@ data = json.loads(data)
 
 data = data['changelog']
 data = data[1:]
-slide_dict = {}
+box_dict = {}
 
 #first slide id is 'p'
-slide_dict['i0'] = {'owner': 'p', 'string': ''}
-slide_dict['i1'] = {'owner': 'p', 'string': ''}
+box_dict['i0'] = {'slide': 'p', 'string': ''}
+box_dict['i1'] = {'slide': 'p', 'string': ''}
 
 def add_text(line):
-    print "add_text:", line
+    box_dest = line[1]
+    add_string = line[4]
+    index = line[3]
+    old_string = box_dict[box_dest]['string']
+    new_string = insert(old_string, add_string, index)
+    box_dict[box_dest]['string'] = new_string
 
 def add_box(line):
-    print "add_box", line
+    box_attrib = {}
+    box_attrib['slide'] = line[5]
+    box_attrib['string'] = ''
+    box_dict[line[1]] = box_attrib
 
 def del_text(line):
-    print "del_text", line
+    box_dest = line[1]
+    start_i = line[3]
+    end_i = line[4]
+    old_string = box_dict[box_dest]['string']
+    new_string = delete(old_string, start_i, end_i)
+    box_dict[box_dest]['string'] = new_string
 
 def parse_mts(data):
-    print "parsing mts"
     action_list = data[1]
     for line in action_list:
         parse(line)
         
 functions = {15: add_text, 4:parse_mts, 16:del_text, 3:add_box}
+
+def insert(old, add, i):
+    return old[:i] + add + old[i:]
+
+def delete(old, si, ei):
+    si = si 
+    return old[:si] + old[ei:]
 
 def parse(line):
     action = line[0]
