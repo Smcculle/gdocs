@@ -15,10 +15,10 @@ def delete(old, si, ei):
     return old[:si] + old[ei:]
 
 def write(s):
-    of = filename.replace('output/', '')
-    of = of.replace('_out', '')
-    with open('o_' + of, 'w') as f:
+    of = filename.replace('_out', '_plain')
+    with open(of, 'w') as f:
         f.write(s)
+    print "finished writing to",of
         
 def get_dict(line):
     try:
@@ -28,7 +28,7 @@ def get_dict(line):
     except:
         raise
 
-filename = 'output/1_456_out.txt'    
+filename = 'output/1_638_out.txt'    
 with open(filename, 'r') as f:
     log = f.read().split('\n')
     
