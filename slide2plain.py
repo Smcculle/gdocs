@@ -1,6 +1,7 @@
 import json
 
 filename = 'slogs/1_317.txt'
+#filename = 'slogs/deltest.txt'
 with open(filename, 'r') as f:
     data = f.read()
     if data[0] == ')':
@@ -15,6 +16,8 @@ box_dict = {}
 #first slide id is 'p'
 box_dict['i0'] = {'slide': 'p', 'string': ''}
 box_dict['i1'] = {'slide': 'p', 'string': ''}
+#keep order of slides
+slide_list = ['p']
 
 def add_text(line):
     box_dest = line[1]
@@ -43,7 +46,26 @@ def parse_mts(data):
     for line in action_list:
         parse(line)
         
-functions = {15: add_text, 4:parse_mts, 16:del_text, 3:add_box}
+def add_slide(line):
+    print 'add slide:', line
+    i = line[2]
+    slide_list.insert(i, line[1])
+    
+def del_box(line):
+    for box in line[1]:
+        try:
+            del box_dict[box]
+        except:
+            print "key error deleting", box, 'in line = ', line
+        
+def del_slide(line):
+    print 'del', line
+    i = line[1]
+    if line[4] == slide_list[i]:
+        slide_list.pop(i)
+    
+functions = {15: add_text, 4:parse_mts, 16:del_text, 3:add_box,
+             12:add_slide, 13:del_slide, 0:del_box}
 
 def insert(old, add, i):
     return old[:i] + add + old[i:]
