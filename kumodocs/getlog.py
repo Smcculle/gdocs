@@ -65,6 +65,28 @@ def create_URL( fileID, start, end ):
   print url
   return url                                          
 
+def list_files():
+  mime_type = 'application/vnd.google-apps.folder'
+  #service.files().list()
+  '''
+  result = []
+  page_token = None
+  while True:
+    try:
+      param = {}  #param['mimeType'] = application/vnd.google-apps.document
+      if page_token:  
+        param['pageToken'] = page_token 
+      files = service.files().list(**param).execute()
+
+      result.extend(files['items'])
+      page_token = files.get('nextPageToken')
+      if not page_token:
+        break
+    except errors.HttpError, error:
+      print 'An error occurred: %s' % error
+      break
+  return result
+  '''
 #*******************************************************
 config = ConfigParser.ConfigParser()
 config.read('config/config.cfg')
@@ -109,9 +131,32 @@ if user_info != None:
 else:
   print "Can't get username"
 	
-	
+''' using service._http to place a post request:
+headers = {'Content-Length': ' *len(data)*', 'Accept-Language': ' en-US,en;q=0.5',
+           'Accept-Encoding': ' gzip, deflate', 'X-Rel-Id': ' f3.3c139c9a.s', 'Connection': ' keep-alive',
+           'Accept': ' text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+           'User-Agent': ' Mozilla/5.0 (Windows NT 6.0; WOW64; rv', 'X-Build': ' kix_2015.38-Tue_b',
+           'Host': ' docs.google.com', 'Referer': ' https', 'X-Same-Domain': ' 1', 'Pragma': ' no-cache',
+           'Cache-Control': ' no-cache',
+           'Cookie': ' S=documents=_gEM09sxq_vGAys5OjO15Q; PREF=ID=1111111111111111',
+           'Content-Type': ' application/x-www-form-urlencoded;charset=utf-8'}
+request body has the form of data, where           
+data = {"r0":["image",{"cosmoId":"AE7MojedZEHNulGfoIidNJe3igHFde64_lGK2V7B6HrsqCmiBz1olI2xkcLwSNqaMsa76Xa69Z375zIli6pI1QSQKSpOsklAx4VirdmOLf0hxkCCa1HRdu8zW0JqsGD4xR-GOAq9NXLW3pvU6TcFnzO26iAphdEZLQS9c5CiznsfeRJZsCid56IS95UE_RDnip1zwZMXgTqOrP1RXUSY9frirqSPCC6YJUDiJ0h2LcaRmnolSe2r_ndW0f8ml0UOkiBTc99UHNFPYkHJ14mbIgPLVGjvOWd2QQ",
+                       "container":"1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps"}],
+        "r1":["image",{"cosmoId":"AE7MojcVJFxz6C3l7_zsJTerLC3O5Brhi7JJzDW-6B1fADHe11ARrISozlbtx-q69Xv7PL5_eta7zxryOWmcgWjYZ_XbV5BwlEbx6NSK8iKXVxNXxjVwsVa4gHiahiN_ViPztRFaxHDz0EGBRHJwQPFhsogoJWChMnpu8_dpMnU18-ibrYjKpc7_tldrCLGiYJQ2NppkQNR1Ra_BVLqojugBpnsuIDuIYkPiDZkdjcGIECxHMZHYFx0ptvFFHSeQqVIFBEy0EO-8V0qminR9O8QIS-PukaJvotzltYej0x4sfVMj5fdakOEvBa8lZDY4a5vmXoGDqH9nxo1M7_dSmrYp4M7gBQicm6rXLwtwNO34hWp1rKQynhHJJZOpdlT_0iJgX1ivYm5KRzyxUhD2arp7W6VA4b4UPg",
+                       "container":"1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps"}]}
+where cosmoId are obtained from the changelog, container is doc_id.
+data is then urlencoded such as urllib.encode(data)
+resp, cont = service._http.request(
+    url, method='POST', body=data, headers=my_headers)
+    '''
 try:
-  url = create_URL(fid, 292, 293)
+  url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/renderdata?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&token=AC4w5Vh_iTzvW2ih7wThCGejbO3J1pVpkw%3A1443374604500'
+  #url = 'https://lh3.googleusercontent.com/TG-HofNaScWRUfyUuA-Ty4PzbZUW8UXHktI9apIv-DQygu7CJkjkgGY5Cm3X7FSXCiAzlQ=s1600'
+  #url = 'https://lh3.googleusercontent.com/8oDqSwcKXBvy6tFS4badAWeQk7_1o3a_6d6EY9EKFsC9pTWD55qXXK3JCi8jcjTuisk01zv6ejeztTqXX3NpE91C5XxLFrT_CLUCK65bskNceclBXM4ersjGSuO0u_3dHFQ=s1600'
+  #url = 'filesystem:https://docs.google.com/persistent/docs/documents/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/image/AE7MojedZEHNulGfoIidNJe3igHFde64_lGK2V7B6HrsqCmiBz1olI2xkcLwSNqaMsa76Xa69Z375zIli6pI1QSQKSpOsklAx4VirdmOLf0hxkCCa1HRdu8zW0JqsGD4xR-GOAq9NXLW3pvU6TcFnzO26iAphdEZLQS9c5CiznsfeRJZsCid56IS95UE_RDnip1zwZMXgTqOrP1RXUSY9frirqSPCC6YJUDiJ0h2LcaRmnolSe2r_ndW0f8ml0UOkiBTc99UHNFPYkHJ14mbIgPLVGjvOWd2QQ?zx=t2cfm4hfa0gb' 
+  #url = create_URL(fid, 292, 293)
+  #url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/'
   resp, content = service._http.request(url)
   print resp
 	    
