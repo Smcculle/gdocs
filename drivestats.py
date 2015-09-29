@@ -125,9 +125,9 @@ def parse_doc(data):
     print_stats(counter, session_counter, action_counter, revision_dict, start_time, end_time)
 def main(argv):
 
-    helpmsg = 'Usage: python log2csv.py <inputfile>. Takes output log from log2csv or changelog from slides\n'\
-              'Ex: \tpython log2csv.py output/1_254_out.txt  or\n'\
-              '  \tpython log2csv.py slogs/1_317.txt'
+    helpmsg = 'Usage: python drivestats.py <inputfile>. Takes single output log from log2csv or raw changelog from slides\n'\
+              'Ex: \tpython drivestats.py output/1_254_out.txt  or\n'\
+              '  \tpython drivestats.py slogs/1_317.txt'
     if not argv:
         print helpmsg
         sys.exit(2)
