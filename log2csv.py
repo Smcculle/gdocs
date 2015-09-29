@@ -136,12 +136,12 @@ def main(argv):
             files += glob.glob(arg)
     else:
         print 'usage: python log2csv.py <inputfiles>  \nMay use wildcards for file.',\
-              ' Ex: python log2csv.py logs/254*.txt'
+              ' Ex: python log2csv.py logs/*.txt'
         sys.exit(2)
 
     if not files:
         print 'No files found.  Usage: python log2csv.py <inputfiles>  \nMay use wildcards',\
-              ' for file. Ex: python log2csv.py logs/254*.txt'
+              ' for file. Ex: python log2csv.py logs/*.txt'
         sys.exit(2)
 
     for doc in files:
