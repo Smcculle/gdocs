@@ -1,25 +1,11 @@
-import os
+import os, sys
 import json
 import errno
 
-#todo:  add main, arg handling, better solution to slide/box dict, clean
-
-filename = 'slogs/1_317.txt'
-#filename = 'slogs/deltest.txt'
-with open(filename, 'r') as f:
-    data = f.read()
-    if data[0] == ')':
-        data = data[5:]
-
-data = json.loads(data)
-
-data = data['changelog']
-data = data[1:]
+#todo:better solution to slide/box dict, clean,
+#some notes missing?
+BASE_DIR = 'oslide2/'
 box_dict = {}
-
-#first slide id is 'p'
-box_dict['i0'] = {'slide': 'p', 'string': ''}
-box_dict['i1'] = {'slide': 'p', 'string': ''}
 slide_dict = {'p': ['i0', 'i1']}
 #keep order of slides
 slide_list = ['p']
@@ -56,18 +42,16 @@ def del_text(line):
 def parse_mts(data):
     action_list = data[1]
     for line in action_list:
-        parse(line)
-        
+        parse_line(line)
+
 def add_slide(line):
-    print 'add slide:', line
     i = line[2]
     slide_id = line[1]
     slide_list.insert(i, slide_id)
-    
+
     if not slide_id in slide_dict:
         slide_dict[slide_id] = []
-    
-    
+
 def del_box(line):
     for box in line[1]:
         try:
@@ -75,16 +59,12 @@ def del_box(line):
             del box_dict[box]
             slide_dict['slide'].remove(box)
         except:
-            print "key error deleting", box, 'in line = ', line
-        
+             "key error deleting", box, 'in line = ', line
+
 def del_slide(line):
-    print 'del', line
     i = line[1]
     if line[4] == slide_list[i]:
         slide_list.pop(i)
-    
-functions = {15: add_text, 4:parse_mts, 16:del_text, 3:add_box,
-             12:add_slide, 13:del_slide, 0:del_box}
 
 def insert(old, add, i):
     return old[:i] + add + old[i:]
@@ -93,23 +73,22 @@ def delete(old, si, ei):
     si = si 
     return old[:si] + old[ei:]
 
-def parse(line):
+def parse(data):
+    #first slide id is 'p'
+    box_dict['i0'] = {'slide': 'p', 'string': ''}
+    box_dict['i1'] = {'slide': 'p', 'string': ''}
+    for entry in data:
+        line = entry[0]
+        parse_line(line)
+            
+def parse_line(line):
+    functions = {15: add_text, 4:parse_mts, 16:del_text, 3:add_box,
+             12:add_slide, 13:del_slide, 0:del_box}
     action = line[0]
-    '''
-    if action == 15:
-        add_text(line)
-    elif action == 4:
-        parse_mts(line)
-    elif action == 16:
-        del_text(line)
-    '''
     if action in functions:
         func = functions[action]
         func(line)
-
-for line in data:
-    parse(line[0])
-
+        
 def makedir(path):
     try:
         os.makedirs(path)
@@ -117,16 +96,45 @@ def makedir(path):
         if exception.errno != errno.EEXIST:
             raise
 
-based = 'oslide/'
-makedir(based)
-for i,slide in enumerate(slide_list):
-    slidei = 'slide' + str(i) 
-    path = based + slidei + '/'
-    print path
-    makedir(path)
-    for j,box in enumerate(slide_dict[slide]):
-        filename = path + slidei + '_' + 'box' + str(j) + '.txt'
-        print filename
-        with open(filename, 'w') as ofile:
-            ofile.write(box_dict[box]['string'])
-            
+def write_output(box_dict, slide_dict, slide_list):
+    makedir(BASE_DIR)
+    for i,slide in enumerate(slide_list):
+        slidei = 'slide' + str(i) 
+        path = BASE_DIR + slidei + '/'
+        makedir(path)
+        for j,box in enumerate(slide_dict[slide]):
+            filename = path + slidei + '_' + 'box' + str(j) + '.txt'
+            with open(filename, 'w') as ofile:
+                ofile.write(box_dict[box]['string'])
+                
+    print 'Finished with output in directory', BASE_DIR   
+def main(argv):
+    helpmsg = 'Usage: python slide2plain.py <inputfile>. Takes single raw changelog from slides\n'\
+              'Ex: \tpython drivestats.py slogs/1_317.txt'
+
+    if not argv:
+        print helpmsg
+        sys.exit(2)
+    else:
+        filename = argv[0]
+
+    if not os.path.isfile(filename):
+        print 'No file found.', helpmsg
+        sys.exit(2)
+
+    with open(filename, 'r') as f:
+        data = f.read()
+    if data[0] == ')':
+        data = data[5:]
+
+    data = json.loads(data)
+
+    data = data['changelog']
+    data = data[1:]
+    parse(data)
+    write_output(box_dict, slide_dict, slide_list)
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
+
+    
