@@ -9,7 +9,7 @@ _MAPPINGS = {
     "is": "insert",
     "ds": "delete",
     "as": "adjust_style",
-    "fm": "?fm", #
+    "fm": "fm", #
     "timestamp": "timestamp",
     "UID": "UID",
     "rev": "rev",
@@ -18,10 +18,10 @@ _MAPPINGS = {
     "sm": "style_modification",
     "mts": "multiset",
     "sugid": "suggestion_id",
-    "tbs_al": "?table_alignment", #
-    "tbs_of": "?table_offset", #
+    "tbs_al": "table_alignment", #
+    "tbs_of": "table_offset", #
     "das_a": "datasheet_anchor",
-    "ps_ltr": "?ps_ltr", #
+    "ps_ltr": "ps_ltr", #
     "hs_nt": "heading_style_normal_text", 
     "ds_pw": "page_width",
     "ds_ph": "page_height",
@@ -53,8 +53,8 @@ _MAPPINGS = {
     "ts_fs_i": "font_size_flag",
     "ts_it": "italic",
     "ts_it_i": "italic_flag",
-    "ts_sc": "?ts_sc", #
-    "ts_sc_i": "?ts_sc_flag", #
+    "ts_sc": "ts_sc", #
+    "ts_sc_i": "ts_sc_flag", #
     "ts_st": "strikethrough",
     "ts_st_i": "strikethrough_flag",
     "ts_un": "underline",
@@ -63,59 +63,58 @@ _MAPPINGS = {
     "ts_va_i": "vertical_align_flag",
     "ps_al": "alignment",
     "ps_al_i": "alignment_flag",
-    "ps_awao": "?ps_awao", #
-    "ps_awao_i": "?ps_awao_flag", #
+    "ps_awao": "ps_awao", #
+    "ps_awao_i": "ps_awao_flag", #
     "ps_hd": "heading_style",
     "ps_hdid": "heading_id",
     "ps_ifl": "indent_first_line",
     "ps_ifl_i": "indent_first_line_flag",
     "ps_il": "indent_line",
     "ps_il_i": "indent_line_flag",
-    "ps_ir": "?ps_ir", #
-    "ps_ir_i": "?ps_ir_flag", #
-    "ps_klt": "?ps_klt", #
-    "ps_klt_i": "?ps_klt_flag", #
-    "ps_kwn": "?ps_kwn", #
-    "ps_kwn_i": "?ps_kwn_flag", #
+    "ps_ir": "ps_ir", #
+    "ps_ir_i": "ps_ir_flag", #
+    "ps_klt": "ps_klt", #
+    "ps_klt_i": "ps_klt_flag", #
+    "ps_kwn": "ps_kwn", #
+    "ps_kwn_i": "ps_kwn_flag", #
     "ps_ls": "line_space",
     "ps_ls_i": "line_space_flag",
     "ps_sa": "space_after_paragraph",
     "ps_sa_i": "space_after_paragraph_flag",
     "ps_sb": "space_before_paragraph",
     "ps_sb_i": "space_before_paragraph_flag",
-    "ps_sm": "?ps_sm", #
-    "ps_sm_i": "?ps_sm_flag", #
-    "ps_ts": "?ps_ts", #
-    "cv": "?cv", #
+    "ps_sm": "ps_sm", #
+    "ps_sm_i": "ps_sm_flag", #
+    "ps_ts": "ps_ts", #
+    "cv": "cv", #
     "opValue": "opValue",
     "op": "op",
     "opIndex": "opIndex",
-    "ds_hi": "?ds_hi", #
+    "ds_hi": "ds_hi", #
     "sugid": "suggestion_id",
     "id": "id",
     "null": "null",
-    "msfd": "suggestion_field",
+    "msfd": "suggestion_add",
     "usfd": "suggestion_reject",
     "sas": "suggestion_accept",
     "rvrt": "revert",
-    "de": "de",
-    "ae": "ae",
-    "te": "te",
+    "de": "del_elem",
+    "ae": "add_elem",
+    "te": "tether_elem",
     "mlti": "mlti",
     
     #mostly related to insertion of kix objects in page
-    "ls_nest": "?ls_nest", #
-    "spi": "?spi", #
-    "epm": "?epm", #
-    "ae": "?ae", #
-    "ue": "?ue", #
-    "epm": "?epm", #
-    "et": "?et",  #
-    "ls_ts": "?ls_ts", #
-    "ls_id": "?ls_id", #
-    "ee_eo": "?ee_eo", #
-    "le_nb": "?le_nb", #
-    "hfe_hft": "?hfe_hft", #
+    "ls_nest": "ls_nest", #
+    "spi": "spi", #
+    "epm": "epm", #
+    "ue": "ue", #
+    "epm": "epm", #
+    "et": "et",  #
+    "ls_ts": "ls_ts", #
+    "ls_id": "ls_id", #
+    "ee_eo": "ee_eo", #
+    "le_nb": "le_nb", #
+    "hfe_hft": "hfe_hft", #
     }
 
 def remap(old_key):
