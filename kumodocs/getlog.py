@@ -120,8 +120,7 @@ credentials = storage.get()
 
 
 if credentials is None or credentials.invalid:
-  print "Creds none/invalid"
-  #credentials = run(FLOW, storage) test later
+  credentials = run(FLOW, storage) #test later
 http = httplib2.Http()
 http = credentials.authorize(http)
 service = build("drive", "v2", http=http)
@@ -151,14 +150,14 @@ resp, cont = service._http.request(
     url, method='POST', body=data, headers=my_headers)
     '''
 try:
-  url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/renderdata?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&token=AC4w5Vh_iTzvW2ih7wThCGejbO3J1pVpkw%3A1443374604500'
+  #url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/renderdata?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&token=AC4w5Vh_iTzvW2ih7wThCGejbO3J1pVpkw%3A1443374604500'
   #url = 'https://lh3.googleusercontent.com/TG-HofNaScWRUfyUuA-Ty4PzbZUW8UXHktI9apIv-DQygu7CJkjkgGY5Cm3X7FSXCiAzlQ=s1600'
   #url = 'https://lh3.googleusercontent.com/8oDqSwcKXBvy6tFS4badAWeQk7_1o3a_6d6EY9EKFsC9pTWD55qXXK3JCi8jcjTuisk01zv6ejeztTqXX3NpE91C5XxLFrT_CLUCK65bskNceclBXM4ersjGSuO0u_3dHFQ=s1600'
   #url = 'filesystem:https://docs.google.com/persistent/docs/documents/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/image/AE7MojedZEHNulGfoIidNJe3igHFde64_lGK2V7B6HrsqCmiBz1olI2xkcLwSNqaMsa76Xa69Z375zIli6pI1QSQKSpOsklAx4VirdmOLf0hxkCCa1HRdu8zW0JqsGD4xR-GOAq9NXLW3pvU6TcFnzO26iAphdEZLQS9c5CiznsfeRJZsCid56IS95UE_RDnip1zwZMXgTqOrP1RXUSY9frirqSPCC6YJUDiJ0h2LcaRmnolSe2r_ndW0f8ml0UOkiBTc99UHNFPYkHJ14mbIgPLVGjvOWd2QQ?zx=t2cfm4hfa0gb' 
-  #url = create_URL(fid, 292, 293)
+  url = create_URL(fid, 292, 293)
   #url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/'
   resp, content = service._http.request(url)
-  print resp
+  #print resp
 	    
 except: 
   raise
