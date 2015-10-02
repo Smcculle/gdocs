@@ -80,7 +80,7 @@ def parse(data):
     for entry in data:
         line = entry[0]
         parse_line(line)
-            
+
 def parse_line(line):
     functions = {15: add_text, 4:parse_mts, 16:del_text, 3:add_box,
              12:add_slide, 13:del_slide, 0:del_box}
@@ -88,7 +88,7 @@ def parse_line(line):
     if action in functions:
         func = functions[action]
         func(line)
-        
+
 def makedir(path):
     try:
         os.makedirs(path)
@@ -106,7 +106,7 @@ def write_output(box_dict, slide_dict, slide_list):
             filename = path + slidei + '_' + 'box' + str(j) + '.txt'
             with open(filename, 'w') as ofile:
                 ofile.write(box_dict[box]['string'])
-                
+
     print 'Finished with output in directory', BASE_DIR   
 def main(argv):
     helpmsg = 'Usage: python slide2plain.py <inputfile>. Takes single raw changelog from slides\n'\
@@ -136,5 +136,3 @@ def main(argv):
 
 if __name__ == '__main__':
     main(sys.argv[1:])
-
-    
