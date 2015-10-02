@@ -47,14 +47,14 @@ def parse_log(log):
             actiondict = get_dict(line)
 
             if actiondict['type'] == 'is':
-                i = actiondict['insert_before_index']
+                i = actiondict['ins_index']
                 s = actiondict['string']
                 #print 'at',ind,i,s
                 plain_text = insert(plain_text, s, i)
 
             elif actiondict['type'] == 'ds':
-                si = actiondict['starting_index']
-                ei = actiondict['ending_index']
+                si = actiondict['start_index']
+                ei = actiondict['end_index']
                 #print 'd:', si, ei
                 plain_text = delete(plain_text, si, ei)
         except:
