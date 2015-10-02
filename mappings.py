@@ -3,111 +3,110 @@ _MAPPINGS = {
     "ty": "type",
     "st": "style_type",
     "s": "string",
-    "ibi": "insert_before_index",
-    "si": "starting_index",
-    "ei": "ending_index",
-    "is": "insert",
-    "ds": "delete",
-    "as": "adjust_style",
+    "ibi": "ins_index",
+    "si": "start_index",
+    "ei": "end_index",
+    "is": "ins",
+    "ds": "del",
+    "as": "adj_style",
     "fm": "fm", #
     "timestamp": "timestamp",
     "UID": "UID",
     "rev": "rev",
     "SID": "SID",
     "SRev": "SRev",
-    "sm": "style_modification",
+    "sm": "style_mod",
     "mts": "multiset",
-    "sugid": "suggestion_id",
-    "tbs_al": "table_alignment", #
-    "tbs_of": "table_offset", #
+    "sugid": "sug_id",
+    "tbs_al": "table_aln", #
+    "tbs_of": "table_off", #
     "das_a": "datasheet_anchor",
     "ps_ltr": "ps_ltr", #
     "hs_nt": "heading_style_normal_text", 
     "ds_pw": "page_width",
     "ds_ph": "page_height",
-    "ds_mb": "margin_bottom",
-    "ds_ml": "margin_left",
-    "ds_mt": "margin_top",
-    "ds_mr": "margin_right",
+    "ds_mb": "marg_bottom",
+    "ds_ml": "marg_left",
+    "ds_mt": "marg_top",
+    "ds_mr": "marg_right",
     "snapshot": "snapshot",
     "lgs_l": "language",
-    "hs_h1": "heading_style_one",
-    "hs_h2": "heading_style_two",
-    "hs_h3": "heading_style_three",
-    "hs_h4": "heading_style_four",
-    "hs_h5": "heading_style_five",
-    "hs_h6": "heading_style_six",
-    "hs_st": "heading_style_subtitle",
-    "hs_t": "heading_style_title",
-    "sdef_ps": "set_default_paragraph_style",
-    "sdef_ts": "set_default_text_style",
+    "hs_h1": "head_style1",
+    "hs_h2": "head_style2",
+    "hs_h3": "head_style3",
+    "hs_h4": "head_style4",
+    "hs_h5": "head_style5",
+    "hs_h6": "head_style6",
+    "hs_st": "head_style_st",
+    "hs_t": "head_style_t",
+    "sdef_ps": "set_def_ps",
+    "sdef_ts": "set_def_ts",
     "ts_bd": "bold",
-    "ts_bd_i": "bold_flag",
+    "ts_bd_i": "bold_i",
     "ts_bgc": "background_color",
-    "ts_bgc_i": "background_color_flag",
+    "ts_bgc_i": "background_color_i",
     "ts_ff": "font_family",
-    "ts_ff_i": "font_family_flag",
+    "ts_ff_i": "font_family_i",
     "ts_fgc": "foreground_color",
-    "ts_fgc_i": "foreground_color_flag",
+    "ts_fgc_i": "foreground_color_i",
     "ts_fs": "font_size",
-    "ts_fs_i": "font_size_flag",
+    "ts_fs_i": "font_size_i",
     "ts_it": "italic",
-    "ts_it_i": "italic_flag",
+    "ts_it_i": "italic_i",
     "ts_sc": "ts_sc", #
-    "ts_sc_i": "ts_sc_flag", #
+    "ts_sc_i": "ts_sc_i", #
     "ts_st": "strikethrough",
-    "ts_st_i": "strikethrough_flag",
+    "ts_st_i": "strikethrough_i",
     "ts_un": "underline",
-    "ts_un_i": "underline_flag",
-    "ts_va": "vertical_align",
-    "ts_va_i": "vertical_align_flag",
+    "ts_un_i": "underline_i",
+    "ts_va": "vert_align",
+    "ts_va_i": "vert_align_i",
     "ps_al": "alignment",
-    "ps_al_i": "alignment_flag",
+    "ps_al_i": "alignment_i",
     "ps_awao": "ps_awao", #
-    "ps_awao_i": "ps_awao_flag", #
+    "ps_awao_i": "ps_awao_i", #
     "ps_hd": "heading_style",
     "ps_hdid": "heading_id",
     "ps_ifl": "indent_first_line",
-    "ps_ifl_i": "indent_first_line_flag",
+    "ps_ifl_i": "indent_first_line_i",
     "ps_il": "indent_line",
-    "ps_il_i": "indent_line_flag",
+    "ps_il_i": "indent_line_i",
     "ps_ir": "ps_ir", #
-    "ps_ir_i": "ps_ir_flag", #
+    "ps_ir_i": "ps_ir_i", #
     "ps_klt": "ps_klt", #
-    "ps_klt_i": "ps_klt_flag", #
+    "ps_klt_i": "ps_klt_i", #
     "ps_kwn": "ps_kwn", #
-    "ps_kwn_i": "ps_kwn_flag", #
+    "ps_kwn_i": "ps_kwn_i", #
     "ps_ls": "line_space",
-    "ps_ls_i": "line_space_flag",
-    "ps_sa": "space_after_paragraph",
-    "ps_sa_i": "space_after_paragraph_flag",
-    "ps_sb": "space_before_paragraph",
-    "ps_sb_i": "space_before_paragraph_flag",
+    "ps_ls_i": "line_space_i",
+    "ps_sa": "space_af_pgraph",
+    "ps_sa_i": "space_af_pgraph_i",
+    "ps_sb": "space_bf_pgraph",
+    "ps_sb_i": "space_bf_pgraph_i",
     "ps_sm": "ps_sm", #
-    "ps_sm_i": "ps_sm_flag", #
+    "ps_sm_i": "ps_sm_i", #
     "ps_ts": "ps_ts", #
     "cv": "cv", #
     "opValue": "opValue",
     "op": "op",
     "opIndex": "opIndex",
     "ds_hi": "ds_hi", #
-    "sugid": "suggestion_id",
+    "sugid": "sug_id",
     "id": "id",
     "null": "null",
-    "msfd": "suggestion_add",
-    "usfd": "suggestion_reject",
-    "sas": "suggestion_accept",
+    "msfd": "sug_add",
+    "usfd": "sug_rej",
+    "sas": "sug_acc",
     "rvrt": "revert",
     "de": "del_elem",
     "ae": "add_elem",
+    "ue": "update_elem",
     "te": "tether_elem",
     "mlti": "mlti",
     
     #mostly related to insertion of kix objects in page
     "ls_nest": "ls_nest", #
     "spi": "spi", #
-    "epm": "epm", #
-    "ue": "ue", #
     "epm": "epm", #
     "et": "et",  #
     "ls_ts": "ls_ts", #
