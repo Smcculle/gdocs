@@ -9,8 +9,9 @@ from oauth2client.tools import run
 
 import log2csv
 import csv2plain
+import slide2plain
 
-#**TODO:  clean, list docs and getting file ID, integrate into kumodd?
+#**TODO:  video slide inserts
 
 
 # Create a client class which will make HTTP requests with Google Docs server.
@@ -20,7 +21,10 @@ fid = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
 BASE_URL = 'https://docs.google.com/document/d/'
 REV_PATH = '/revisions/load?id='
 RENDER_PATH = '/renderdata?id='
-DRAW_PATH = 'https://docs.google.com/drawings/d/{id}/image?w={w}&h={h}'
+DRAW_PATH = 'https://docs.google.com/drawings/d/{d_id}/image?w={w}&h={h}'
+REV_URL = 'https://docs.google.com/{drive}/d/{file_id}/revisions/load?id={file_id}'\
+          '&start={start}&end={end}'
+DRIVE_TYPE = {0: 'document', 1: 'presentation'}
 
 '''
 # Query the server for an Atom feed containing a list of your documents.
@@ -56,7 +60,7 @@ def write(msg):
   with open('out.txt', 'w') as f:
     f.write(msg)
 
-def create_URL(fileID, start, end):
+def create_URL(choice, file_id, start, end):
   """Constructs URL to retrieve the changelog.
 
   Args:
@@ -67,7 +71,9 @@ def create_URL(fileID, start, end):
     Composite URL for the request
   """
   
-  url = BASE_URL + fileID + REV_PATH + fileID + '&start=' + str(start) + '&end=' + str(end)
+  #url = BASE_URL + fileID + REV_PATH + fileID + '&start=' + str(start) + '&end=' + str(end)
+  drive = DRIVE_TYPE[choice]
+  url = REV_URL.format(file_id = file_id, start=start, end=end, drive=drive)
   return url                                          
 
 def list_files(key):
@@ -321,7 +327,7 @@ def get_doc_objects(flat_log):
   
   return comment_anchors, image_ids, drawing_ids
   
-def handle_doc(log, service, file_id):
+def process_doc(log, service, file_id):
   flat_log = log2csv.get_flat_log(log)
   comment_anchors, image_ids, drawing_ids = get_doc_objects(flat_log)
   plain_text = csv2plain.parse_log(flat_log)
@@ -333,7 +339,44 @@ def handle_doc(log, service, file_id):
   for i,drawing in enumerate(drawings):
     with open('imtest/draw' + str(i) + drawing[1], 'wb') as f:
       f.write(drawing[0])
-    
+
+def get_slide_objects(log):
+  image_ids = {}
+  for line in log['changelog']:
+    #line[0][0] is action type, 4 is multiset, 44 is insert image action
+    #for video inserts, len...[4] is 18; exclude video inserts for now
+    if line[0][0] == 4 and line[0][1][1][0] == 44 and len(line[0][1][0][4]) != 18:
+      #for drive,personal upload, image id in ...[9], else if url in ...[11]
+      slide_id = line[0][1][0][5]
+      if not slide_id in image_ids:
+        image_ids[slide_id] = []
+      #if ..[11] is a list, the image was not uploaded via url
+      if type(line[0][1][0][4][11]) == list: 
+        #if ..[9] is a list, not uploaded by drive
+        if type(line[0][1][0][4][9]) == list:
+          image_id = line[0][1][0][4][7]
+        else:
+          image_id = line[0][1][0][4][9]
+      else:
+        #if 11 is not a list, it was uploaded by url, src in ...[9]
+        image_id = line[0][1][0][4][11]
+      
+      image_ids[slide_id].append(image_id)
+  return image_ids
+
+def process_slide(log, service, file_id):
+  #plain_text = slide2plain
+  image_ids = get_slide_objects(log)
+  '''
+  id_list = []
+  for image_id in image_ids.itervalues():
+    id_list.append(image_id)    '''
+  images = get_images([img for img_list in image_ids.values() for img in img_list],
+                       service, file_id)
+
+  for i,img in enumerate(images):
+    with open('imtest/img' + str(i) + img[1], 'wb') as f:
+      f.write(img[0])
   
 def main(argv):
 
@@ -348,24 +391,27 @@ def main(argv):
     start = argv[1]
     end = argv[2]
   else:
+    choice = int(raw_input("Enter 0 for document, or 1 for presentation: "))
     file_id = raw_input("Enter file ID: ")
     start = raw_input("Start from revision: ")
     end = raw_input("End at revision: ")
 
 #***********testing*********************only*************
-  file_id = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
+  #file_id = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
+  file_id = '1O-vM_7MQgEJW06scH7k8zKHB2z2RClhPJDxI_jIKtdc'
   try:
     service = start_service()
-    url = create_URL(file_id, int(start), int(end))
+    url = create_URL(choice, file_id, int(start), int(end))
+    print url
     response, log = service._http.request(url) 
   except:
     raise
 
   log = json.loads(log[5:])
   if type(log['changelog'][0][0]) == dict:
-    handle_doc(log, service, file_id)
+    process_doc(log, service, file_id)
   elif type(log['changelog'][0][0]) == list:
-    handle_slide(log, service, file_id)
+    process_slide(log, service, file_id)
   else:
     raise ValueError('Unexpected type %s' % type(log['changelog'][0][0]))
     
