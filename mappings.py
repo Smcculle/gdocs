@@ -53,8 +53,8 @@ _MAPPINGS = {
     "ts_fs_i": "font_size_i",
     "ts_it": "italic",
     "ts_it_i": "italic_i",
-    "ts_sc": "ts_sc", #
-    "ts_sc_i": "ts_sc_i", #
+    "ts_sc": "small_caps", 
+    "ts_sc_i": "small_caps_i", 
     "ts_st": "strikethrough",
     "ts_st_i": "strikethrough_i",
     "ts_un": "underline",
