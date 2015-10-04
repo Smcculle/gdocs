@@ -17,8 +17,9 @@ import csv2plain
 #client = gdata.docs.service.DocsService()
 fid = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
 #url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/revisions/load?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&start=254&end=276'#&token=AC4w5ViipiO5sN96CUai4LMfK9VWsbLltw%3A1443027271527'
-base_url = 'https://docs.google.com/document/d/'
-url_path = '/revisions/load?id='
+BASE_URL = 'https://docs.google.com/document/d/'
+REV_PATH = '/revisions/load?id='
+RENDER_PATH = '/renderdata?id='
 '''
 # Query the server for an Atom feed containing a list of your documents.
 documents_feed = client.GetDocumentListFeed()
@@ -64,7 +65,7 @@ def create_URL(fileID, start, end):
     Composite URL for the request
   """
   
-  url = base_url + fileID + url_path + fileID + '&start=' + str(start) + '&end=' + str(end)
+  url = BASE_URL + fileID + REV_PATH + fileID + '&start=' + str(start) + '&end=' + str(end)
   return url                                          
 
 def list_files(key):
@@ -220,6 +221,36 @@ def start_service():
     
   return service
 
+def get_image_links(image_ids, service, file_id):
+  image_ids = set(image_ids)
+  data = {}
+  for i, imid in enumerate(image_ids):
+    key = 'r' + str(i)
+    #unicode image_ids are not accepted in the request, so they must be encoded as strings
+    data[key] = ['image', {'cosmoId': imid.encode(), 'container': file_id}]
+  request_body = {}
+  request_body['renderOps'] = data
+  request_body = urllib.urlencode(request_body)
+  request_body = request_body.replace('+','')
+  my_headers = {}
+  my_headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+
+  render_url = BASE_URL + fid + RENDER_PATH + fid
+  try:
+    response, content = service._http.request(render_url, method='POST', body=request_body, headers=my_headers)
+    return json.loads(content[5:])
+  except:
+    raise
+
+def get_images(image_ids, service, file_id):
+  images = []
+  links = get_image_links(image_ids, service, file_id)
+  for url in links.itervalues():
+    response, content = service._http.request(url)
+    images.append(content)
+
+  return images  
+  
 def get_comments(comment_anchors, service, file_id):
   url = 'https://www.googleapis.com/drive/v2/files/' + file_id + r'/comments?includeDeleted=true&fields=items(anchor%2Ccontent%2Creplies%2Fcontent)'
   response, content = service._http.request(url)
@@ -273,9 +304,11 @@ def handle_doc(log, service, file_id):
   plain_text = csv2plain.parse_log(flat_log)
 
   comments = get_comments(comment_anchors, service, file_id)
-  for item in comments:
-    print "Comment = ", item[0], 'replies = ', item[1]
-  #images = get_images(image_ids, service)
+  images = get_images(image_ids, service, file_id)
+  for i,image in enumerate(images):
+    filen = 'imtest/img' + str(i) + '.jpg'
+    with open(filen, 'wb') as f:
+      f.write(image)
   
 def main(argv):
 
