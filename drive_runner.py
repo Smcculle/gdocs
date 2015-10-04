@@ -243,10 +243,10 @@ def get_drawings(drawing_ids, service, file_id):
 def get_image_links(image_ids, service, file_id):
   image_ids = set(image_ids)
   data = {}
-  for i, imid in enumerate(image_ids):
+  for i, img_id in enumerate(image_ids):
     key = 'r' + str(i)
     #unicode image_ids are not accepted in the request, so they must be encoded as strings
-    data[key] = ['image', {'cosmoId': imid.encode(), 'container': file_id}]
+    data[key] = ['image', {'cosmoId': img_id.encode(), 'container': file_id}]
   request_body = {}
   request_body['renderOps'] = data
   request_body = urllib.urlencode(request_body)
@@ -257,9 +257,15 @@ def get_image_links(image_ids, service, file_id):
   render_url = BASE_URL + fid + RENDER_PATH + fid
   try:
     response, content = service._http.request(render_url, method='POST', body=request_body, headers=my_headers)
-    return json.loads(content[5:])
+    content = json.loads(content[5:])
+    #keep assocation of image ids with image
+    for i, img_id in enumerate(image_ids):
+      key = 'r' + str(i)
+      content[key] = [content.pop(key), img_id]
+    return content
   except:
-    raise
+    print response
+    print content
 
 def get_extension(html_response):
   '''Returns extension for downloaded resource'''
@@ -270,11 +276,11 @@ def get_extension(html_response):
 def get_images(image_ids, service, file_id):
   images = []
   links = get_image_links(image_ids, service, file_id)
-  for url in links.itervalues():
+  for url, img_id in links.itervalues():
     response, content = service._http.request(url)
     extension = get_extension(response)
-    images.append((content, extension))
-
+    images.append((content, extension, img_id))
+    
   return images  
   
 def get_comments(comment_anchors, service, file_id):
@@ -348,8 +354,8 @@ def get_slide_objects(log):
     if line[0][0] == 4 and line[0][1][1][0] == 44 and len(line[0][1][0][4]) != 18:
       #for drive,personal upload, image id in ...[9], else if url in ...[11]
       slide_id = line[0][1][0][5]
-      if not slide_id in image_ids:
-        image_ids[slide_id] = []
+      #if not slide_id in image_ids:
+       # image_ids[slide_id] = []
       #if ..[11] is a list, the image was not uploaded via url
       if type(line[0][1][0][4][11]) == list: 
         #if ..[9] is a list, not uploaded by drive
@@ -361,7 +367,8 @@ def get_slide_objects(log):
         #if 11 is not a list, it was uploaded by url, src in ...[9]
         image_id = line[0][1][0][4][11]
       
-      image_ids[slide_id].append(image_id)
+      #image_ids[slide_id].append(image_id)
+      image_ids[image_id] = slide_id
   return image_ids
 
 def process_slide(log, service, file_id):
@@ -371,12 +378,24 @@ def process_slide(log, service, file_id):
   id_list = []
   for image_id in image_ids.itervalues():
     id_list.append(image_id)    '''
-  images = get_images([img for img_list in image_ids.values() for img in img_list],
-                       service, file_id)
+  #print image_ids
+  images = get_images(image_ids.keys(), service, file_id)
 
-  for i,img in enumerate(images):
-    with open('imtest/img' + str(i) + img[1], 'wb') as f:
-      f.write(img[0])
+  #index images by slide for printing
+  slide_images = {}
+  for img in images:
+    slide_id = image_ids.pop(img[2])
+    if slide_id in slide_images:
+      slide_images[slide_id].append(img)
+    else:
+      slide_images[slide_id] = [img]
+  '''
+  for i,key in enumerate(slide_images.iterkeys()):
+    for j,img in enumerate(slide_images[key]):
+      with open('imtest/imag' + str(i) + str(j) + img[1], 'wb') as f:
+        f.write(img[0])'''
+      
+  slide2plain.write_objects(log, slide_images, 'imgruntest/')
   
 def main(argv):
 
@@ -402,7 +421,6 @@ def main(argv):
   try:
     service = start_service()
     url = create_URL(choice, file_id, int(start), int(end))
-    print url
     response, log = service._http.request(url) 
   except:
     raise
