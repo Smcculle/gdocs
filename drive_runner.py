@@ -20,6 +20,8 @@ fid = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
 BASE_URL = 'https://docs.google.com/document/d/'
 REV_PATH = '/revisions/load?id='
 RENDER_PATH = '/renderdata?id='
+DRAW_PATH = 'https://docs.google.com/drawings/d/{id}/image?w={w}&h={h}'
+
 '''
 # Query the server for an Atom feed containing a list of your documents.
 documents_feed = client.GetDocumentListFeed()
@@ -221,6 +223,17 @@ def start_service():
     
   return service
 
+def get_drawings(drawing_ids, service, file_id):
+  drawings = []
+  for drawing_id in drawing_ids:
+    url = DRAW_PATH.format(id=drawing_id[0], w=drawing_id[1], h=drawing_id[2])
+    print url
+    response, content = service._http.request(url)
+    extension = get_extension(response)
+    drawings.append((content, extension))
+
+  return drawings
+
 def get_image_links(image_ids, service, file_id):
   image_ids = set(image_ids)
   data = {}
@@ -242,12 +255,19 @@ def get_image_links(image_ids, service, file_id):
   except:
     raise
 
+def get_extension(html_response):
+  '''Returns extension for downloaded resource'''
+  
+  cdisp = html_response['content-disposition']
+  return cdisp[cdisp.index('.'):-1]
+
 def get_images(image_ids, service, file_id):
   images = []
   links = get_image_links(image_ids, service, file_id)
   for url in links.itervalues():
     response, content = service._http.request(url)
-    images.append(content)
+    extension = get_extension(response)
+    images.append((content, extension))
 
   return images  
   
@@ -268,7 +288,7 @@ def get_comments(comment_anchors, service, file_id):
 
   return comments
 
-def get_objects(flat_log):
+def get_doc_objects(flat_log):
   comment_anchors = []
   image_ids = []
   drawing_ids = []
@@ -290,7 +310,10 @@ def get_objects(flat_log):
         if 'i_cid' in line_dict['epm']['ee_eo']:
           image_ids.append(line_dict['epm']['ee_eo']['i_cid'])
         elif 'd_id' in line_dict['epm']['ee_eo']:
-          drawing_ids.append(line_dict['epm']['ee_eo']['d_id'])
+          d_id = line_dict['epm']['ee_eo']['d_id']
+          i_wth = line_dict['epm']['ee_eo']['i_wth']
+          i_ht = line_dict['epm']['ee_eo']['i_ht']
+          drawing_ids.append((d_id, int(i_wth), int(i_ht)))
 
     except ValueError:
         pass # either chunked or changelog header without dict, no action needed
@@ -300,15 +323,17 @@ def get_objects(flat_log):
   
 def handle_doc(log, service, file_id):
   flat_log = log2csv.get_flat_log(log)
-  comment_anchors, image_ids, drawing_ids = get_objects(flat_log)
+  comment_anchors, image_ids, drawing_ids = get_doc_objects(flat_log)
   plain_text = csv2plain.parse_log(flat_log)
 
   comments = get_comments(comment_anchors, service, file_id)
   images = get_images(image_ids, service, file_id)
-  for i,image in enumerate(images):
-    filen = 'imtest/img' + str(i) + '.jpg'
-    with open(filen, 'wb') as f:
-      f.write(image)
+  drawings = get_drawings(drawing_ids, service, file_id)
+
+  for i,drawing in enumerate(drawings):
+    with open('imtest/draw' + str(i) + drawing[1], 'wb') as f:
+      f.write(drawing[0])
+    
   
 def main(argv):
 
