@@ -9,7 +9,7 @@ import mappings
 
  
 
-#todo:  look at reverts, deep multisets
+#todo:  look at reverts
 
 CHUNKED_ORDER = ['si', 'ei', 'st']#, 'ty', 'sm']
 keys = set() # temporary
@@ -26,8 +26,9 @@ def rename_keys(log_dict):
             if isinstance(log_dict[new_key], dict):
                 log_dict[new_key] = rename_keys(log_dict[new_key])
         except KeyError:
-            logging.warning('KeyError, %s missing in renamekeys', key)
-            keys.add(key)
+            pass
+            #logging.warning('KeyError, %s missing in renamekeys', key)
+            #keys.add(key)
     return log_dict
 
 def to_file(flat_log, filename):
@@ -124,9 +125,22 @@ def parse_snapshot(snapshot, flat_log):
             flat_log.append('|'.join(str(entry) for entry in line))
 
         except KeyError:
-            logging.warning('KeyError, %s missing', key)
+            #logging.warning('KeyError, %s missing', key)
             keys.add(key)
+                
+def get_flat_log(data):
+    """Splits into snapshot and changelog, parses each, and returns flat log"""
+    #log = json.loads(data)
+    flat_log = []
+    
+    try:
+        parse_snapshot(data['chunkedSnapshot'], flat_log)
+        parse_log(data['changelog'], flat_log)
+    except KeyError:
+        raise
 
+    return flat_log
+    
 def main(argv):
     logging.basicConfig(filename='output/error.log', level=logging.DEBUG)
     files = []
@@ -149,7 +163,7 @@ def main(argv):
             data = infile.read()
             if data[0] == ')':
                 data = data[5:]
-
+        '''
         log = json.loads(data)
         flat_log = []
 
@@ -158,7 +172,9 @@ def main(argv):
             parse_log(log['changelog'], flat_log)
         except KeyError:
             raise
-
+        '''
+        data = json.loads(data)
+        flat_log = get_flat_log(data)
         to_file(flat_log, doc)
 
 if __name__ == '__main__':
