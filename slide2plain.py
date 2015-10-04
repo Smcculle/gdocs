@@ -96,18 +96,32 @@ def makedir(path):
         if exception.errno != errno.EEXIST:
             raise
 
-def write_output(box_dict, slide_dict, slide_list):
-    makedir(BASE_DIR)
+def write_output(box_dict, slide_dict, slide_list, images=None, base_dir=BASE_DIR):
+    makedir(base_dir)
     for i,slide in enumerate(slide_list):
         slidei = 'slide' + str(i) 
-        path = BASE_DIR + slidei + '/'
+        path = base_dir + slidei + '/'
         makedir(path)
         for j,box in enumerate(slide_dict[slide]):
-            filename = path + slidei + '_' + 'box' + str(j) + '.txt'
-            with open(filename, 'w') as ofile:
-                ofile.write(box_dict[box]['string'])
+            if(box_dict[box]['string']):
+                filename = path + slidei + '_' + 'box' + str(j) + '.txt'
+                with open(filename, 'w') as ofile:
+                    ofile.write(box_dict[box]['string'])
+        if images and slide in images:
+            for j,img in enumerate(images[slide]):
+                extension = img[1]
+                filename = path + slidei + '_' + 'image' + str(j) + extension
+                with open(filename, 'wb') as ofile:
+                    ofile.write(img[0])
+    
+    print 'Finished with output in directory', base_dir
 
-    print 'Finished with output in directory', BASE_DIR   
+def write_objects(log, images, path):
+    log = log['changelog']
+    log = log[1:]
+    parse(log)
+    write_output(box_dict, slide_dict, slide_list, images=images, base_dir=path)
+
 def main(argv):
     helpmsg = 'Usage: python slide2plain.py <inputfile>. Takes single raw changelog from slides\n'\
               'Ex: \tpython drivestats.py slogs/1_317.txt'
