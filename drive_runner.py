@@ -10,7 +10,7 @@ import log2csv
 import csv2plain
 import slide2plain
 
-#**TODO:  video slide inserts
+#**TODO:  video slide inserts?, list docs, find better solution to renderdata needing doc_id
 
 fid = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
 #url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/revisions/load?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&start=254&end=276'#&token=AC4w5ViipiO5sN96CUai4LMfK9VWsbLltw%3A1443027271527'
@@ -301,6 +301,7 @@ def get_slide_objects(log):
 
 def process_slide(log, service, file_id):
 
+  image_ids = get_slide_objects(log)
   images = get_images(image_ids.keys(), service, file_id)
 
   #index images by slide for printing
