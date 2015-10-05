@@ -116,6 +116,33 @@ _MAPPINGS = {
     "hfe_hft": "hfe_hft", #
     }
 
+''' unknown properties
+--involves bullet lists
+b_gf
+b_ifl
+b_gs
+b_gt
+b_ts
+b_il
+--
+eo_type  element something type 
+b_a
+eo_mb  element something margin bottom
+eo_ad  ?
+eo_mt  margin top
+eo_mr  margin right
+eo_ml  margin left
+-- involves numbered lists
+nl_3
+nl_2
+nl_1
+nl_0
+nl_7
+nl_6
+nl_5
+nl_4
+nl_8
+--- '''
 def remap(old_key):
     return _MAPPINGS[old_key]
 
