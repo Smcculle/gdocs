@@ -25,6 +25,7 @@ DRAW_PATH = 'https://docs.google.com/drawings/d/{d_id}/image?w={w}&h={h}'
 REV_URL = 'https://docs.google.com/{drive}/d/{file_id}/revisions/load?id={file_id}'\
           '&start={start}&end={end}'
 DRIVE_TYPE = {0: 'document', 1: 'presentation'}
+TITLE_PATH = 'https://www.googleapis.com/drive/v2/files/{file_id}?fields=title'
 
 '''
 # Query the server for an Atom feed containing a list of your documents.
@@ -59,22 +60,6 @@ def get_user_info(service):
 def write(msg):
   with open('out.txt', 'w') as f:
     f.write(msg)
-
-def create_URL(choice, file_id, start, end):
-  """Constructs URL to retrieve the changelog.
-
-  Args:
-    fileID: Google file ID
-    start: starting revision number
-    end: ending revision number
-  Returns:
-    Composite URL for the request
-  """
-  
-  #url = BASE_URL + fileID + REV_PATH + fileID + '&start=' + str(start) + '&end=' + str(end)
-  drive = DRIVE_TYPE[choice]
-  url = REV_URL.format(file_id = file_id, start=start, end=end, drive=drive)
-  return url                                          
 
 def list_files(key):
   search_param = {'doc':"mimeType = 'application/vnd.google-apps.document'", 'slide': "mimeType = 'application/vnd.google-apps.presentation'"}
@@ -182,7 +167,30 @@ def code():
           print i['htmlContent']
           for j in i['replies']:
                   print j['content']
-                  '''
+              '''
+
+def create_URL(choice, file_id, start, end):
+  """Constructs URL to retrieve the changelog.
+
+  Args:
+    fileID: Google file ID
+    start: starting revision number
+    end: ending revision number
+  Returns:
+    Composite URL for the request
+  """
+  
+  #url = BASE_URL + fileID + REV_PATH + fileID + '&start=' + str(start) + '&end=' + str(end)
+  drive = DRIVE_TYPE[choice]
+  url = REV_URL.format(file_id = file_id, start=start, end=end, drive=drive)
+  return url
+
+def get_title(service, file_id):
+  url = TITLE_PATH.format(file_id = file_id)
+  response, content = service._http.request(url)
+  content = json.loads(content)
+  return content['title']
+  
 def start_service():
   """Reads config file and initializes the gdrive service with proper authentication"""
   
@@ -232,12 +240,11 @@ def start_service():
 def get_drawings(drawing_ids, service, file_id):
   drawings = []
   for drawing_id in drawing_ids:
-    url = DRAW_PATH.format(id=drawing_id[0], w=drawing_id[1], h=drawing_id[2])
-    print url
+    url = DRAW_PATH.format(d_id=drawing_id[0], w=drawing_id[1], h=drawing_id[2])
     response, content = service._http.request(url)
     extension = get_extension(response)
     drawings.append((content, extension))
-
+    
   return drawings
 
 def get_image_links(image_ids, service, file_id):
@@ -269,9 +276,12 @@ def get_image_links(image_ids, service, file_id):
 
 def get_extension(html_response):
   '''Returns extension for downloaded resource'''
-  
+
   cdisp = html_response['content-disposition']
-  return cdisp[cdisp.index('.'):-1]
+  start_index = cdisp.index('.')
+  end_index = cdisp.index('"', start_index)
+  extension = cdisp[start_index:end_index]
+  return extension
 
 def get_images(image_ids, service, file_id):
   images = []
@@ -288,6 +298,7 @@ def get_comments(comment_anchors, service, file_id):
   response, content = service._http.request(url)
   content = json.loads(content)
   comment_anchors = set(comment_anchors)
+  '''
   comments = []
   for item in content['items']:
     if item['anchor'] in comment_anchors:
@@ -296,7 +307,16 @@ def get_comments(comment_anchors, service, file_id):
       if item['replies']:
         for reply in item['replies']:
           replies.append(reply['content'])
-      comments.append((comment, replies))
+      comments.append((comment, replies))'''
+  comments = []
+  for item in content['items']:
+    if item['anchor'] in comment_anchors:
+      comment = 'Comment: %s\n' % item['content']
+      comments.append(comment)
+      if item['replies']:
+        for reply in item['replies']:
+          reply = '\t%s\n' % reply['content']
+          comments.append(reply)
 
   return comments
 
@@ -341,11 +361,33 @@ def process_doc(log, service, file_id):
   comments = get_comments(comment_anchors, service, file_id)
   images = get_images(image_ids, service, file_id)
   drawings = get_drawings(drawing_ids, service, file_id)
+  docname = get_title(service, file_id)
+
+  write_doc(docname, plain_text, comments, images, drawings)
+
+def write_doc(docname, plain_text, comments, images, drawings):
+  base_dir = docname + '/'
+  slide2plain.makedir(base_dir)
 
   for i,drawing in enumerate(drawings):
-    with open('imtest/draw' + str(i) + drawing[1], 'wb') as f:
+    filename = base_dir + 'drawing' + str(i) + drawing[1]
+    with open(filename, 'wb') as f:
       f.write(drawing[0])
+      
+  for i,img in enumerate(images):
+    filename = base_dir + 'img' + str(i) + img[1]
+    with open(filename, 'wb') as f:
+      f.write(img[0])
+      
+  filename = base_dir + 'plain.txt'
+  with open(filename, 'w') as f:
+    f.write(plain_text.encode('mbcs'))
 
+  filename = base_dir + 'comments.txt'
+  comment_string = ''.join(comments)
+  with open(filename, 'w') as f:
+    f.write(comment_string)
+    
 def get_slide_objects(log):
   image_ids = {}
   for line in log['changelog']:
@@ -394,8 +436,10 @@ def process_slide(log, service, file_id):
     for j,img in enumerate(slide_images[key]):
       with open('imtest/imag' + str(i) + str(j) + img[1], 'wb') as f:
         f.write(img[0])'''
-      
-  slide2plain.write_objects(log, slide_images, 'imgruntest/')
+
+  path = get_title(service, file_id)
+  path += '/'
+  slide2plain.write_objects(log, slide_images, path)
   
 def main(argv):
 
@@ -416,8 +460,8 @@ def main(argv):
     end = raw_input("End at revision: ")
 
 #***********testing*********************only*************
-  #file_id = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
-  file_id = '1O-vM_7MQgEJW06scH7k8zKHB2z2RClhPJDxI_jIKtdc'
+  file_id = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
+  #file_id = '1O-vM_7MQgEJW06scH7k8zKHB2z2RClhPJDxI_jIKtdc'
   try:
     service = start_service()
     url = create_URL(choice, file_id, int(start), int(end))
