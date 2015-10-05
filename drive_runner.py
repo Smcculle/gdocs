@@ -10,32 +10,21 @@ import log2csv
 import csv2plain
 import slide2plain
 
-#**TODO:  video slide inserts?, list docs, find better solution to renderdata needing doc_id
+#**TODO:  handle slide snapshot parsing, list docs/slides and max revision, find better solution to renderdata needing doc_id
+#TODO:  video slide inserts?
 
 fid = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
 #url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/revisions/load?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&start=254&end=276'#&token=AC4w5ViipiO5sN96CUai4LMfK9VWsbLltw%3A1443027271527'
-BASE_URL = 'https://docs.google.com/document/d/'
-REV_PATH = '/revisions/load?id='
-RENDER_PATH = '/renderdata?id='
+#BASE_URL = 'https://docs.google.com/document/d/'
+#REV_PATH = '/revisions/load?id='
+#RENDER_PATH = '/renderdata?id='
 DRAW_PATH = 'https://docs.google.com/drawings/d/{d_id}/image?w={w}&h={h}'
 REV_URL = 'https://docs.google.com/{drive}/d/{file_id}/revisions/load?id={file_id}'\
           '&start={start}&end={end}'
+RENDER_URL = 'https://docs.google.com/{drive}/d/{file_id}/renderdata?id={file_id}'
 DRIVE_TYPE = {0: 'document', 1: 'presentation'}
 TITLE_PATH = 'https://www.googleapis.com/drive/v2/files/{file_id}?fields=title'
-
-def get_user_info(service):
-  """Print information about the user along with the Drive API settings.
-
-  Args:
-    service: Drive API service instance.
-  """
-  try:
-    about = service.about().get().execute()
-
-    return about
-  except errors.HttpError, error:
-    print 'An error occurred: %s' % error
-    return None
+DRIVE = ''
 
 def list_files(key):
   search_param = {'doc':"mimeType = 'application/vnd.google-apps.document'", 'slide': "mimeType = 'application/vnd.google-apps.presentation'"}
@@ -60,7 +49,7 @@ def list_files(key):
   return result
   '''
 
-def create_URL(choice, file_id, start, end):
+def create_URL(file_id, start, end):
   """Constructs URL to retrieve the changelog.
 
   Args:
@@ -70,9 +59,8 @@ def create_URL(choice, file_id, start, end):
   Returns:
     Composite URL for the request
   """
-
-  drive = DRIVE_TYPE[choice]
-  url = REV_URL.format(file_id = file_id, start=start, end=end, drive=drive)
+  
+  url = REV_URL.format(file_id=file_id, start=start, end=end, drive=DRIVE)
   return url
 
 def get_title(service, file_id):
@@ -116,12 +104,6 @@ def start_service():
   http = httplib2.Http()
   http = credentials.authorize(http)
   service = build("drive", "v2", http=http)
-  user_info = get_user_info(service)
-  if user_info != None:
-    username = user_info['user']['emailAddress']
-  else:
-    print "Can't get username"
-    
   return service
 
 def get_drawings(drawing_ids, service, file_id):
@@ -134,7 +116,7 @@ def get_drawings(drawing_ids, service, file_id):
     
   return drawings
 
-def get_image_links(image_ids, service, file_id):
+def get_render_request(image_ids, file_id):
   image_ids = set(image_ids)
   data = {}
   for i, img_id in enumerate(image_ids):
@@ -148,9 +130,17 @@ def get_image_links(image_ids, service, file_id):
   my_headers = {}
   my_headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 
-  render_url = BASE_URL + fid + RENDER_PATH + fid
+  
+  render_url = RENDER_URL.format(drive=DRIVE, file_id=file_id)
+  
+  return render_url, request_body, my_headers
+  
+def get_image_links(image_ids, service, file_id):
+
+  render_url, request_body, my_headers = get_render_request(image_ids, file_id, )
   try:
-    response, content = service._http.request(render_url, method='POST', body=request_body, headers=my_headers)
+    response, content = service._http.request(render_url, method='POST',
+                                              body=request_body, headers=my_headers)
     content = json.loads(content[5:])
     #keep assocation of image ids with image
     for i, img_id in enumerate(image_ids):
@@ -239,7 +229,8 @@ def get_doc_objects(flat_log):
 
   return comment_anchors, image_ids, drawing_ids
   
-def process_doc(log, service, file_id):
+def process_doc(log, service, file_id, end):
+  
   flat_log = log2csv.get_flat_log(log)
   comment_anchors, image_ids, drawing_ids = get_doc_objects(flat_log)
   plain_text = csv2plain.parse_log(flat_log)
@@ -249,10 +240,10 @@ def process_doc(log, service, file_id):
   drawings = get_drawings(drawing_ids, service, file_id)
   docname = get_title(service, file_id)
 
-  write_doc(docname, plain_text, comments, images, drawings)
+  write_doc(docname, plain_text, comments, images, drawings, end)
 
-def write_doc(docname, plain_text, comments, images, drawings):
-  base_dir = docname + '/'
+def write_doc(docname, plain_text, comments, images, drawings, end):
+  base_dir = docname + '_' + str(end) + '/'
   slide2plain.makedir(base_dir)
 
   for i,drawing in enumerate(drawings):
@@ -273,6 +264,8 @@ def write_doc(docname, plain_text, comments, images, drawings):
   comment_string = ''.join(comments)
   with open(filename, 'w') as f:
     f.write(comment_string)
+
+  print 'Finished with output in directory', base_dir
 
 def get_slide_objects(log):
   image_ids = {}
@@ -299,7 +292,7 @@ def get_slide_objects(log):
       image_ids[image_id] = slide_id
   return image_ids
 
-def process_slide(log, service, file_id):
+def process_slide(log, service, file_id, end):
 
   image_ids = get_slide_objects(log)
   images = get_images(image_ids.keys(), service, file_id)
@@ -314,11 +307,11 @@ def process_slide(log, service, file_id):
       slide_images[slide_id] = [img]
 
   path = get_title(service, file_id)
-  path += '/'
+  path += '_' + str(end) + '/'
   slide2plain.write_objects(log, slide_images, path)
   
 def main(argv):
-
+  '''
   helpmsg = 'Usage: python driverunner.py <file_id> <start revision> <end revision> \n'\
               'Downloads the plain-text as of end revision as well as the images and comments associated with the file \n'
   if not argv:
@@ -329,28 +322,31 @@ def main(argv):
     file_id = argv[0]
     start = argv[1]
     end = argv[2]
-  else:
-    choice = int(raw_input("Enter 0 for document, or 1 for presentation: "))
-    file_id = raw_input("Enter file ID: ")
-    start = raw_input("Start from revision: ")
-    end = raw_input("End at revision: ")
-
+  else:'''
+  print 'Downloads the plain-text as of end revision as well as the images and comments associated with the file'\
+        'even if deleted. Presentations only support starting from revision 1.  \n\n'
+  choice = int(raw_input("Enter 0 for document, or 1 for presentation: "))
+  file_id = raw_input("Enter file ID: ")
+  start = int(raw_input("Start from revision: "))
+  end = int(raw_input("End at revision: "))
+  global DRIVE
+  DRIVE = DRIVE_TYPE[choice]
 #***********testing*********************only*************
-  #file_id = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
-  #file_id = '1O-vM_7MQgEJW06scH7k8zKHB2z2RClhPJDxI_jIKtdc'
+  #doc file_id = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps' (1-692)
+  #slide file_id = '1O-vM_7MQgEJW06scH7k8zKHB2z2RClhPJDxI_jIKtdc' (1-325)
 #***************
-  try:
-    service = start_service()
-    url = create_URL(choice, file_id, int(start), int(end))
-    response, log = service._http.request(url) 
-  except:
-    raise
+  service = start_service()
+  url = create_URL(file_id, start, end)
+  response, log = service._http.request(url) 
+  if response['status'] != '200':
+    print 'Could not obtain log.  Check file_id, max revision number, and permission for file.'
+    sys.exit(2)
 
   log = json.loads(log[5:])
   if type(log['changelog'][0][0]) == dict:
-    process_doc(log, service, file_id)
+    process_doc(log, service, file_id, end)
   elif type(log['changelog'][0][0]) == list:
-    process_slide(log, service, file_id)
+    process_slide(log, service, file_id, end)
   else:
     raise ValueError('Unexpected type %s' % type(log['changelog'][0][0]))
 
