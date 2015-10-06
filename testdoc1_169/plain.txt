@@ -1,0 +1,18 @@
+new document tenatively titled project 1
+
+This document 
+
+is being written to test 
+
+
+various features of google documents.  
+
+Page two starts here.  Here we do some formatting and deletion.  
+
+	here we indent the page and 		test some styles.  
+
+*
+
+some images will now follow, and a drawing
+*
+*
