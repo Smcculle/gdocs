@@ -61,7 +61,13 @@ def flat_mts(entry, line_copy, line):
   """
     if not 'mts' in entry:
         new_line = list(line)
-        mts_action = mappings.remap(entry['ty'])
+        
+        try:
+            mts_action = mappings.remap(entry['ty'])
+        except KeyError:
+            mts_action = entry['ty']
+            print 'Unknown key in flat_mts %s' % entry['ty']
+            
         new_line.append(mts_action)
 
         #action dictionary with descriptive keys
