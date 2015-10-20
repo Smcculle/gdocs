@@ -216,6 +216,7 @@ def get_doc_objects(flat_log):
   comment_anchors = []
   image_ids = []
   drawing_ids = []
+  suggestions = {}
 
   for line in flat_log:
     try:
@@ -238,16 +239,49 @@ def get_doc_objects(flat_log):
           i_wth = line_dict['epm']['ee_eo']['i_wth']
           i_ht = line_dict['epm']['ee_eo']['i_ht']
           drawing_ids.append((d_id, int(i_wth), int(i_ht)))
+      elif 'type' in line_dict:
+        if line_dict['type'] == 'iss':
+          sug_id = line_dict['sug_id']
+          ins_index = line_dict['ins_index']
+          string = line_dict['string']
+
+          #check if suggestion exists, create otherwise
+          if sug_id in suggestions:
+            suggestions[sug_id] = csv2plain.insert(suggestions[sug_id],
+                                                   string, ins_index)
+          else:
+            suggestions[sug_id] = string
+            
+        elif line_dict['type'] == 'dss' and sug_id in line_dict:
+          start_index = line_dict['start_index']
+          end_index = line_dict['end_index']
+          try:
+            sug_id = line_dict['sug_id']
+          except KeyError:
+            print "key error in sugid"
+            print line_dict
+            sys.exit(2)
+            
+
+          #remove later#
+          if not sug_id in suggestions:
+            print 'Trying to delete suggestion that does not exist'
+            raise
+          
+          suggestions[sug_id] = csv2plain.delete(suggestions[sug_id],
+                                                 start_index, end_index)
+        
 
     except ValueError:
         pass # either chunked or changelog header without dict, no action needed
 
-  return comment_anchors, image_ids, drawing_ids
+  
+  return comment_anchors, image_ids, drawing_ids, suggestions
   
 def process_doc(log, service, file_id, end):
   
   flat_log = log2csv.get_flat_log(log)
-  comment_anchors, image_ids, drawing_ids = get_doc_objects(flat_log)
+  comment_anchors, image_ids, drawing_ids, suggestions = get_doc_objects(flat_log)
   plain_text = csv2plain.parse_log(flat_log)
 
   comments = get_comments(comment_anchors, service, file_id)
@@ -255,9 +289,10 @@ def process_doc(log, service, file_id, end):
   drawings = get_drawings(drawing_ids, service, file_id)
   docname = get_title(service, file_id)
 
-  write_doc(docname, plain_text, comments, images, drawings, end)
+  write_doc(docname, plain_text, comments, images, drawings, end, suggestions)
 
-def write_doc(docname, plain_text, comments, images, drawings, end):
+#refactor for list(**args)
+def write_doc(docname, plain_text, comments, images, drawings, end, suggestions):
   base_dir = docname + '_' + str(end) + '/'
   slide2plain.makedir(base_dir)
 
@@ -279,6 +314,10 @@ def write_doc(docname, plain_text, comments, images, drawings, end):
   comment_string = ''.join(comments)
   with open(filename, 'w') as f:
     f.write(comment_string)
+
+  filename = base_dir + 'suggestions.txt'
+  with open(filename, 'w') as f:
+    f.write(json.dumps(suggestions))
 
   print 'Finished with output in directory', base_dir
 
