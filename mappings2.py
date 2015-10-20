@@ -103,6 +103,12 @@ _MAPPINGS = {
     "ue": "update_elem",
     "te": "tether_elem",
     "mlti": "mlti",
+    "i_ht": "img_ht",
+    "i_wth": "img_wth",
+    "i_src": "img_src",
+    "i_cid": "img_cosmoId",
+    
+    
     
     #mostly related to insertion of kix objects in page
     "ls_nest": "ls_nest", #
@@ -116,38 +122,6 @@ _MAPPINGS = {
     "hfe_hft": "hfe_hft", #
     }
 
-''' unknown properties
---involves bullet lists
-
---
-eo_type  element something type 
-b_a
-eo_mb  element something margin bottom
-eo_ad  ?
-eo_mt  margin top
-eo_mr  margin right
-eo_ml  margin left
--- involves lists
-le_nb contains 
-    nl_3
-    nl_2
-    nl_1
-    nl_0
-    nl_7
-    nl_6
-    nl_5
-    nl_4
-    nl_8
-each one of nl_1...8 contains properties describing formats of indention level
-b_gf  %0...%8 for nl_0 ... nl_8
-b_ifl (indent first line)
-b_gs  associated with bullet list
-b_gt  
-b_ts associated with numbered lists
-b_il  amount to indent each level
-
-list insertion associated with epm: le_nb
---- '''
 def remap(old_key):
     return _MAPPINGS[old_key]
 
