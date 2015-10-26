@@ -10,15 +10,8 @@ import log2csv
 import csv2plain
 import slide2plain
 
-
-#**TODO:  handle slide snapshot parsing, list docs/slides and max revision, find better solution to renderdata needing doc_id
 #TODO:  video slide inserts?
 
-fid = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps'
-#url = 'https://docs.google.com/document/d/1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps/revisions/load?id=1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps&start=254&end=276'#&token=AC4w5ViipiO5sN96CUai4LMfK9VWsbLltw%3A1443027271527'
-#BASE_URL = 'https://docs.google.com/document/d/'
-#REV_PATH = '/revisions/load?id='
-#RENDER_PATH = '/renderdata?id='
 DRAW_PATH = 'https://docs.google.com/drawings/d/{d_id}/image?w={w}&h={h}'
 REV_URL = 'https://docs.google.com/{drive}/d/{file_id}/revisions/load?id={file_id}'\
           '&start={start}&end={end}'
