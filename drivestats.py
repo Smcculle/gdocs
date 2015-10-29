@@ -15,38 +15,8 @@ def get_list(line):
     stop_index = line.find('{')
     stop_index -= 1  #stops an empty element at the end of the list
     return line[:stop_index].split('|')
-
-def print_stats(counter, session_counter, action_counter, revision_dict, start_time, end_time):
-    '''Prints a list of stats to the console'''
-    counter['revisions'] += 1    
-    fmt = "%Y-%m-%d %H:%M:%S"
-    authors = list(set(revision_dict.values()))
-    timediff = timedelta(seconds=(time.mktime(time.localtime()) - start_time))
-    if timediff.days > 0:
-        revperday = counter['revisions'] / (timediff.total_seconds() / 86400)
-        days = timediff.days
-    else:
-        revperday = counter['revisions']
-        days = 0
-    (hours, seconds) = divmod(timediff.seconds, 3600)
-    longest_session, longest_session_revs = session_counter.most_common(1)[0]
-
-    #modify this to write to file. 
-    #sys.stdout = open(filename, 'w')
-    print 'File created on %s' % (time.strftime(fmt, time.localtime(start_time)))
-    print 'Last revision on %s' % (time.strftime(fmt, time.localtime(end_time)))
-    print 'Age of file: %d days, %d hours, %d minutes' % (days, hours, seconds/60)
-    print 'File contains %d total revisions, broken down by google id:' % (counter['revisions'])
-    for author in authors:
-        print '\t %s with %s revisions' % (author, counter[author])
-    print 'The average number of revisions per day was %d over a total of %s sessions' % (revperday, len(revision_dict))
-    print 'The average number of revisions per session was %d, with the longest session at %d revisions by %s' %(
-        (counter['revisions'] / len(revision_dict) ), longest_session_revs, revision_dict[longest_session] )
-    print 'Revisions by action:'
-    for action in action_counter:
-        print '\t', action, ':', action_counter[action]
         
-def print_stats2(counter, session_counter, action_counter, revision_dict, start_time, end_time, filename):
+def print_stats(counter, session_counter, action_counter, revision_dict, start_time, end_time, filename):
     print_list = []
     fmt = "%Y-%m-%d %H:%M:%S"
     authors = list(set(revision_dict.values()))
@@ -81,10 +51,13 @@ def print_stats2(counter, session_counter, action_counter, revision_dict, start_
     
     
 def parse_slide(data, filename):
+    """ Gets states from a google slide changelog"""
     action_dict = {15: 'add_text', 4:'multiset_op', 16:'del_text', 3:'add_box',
              12:'add_slide', 13:'del_slide', 0:'del_box', 35:'revert'}
     data = json.loads(data)
     data = data['changelog']
+    
+    #stat counters 
     counter = Counter()
     session_counter = Counter()
     action_counter = Counter()
@@ -93,7 +66,6 @@ def parse_slide(data, filename):
     end_time = data[-1][1]/1000
 
     revision_dict = {}
-    prev_revision = -1
     counter['revisions'] = -1
     
     if not data[0][5]:
@@ -116,15 +88,16 @@ def parse_slide(data, filename):
             revision_dict[sid] = google_id
             
         action_counter[action] += 1
-    print_stats2(counter, session_counter, action_counter, revision_dict, start_time, end_time, filename)
+    print_stats(counter, session_counter, action_counter, revision_dict, start_time, end_time, filename)
     
 def parse_doc(data, filename):
-    
+    """Get stats from a log2csv output file""" 
     data = data.split('\n')
     #ignore lines in snapshot
     i = data.index('changelog')
     data = data[i+1:]
 
+    #stat counters 
     counter = Counter()
     session_counter = Counter()
     action_counter = Counter()
@@ -132,9 +105,12 @@ def parse_doc(data, filename):
     first_line = get_list(data[0])
     start_time = int(first_line[0])/1000
     end_time = int(get_list(data[-2])[0])/1000
+    
+    #user id, session id, and action type 
     counter[first_line[1]] += 1
     counter[first_line[3]] += 1
     counter[first_line[5]] += 1
+    
     revision_dict = {}
     prev_revision = -1
     for line in data[1:-1]:
@@ -156,7 +132,8 @@ def parse_doc(data, filename):
         prev_revision = revision
         
     counter['revisions'] += 1
-    print_stats2(counter, session_counter, action_counter, revision_dict, start_time, end_time, filename)
+    print_stats(counter, session_counter, action_counter, revision_dict, start_time, end_time, filename)
+    
 def main(argv):
 
     helpmsg = 'Usage: python drivestats.py <inputfile>. Takes single output log from log2csv or raw changelog from slides\n'\

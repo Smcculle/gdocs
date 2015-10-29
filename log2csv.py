@@ -3,16 +3,11 @@ from collections import OrderedDict
 
 import json
 import glob
-import logging  #remove later
 
 import mappings
 
- 
 
-#todo:  look at reverts
-
-CHUNKED_ORDER = ['si', 'ei', 'st']#, 'ty', 'sm']
-keys = set() # temporary
+CHUNKED_ORDER = ['si', 'ei', 'st']
 
 def rename_keys(log_dict):
     """rename minified variables using mappings in mappings.py. preserves order"""
@@ -26,9 +21,9 @@ def rename_keys(log_dict):
             if isinstance(log_dict[new_key], dict):
                 log_dict[new_key] = rename_keys(log_dict[new_key])
         except KeyError:
+            #if key is not in mappings, leave old key unchanged.
             pass
-            #logging.warning('KeyError, %s missing in renamekeys', key)
-            #keys.add(key)
+
     return log_dict
 
 def to_file(flat_log, filename):
@@ -45,12 +40,8 @@ def to_file(flat_log, filename):
             outfile.write(line + '\n')
     print "finished with", filename
 
-def write_keys(str):
-    with open('keys.txt', 'a') as outfile:
-        outfile.write(str)
-
 def flat_mts(entry, line_copy, line):
-    """Tail recursion to flatten multiset entry.
+    """ Recursively flatten multiset entry.
 
   Args:
     entry: an entry in changelog
@@ -66,7 +57,6 @@ def flat_mts(entry, line_copy, line):
             mts_action = mappings.remap(entry['ty'])
         except KeyError:
             mts_action = entry['ty']
-            print 'Unknown key in flat_mts %s' % entry['ty']
             
         new_line.append(mts_action)
 
@@ -96,11 +86,11 @@ def parse_log(c_log, flat_log):
                 flat_log.append('|'.join(str(col) for col in item))
         else:
             try:
-                action_type = mappings.remap(entry[0]['ty'])
-                line.append(action_type)
-                line.append(json.dumps(rename_keys(entry[0])))
+                action_type = mappings.remap(entry[0]['ty'])     
             except:
-                raise
+                action_type = entry[0]['ty']
+            line.append(action_type)
+            line.append(json.dumps(rename_keys(entry[0])))
             flat_log.append('|'.join(str(entry) for entry in line))
 
 def parse_snapshot(snapshot, flat_log):
@@ -113,7 +103,7 @@ def parse_snapshot(snapshot, flat_log):
     if 's' in snapshot[0]:
         snapshot[0]['type'] = snapshot[0].pop('ty')
         snapshot[0]['string'] = snapshot[0].pop('s').replace('\n', '\\n')
-        del snapshot[0]['ibi'] #this value is always 1
+        del snapshot[0]['ibi'] #this value is always 1 and unused
         flat_log.append(json.dumps(snapshot[0]))
 
     #parse style modifications
@@ -132,7 +122,7 @@ def parse_snapshot(snapshot, flat_log):
 
         except KeyError:
             #logging.warning('KeyError, %s missing', key)
-            keys.add(key)
+            pass
                 
 def get_flat_log(data):
     """Splits into snapshot and changelog, parses each, and returns flat log"""
@@ -148,7 +138,7 @@ def get_flat_log(data):
     return flat_log
     
 def main(argv):
-    logging.basicConfig(filename='output/error.log', level=logging.DEBUG)
+  
     files = []
 
     if argv:
