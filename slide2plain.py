@@ -163,10 +163,18 @@ def main(argv):
         sys.exit(2)
     else:
         filename = argv[0]
-        if argv[1]:
+        if len(argv) == 2:
             base_dir = argv[1]
             if base_dir[-1] != '/':
                 base_dir += '/'
+        elif len(argv) == 1:
+            base_dir = BASE_DIR
+        else:
+            print __doc__
+            sys.exit("Incorrect arguments")
+
+    print argv
+    raw_input('wait...')
 
     if not os.path.isfile(filename):
         print 'No file found. ', __doc__
