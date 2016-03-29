@@ -73,7 +73,7 @@ def del_box(line):
     """ Deletes a box from the given slide """
     for box in line[1]:
         try:
-            parent = box_dict['slide']
+            # parent = box_dict['slide']
             del box_dict[box]
             slide_dict['slide'].remove(box)
         except:

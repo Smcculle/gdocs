@@ -52,7 +52,7 @@ def flatten_mts(entry, line_copy, line):
   Returns:
     None.  line_copy contains flattened entries to be appended to log.
   """
-    if not 'mts' in entry:
+    if 'mts' not in entry:
         new_line = list(line)
 
         try:
@@ -78,7 +78,7 @@ def parse_log(c_log, flat_log):
     for entry in c_log:
         line = []
         # ignore None in last index, add dictionary in [0] at end
-        #for i in range(1, len(entry) - 1):
+        # for i in range(1, len(entry) - 1):
         for item in entry[1:-1]:
             line.append(item)
 
