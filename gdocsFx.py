@@ -126,7 +126,6 @@ def get_render_request(image_ids, file_id):
         key = 'r' + str(i)
         # unicode image_ids are not accepted in the request, so they must be encoded as strings
         data[key] = ['image', {'cosmoId': img_id.encode(), 'container': file_id}]
-    #request_body = {'renderOps': data}
     request_body = urllib.urlencode({'renderOps': data}).replace('+', '')
     my_headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'}
 
@@ -358,36 +357,18 @@ def process_slide(log, service, file_id, start, end):
 
 
 def main(argv):
-    '''
-    helpmsg = 'Usage: python driverunner.py <file_id> <start revision> <end revision> \n'\
-                'Downloads the plain-text as of end revision as well as the images and comments associated with the file \n'
-    if not argv:
-      print helpmsg
-      #sys.exit(2)
 
-    if len(argv) > 0:
-      file_id = argv[0]
-      start = argv[1]
-      end = argv[2]
-    else:'''
-    print 'Downloads the plain-text as of end revision as well as the images and comments associated ' \
-          'with the file, even deleted images. \n*Presentations only support starting from revision 1.  \n\n'
-    # choice = int(raw_input("Enter 0 for document, or 1 for presentation: "))
+    print 'Downloads the plain-text as of end revision as well as the images and comments ' \
+          'associated with the file, even deleted images. \n*Presentations only support starting ' \
+          'from revision 1.  \n\n'
     choice = int(raw_input('Enter ' + ', '.join(
         '{} for {}'.format(index, service) for index, service in DRIVE_TYPE.iteritems()) + ': '))
     global DRIVE
     DRIVE = DRIVE_TYPE[choice]
     service = start_service()
-    print "Hi, this is a simple test"
-    # file_id = raw_input("Enter file ID: ")
     file_id, max_revs = choose_file(service, drive_type=DRIVE)
     start = int(raw_input("Start from revision(max {}): ".format(max_revs)))
     end = int(raw_input("End at revision(max {}): ".format(max_revs)))
-
-    # ***********testing*********************only*************
-    # doc file_id = '1SsCaJuY51VVeCmvh80obb7kPsb6Ybau6ngKm8KIUxps' (1-692)
-    # slide file_id = '1O-vM_7MQgEJW06scH7k8zKHB2z2RClhPJDxI_jIKtdc' (1-325)
-    # ***************
 
     url = create_URL(file_id, start, end)
     response, log = service._http.request(url)

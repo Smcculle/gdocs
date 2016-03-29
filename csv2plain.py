@@ -1,3 +1,8 @@
+"""csv2plain.py uses the result from log2csv (flat log) to output the plain text contents.
+ Usage: python csv2plain.py <inputfile>. Takes single output log from log2csv
+ Ex: \tpython log2csv.py flat_logs/1_413_out.txt
+"""
+
 import sys
 import os
 import json
@@ -68,10 +73,8 @@ def parse_log(log):
 
 
 def main(argv):
-    helpmsg = 'Usage: python csv2plain.py <inputfile>. Takes single output log from log2csv\n' \
-              'Ex: \tpython log2csv.py output/1_413_out.txt'
     if not argv:
-        print helpmsg
+        print __doc__
         sys.exit(2)
     else:
         filename = argv[0]
