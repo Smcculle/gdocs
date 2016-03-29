@@ -6,8 +6,8 @@ import glob
 
 import mappings
 
-
 CHUNKED_ORDER = ['si', 'ei', 'st']
+
 
 def rename_keys(log_dict):
     """rename minified variables using mappings in mappings.py. preserves order"""
@@ -17,14 +17,15 @@ def rename_keys(log_dict):
             new_key = mappings.remap(key)
             log_dict[new_key] = log_dict.pop(key)
 
-            #recursively replace deep dictionaries
+            # recursively replace deep dictionaries
             if isinstance(log_dict[new_key], dict):
                 log_dict[new_key] = rename_keys(log_dict[new_key])
         except KeyError:
-            #if key is not in mappings, leave old key unchanged.
+            # if key is not in mappings, leave old key unchanged.
             pass
 
     return log_dict
+
 
 def to_file(flat_log, filename):
     """writes log to file in CSV format"""
@@ -40,7 +41,8 @@ def to_file(flat_log, filename):
             outfile.write(line + '\n')
     print "finished with", filename
 
-def flat_mts(entry, line_copy, line):
+
+def flatten_mts(entry, line_copy, line):
     """ Recursively flatten multiset entry.
 
   Args:
@@ -52,20 +54,21 @@ def flat_mts(entry, line_copy, line):
   """
     if not 'mts' in entry:
         new_line = list(line)
-        
+
         try:
             mts_action = mappings.remap(entry['ty'])
         except KeyError:
             mts_action = entry['ty']
-            
+
         new_line.append(mts_action)
 
-        #action dictionary with descriptive keys
+        # action dictionary with descriptive keys
         new_line.append(json.dumps(rename_keys(entry)))
         line_copy.append(new_line)
     else:
         for item in entry['mts']:
-            flat_mts(item, line_copy, line)
+            flatten_mts(item, line_copy, line)
+
 
 def parse_log(c_log, flat_log):
     """parses changelog part of log"""
@@ -75,23 +78,22 @@ def parse_log(c_log, flat_log):
     for entry in c_log:
         line = []
         # ignore None in last index, add dictionary in [0] at end
-        for i in range(1, len(entry) - 1):
-            line.append(entry[i])
+        #for i in range(1, len(entry) - 1):
+        for item in entry[1:-1]:
+            line.append(item)
 
-        #break up multiset into components
+        # break up multiset into components
         if 'mts' in entry[0]:
             line_copy = []
-            flat_mts(entry[0], line_copy, line)
+            flatten_mts(entry[0], line_copy, line)
             for item in line_copy:
                 flat_log.append('|'.join(str(col) for col in item))
         else:
-            try:
-                action_type = mappings.remap(entry[0]['ty'])     
-            except:
-                action_type = entry[0]['ty']
+            action_type = mappings.remap(entry[0]['ty'])
             line.append(action_type)
             line.append(json.dumps(rename_keys(entry[0])))
             flat_log.append('|'.join(str(entry) for entry in line))
+
 
 def parse_snapshot(snapshot, flat_log):
     """parses snapshot part of log"""
@@ -99,36 +101,47 @@ def parse_snapshot(snapshot, flat_log):
     flat_log.append('chunkedSnapshot')
     snapshot = snapshot[0]
 
-    #take care of plain text paste entry
+    # take care of plain text paste entry
     if 's' in snapshot[0]:
         snapshot[0]['type'] = snapshot[0].pop('ty')
         snapshot[0]['string'] = snapshot[0].pop('s').replace('\n', '\\n')
-        del snapshot[0]['ibi'] #this value is always 1 and unused
-        flat_log.append(json.dumps(snapshot[0]))
+        del snapshot[0]['ibi']  # this value is always 1 and unused
+        flat_log.append(json.dumps(snapshot.pop(0)))  # pop entry to remove special case
 
-    #parse style modifications
-    for i in xrange(1, len(snapshot)):
-        line = []
-        try:
-            for key in CHUNKED_ORDER:
-                line.append(snapshot[i][key])
+    # parse style modifications
+    for entry in snapshot:
+        line = get_snapshot_line(snapshot_entry=entry)
+        flat_log.append('|'.join(str(item) for item in line))
 
-            action_type = mappings.remap(snapshot[i]['ty'])
-            line.append(action_type)
 
-            style_mod = json.dumps(rename_keys(snapshot[i]['sm']))
-            line.append(style_mod)
-            flat_log.append('|'.join(str(entry) for entry in line))
+def get_snapshot_line(snapshot_entry):
+    """
+    Turns raw line from snapshot into a translated version for flat_log with style dictionary at end
+    :param snapshot_entry: A line in the snapshot part of the log
+    :return: line entry for flat_log with style dictionary at end
+    """
+    line = []
+    for key in CHUNKED_ORDER:
+        line.append(snapshot_entry[key])
+    try:
+        action_type = mappings.remap(snapshot_entry['ty'])
+        style_mod = json.dumps(rename_keys(snapshot_entry['sm']))
 
-        except KeyError:
-            #logging.warning('KeyError, %s missing', key)
-            pass
-                
+    except KeyError:
+        # logging.warning('KeyError, %s missing', key)
+        pass
+    else:
+        line.append(action_type)
+        line.append(style_mod)
+
+    return line
+
+
 def get_flat_log(data):
     """Splits into snapshot and changelog, parses each, and returns flat log"""
-    #log = json.loads(data)
+    # log = json.loads(data)
     flat_log = []
-    
+
     try:
         parse_snapshot(data['chunkedSnapshot'], flat_log)
         parse_log(data['changelog'], flat_log)
@@ -136,22 +149,22 @@ def get_flat_log(data):
         raise
 
     return flat_log
-    
+
+
 def main(argv):
-  
     files = []
 
     if argv:
         for arg in argv:
             files += glob.glob(arg)
     else:
-        print 'usage: python log2csv.py <inputfiles>  \nMay use wildcards for file.',\
-              ' Ex: python log2csv.py logs/*.txt'
+        print 'usage: python log2csv.py <inputfiles>  \nMay use wildcards for file.', \
+            ' Ex: python log2csv.py logs/*.txt'
         sys.exit(2)
 
     if not files:
-        print 'No files found.  Usage: python log2csv.py <inputfiles>  \nMay use wildcards',\
-              ' for file. Ex: python log2csv.py logs/*.txt'
+        print 'No files found.  Usage: python log2csv.py <inputfiles>  \nMay use wildcards', \
+            ' for file. Ex: python log2csv.py logs/*.txt'
         sys.exit(2)
 
     for doc in files:
@@ -172,6 +185,7 @@ def main(argv):
         data = json.loads(data)
         flat_log = get_flat_log(data)
         to_file(flat_log, doc)
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
