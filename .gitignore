@@ -2,3 +2,5 @@
 output/
 kumodocs/config/
 config/
+.idea
+*test*
