@@ -135,7 +135,7 @@ def get_render_request(image_ids, file_id):
 
 
 def get_image_links(image_ids, service, file_id):
-    render_url, request_body, my_headers = get_render_request(image_ids, file_id, )
+    render_url, request_body, my_headers = get_render_request(image_ids, file_id)
     try:
         response, content = service._http.request(render_url, method='POST',
                                                   body=request_body, headers=my_headers)
@@ -171,20 +171,14 @@ def get_images(image_ids, service, file_id):
 
 
 def get_comments(comment_anchors, service, file_id):
-    url = 'https://www.googleapis.com/drive/v2/files/' + file_id + r'/comments?includeDeleted=true&fields=items(anchor%2Ccontent%2Creplies%2Fcontent)'
+    url = ''.join(('https://www.googleapis.com/drive/v2/files/',
+                   file_id,
+                   r'/comments?includeDeleted=true'
+                   r'&fields=items(anchor%2Ccontent%2Creplies%2Fcontent)'))
     response, content = service._http.request(url)
     content = json.loads(content)
     comment_anchors = set(comment_anchors)
-    '''
-    comments = []
-    for item in content['items']:
-      if item['anchor'] in comment_anchors:
-        comment = item['content']
-        replies = []
-        if item['replies']:
-          for reply in item['replies']:
-            replies.append(reply['content'])
-        comments.append((comment, replies))'''
+
     comments = []
     for item in content['items']:
         if item['anchor'] in comment_anchors:
@@ -206,7 +200,7 @@ def get_doc_objects(flat_log):
     """
     # TODO break into one section for each object type and parallelize
     comment_anchors = []
-    image_ids = []
+    image_ids = set()
     drawing_ids = []
     drawing = namedtuple('drawing', 'd_id width height')
     suggestions = {}
@@ -215,18 +209,18 @@ def get_doc_objects(flat_log):
         try:
             i = line.index('{')
             line_dict = json.loads(line[i:])
-            if 'style_type' in line_dict:  # look for any comments
-                if line_dict['style_type'] == 'doco_anchor':
+            if 'style_type' in line_dict:
+                if line_dict['style_type'] == 'doco_anchor':    # comment anchor
                     c_id = line_dict['style_mod']['datasheet_anchor']['cv']['opValue']
                     if c_id:
                         comment_anchors += c_id if type(c_id) == list else [c_id]
-                elif 'datasheet_anchor' in line_dict:
+                elif 'datasheet_anchor' in line_dict:           # data anchor for comment
                     c_id = line_dict['datasheet_anchor']['cv']['opValue']
                     if c_id:
                         comment_anchors += c_id if type(c_id) == list else [c_id]
             elif 'epm' in line_dict and 'ee_eo' in line_dict['epm']:
-                if 'i_cid' in line_dict['epm']['ee_eo']:  # image located
-                    image_ids.append(line_dict['epm']['ee_eo']['img_cosmoId'])
+                if 'img_cosmoId' in line_dict['epm']['ee_eo']:  # image located
+                    image_ids.add(line_dict['epm']['ee_eo']['img_cosmoId'])
                 elif 'd_id' in line_dict['epm']['ee_eo']: # drawing located
                     d_id = line_dict['epm']['ee_eo']['d_id']
                     img_wth = line_dict['epm']['ee_eo']['img_wth']
@@ -303,9 +297,8 @@ def write_doc(docname, plain_text, comments, images, drawings, start, end, sugge
         f.write(plain_text.encode('utf-8'))
 
     filename = base_dir + 'comments.txt'
-    comment_string = ''.join(comments)
     with open(filename, 'w') as f:
-        f.write(comment_string)
+        f.write(''.join(comments))
 
     filename = base_dir + 'suggestions.txt'
     with open(filename, 'w') as f:
