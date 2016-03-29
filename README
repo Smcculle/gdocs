@@ -1,5 +1,6 @@
-config/ must be set up with your application's credentials in order to authorize with google API
-to use gdocsFx.py.  Other files require google changelogs.
+config/ must be set up with your application's credentials (client id, client secret) in order to
+authorize access to your google account through API for gdocsFx.py.  Other files require google
+changelogs or output from log2csv.py
 
 Use gdocsFx without any arguments to retrieve either a slide or presentation file log from
 the google drive account associated with your config information.  The plain text, images, comments,
