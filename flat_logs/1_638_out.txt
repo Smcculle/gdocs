@@ -566,3 +566,346 @@ changelog
 1442023076938|18178839968700900856|411|3e149eadd24c1c20|55|insert|{"insert_before_index": 151, "string": "l", "type": "is"}
 1442023077348|18178839968700900856|412|3e149eadd24c1c20|56|insert|{"insert_before_index": 152, "string": "et ag", "type": "is"}
 1442023077635|18178839968700900856|413|3e149eadd24c1c20|57|insert|{"insert_before_index": 157, "string": "ain", "type": "is"}
+1443143392358|18178839968700900856|414|6c536d6e3c0503fe|0|insert|{"insert_before_index": 170, "string": "re", "type": "is"}
+1443143392730|18178839968700900856|415|6c536d6e3c0503fe|1|insert|{"insert_before_index": 172, "string": "v", "type": "is"}
+1443143403487|18178839968700900856|416|6c536d6e3c0503fe|2|insert|{"insert_before_index": 173, "string": "\u000b", "type": "is"}
+1443143404471|18178839968700900856|417|6c536d6e3c0503fe|3|delete|{"starting_index": 173, "ending_index": 173, "type": "ds"}
+1443143405156|18178839968700900856|418|6c536d6e3c0503fe|4|insert|{"insert_before_index": 173, "string": "\u000b", "type": "is"}
+1443143405571|18178839968700900856|419|6c536d6e3c0503fe|5|delete|{"starting_index": 173, "ending_index": 173, "type": "ds"}
+1443143431319|18178839968700900856|420|6c536d6e3c0503fe|6|del_elem|{"id": "id.33ea865r11sv", "type": "de"}
+1443143756439|18178839968700900856|421|1c78d5af08ac2971|0|insert|{"insert_before_index": 165, "string": "p", "type": "is"}
+1443144092328|18178839968700900856|422|1a00f1bd452ad904|0|insert|{"insert_before_index": 160, "string": "n", "type": "is"}
+1443144127877|18178839968700900856|423|1a00f1bd452ad904|1|insert|{"insert_before_index": 147, "string": "b", "type": "is"}
+1443144128618|18178839968700900856|424|1a00f1bd452ad904|2|insert|{"insert_before_index": 148, "string": "f", "type": "is"}
+1443144271774|18178839968700900856|425|32413bad0f15db1c|0|insert|{"insert_before_index": 135, "string": "f", "type": "is"}
+1443144738024|18178839968700900856|426|32413bad0f15db1c|1|insert|{"insert_before_index": 175, "string": "*", "type": "is"}
+1443144738024|18178839968700900856|426|32413bad0f15db1c|1|add_elem|{"et": "inline", "epm": {"ee_eo": {"eo_type": 0, "eo_mt": 9.0, "i_wth": 540.0, "eo_mr": 9.0, "i_src": "http://naturewallpaperspic.com/wp-content/uploads/2015/04/Best-Ever-Wallpapers-Hd-5.jpg", "i_cid": "AE7MojclaU82B34OOmpXxcO1OZSh8bdyYTAqSZqOiqWclZDQDXq21mWNC7n32T7timPTOKAGQ-qwCb3bgOnDAL-TncUG6D1ZVCw2-0Y9lS3PHfojXSNuRF7yIrR5TxfzH6y3CG5RTmdx-H2WIWVAAuPGDmHHOt2ELkj7lY_pqcs9gHNfn7wc4-Dr03A_h3NkrUnJZR9Bvngx4XKMWoOBkTAMnYrSFee0JFYY-Nb8Ri8IgWZ_OxtsxtD3xTsImkQUlSQ56TF3UM9YmpyhYR4_WAEbZPcSZgm-CkVIy3zsCfiyG9-t-nvsceAn_lPlhZH6xhu27RlPw2byl8sPiola6JtPsqnoCmHdiK-w7G6Ap9mOyQCWN8ZwUQU", "eo_ad": "Best-Ever-Wallpapers-Hd-5.jpg", "eo_mb": 9.0, "eo_ml": 9.0, "i_ht": 338.0}}, "id": "kix.ypx2bq5kv8jb", "type": "ae"}
+1443144738024|18178839968700900856|426|32413bad0f15db1c|1|tether_elem|{"spi": 175, "id": "kix.ypx2bq5kv8jb", "type": "te"}
+1443144960531|18178839968700900856|427|6c536d6e3c0503fe|7|insert|{"insert_before_index": 180, "string": "\u001a\u001e", "type": "is"}
+1443144960531|18178839968700900856|427|6c536d6e3c0503fe|7|adjust_style|{"ending_index": 181, "type": "as", "style_type": "text", "starting_index": 180, "style_modification": {"italic_flag": true, "strikethrough_flag": true, "foreground_color_flag": true, "bold_flag": true, "font_size_flag": true, "underline_flag": true, "font_family_flag": true, "background_color_flag": true, "vertical_align_flag": true, "ts_sc_flag": true}, "fm": false}
+1443144960531|18178839968700900856|427|6c536d6e3c0503fe|7|adjust_style|{"ending_index": 180, "type": "as", "style_type": "equation", "starting_index": 180, "style_modification": {"eqs_p": "$"}, "fm": false}
+1443144966051|18178839968700900856|428|6c536d6e3c0503fe|8|insert|{"insert_before_index": 181, "string": "\u001f", "type": "is"}
+1443144966051|18178839968700900856|428|6c536d6e3c0503fe|8|adjust_style|{"ending_index": 181, "type": "as", "style_type": "equation_function", "starting_index": 181, "style_modification": {"eqfs_c": "\\nu"}, "fm": false}
+1443144967807|18178839968700900856|429|6c536d6e3c0503fe|9|insert|{"insert_before_index": 182, "string": "\u001f", "type": "is"}
+1443144967807|18178839968700900856|429|6c536d6e3c0503fe|9|adjust_style|{"ending_index": 182, "type": "as", "style_type": "equation_function", "starting_index": 182, "style_modification": {"eqfs_c": "\\geq"}, "fm": false}
+1443144968853|18178839968700900856|430|6c536d6e3c0503fe|10|insert|{"insert_before_index": 183, "string": "\u0019\u001b", "type": "is"}
+1443144968853|18178839968700900856|430|6c536d6e3c0503fe|10|adjust_style|{"ending_index": 183, "type": "as", "style_type": "equation_function", "starting_index": 183, "style_modification": {"eqfs_c": "\\sqrt"}, "fm": false}
+1443144970213|18178839968700900856|431|6c536d6e3c0503fe|11|insert|{"insert_before_index": 184, "string": "\u001f", "type": "is"}
+1443144970213|18178839968700900856|431|6c536d6e3c0503fe|11|adjust_style|{"ending_index": 184, "type": "as", "style_type": "equation_function", "starting_index": 184, "style_modification": {"eqfs_c": "\\leftarrow"}, "fm": false}
+1443144974264|18178839968700900856|432|6c536d6e3c0503fe|12|insert|{"insert_before_index": 186, "string": "2", "type": "is"}
+1443144976093|18178839968700900856|433|6c536d6e3c0503fe|13|insert|{"insert_before_index": 188, "string": "\n", "type": "is"}
+1443144976093|18178839968700900856|433|6c536d6e3c0503fe|13|adjust_style|{"ending_index": 188, "type": "as", "style_type": "paragraph", "starting_index": 188, "style_modification": {"ps_kwn_flag": true, "indent_line": 36.0, "ps_klt": false, "ps_awao_flag": true, "space_before_paragraph": 0.0, "space_after_paragraph_flag": true, "ps_ir": 0.0, "space_after_paragraph": 10.0, "ps_sm": 0, "ps_ir_flag": true, "alignment": 1, "ps_sm_flag": false, "ps_ts": {"cv": {"opValue": [{"tbs_of": 504.0, "tbs_al": 2}], "op": "set"}}, "heading_id": "", "ps_awao": false, "alignment_flag": true, "indent_first_line": 18.0, "indent_line_flag": false, "line_space_flag": true, "line_space": 2.0, "ps_klt_flag": true, "space_before_paragraph_flag": true, "ps_kwn": false, "ps_ltr": true, "indent_first_line_flag": false, "heading_style": 0}, "fm": false}
+1443144976093|18178839968700900856|433|6c536d6e3c0503fe|13|adjust_style|{"ending_index": 188, "type": "as", "style_type": "list", "starting_index": 188, "style_modification": {"ls_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "ls_id": "kix.5semfigsznlz", "ls_nest": 0}, "fm": false}
+1443144992611|18178839968700900856|434|6c536d6e3c0503fe|14|insert|{"insert_before_index": 189, "string": "\n\f\n", "type": "is"}
+1443144992611|18178839968700900856|434|6c536d6e3c0503fe|14|adjust_style|{"ending_index": 189, "type": "as", "style_type": "paragraph", "starting_index": 189, "style_modification": {"ps_kwn_flag": true, "indent_line": 36.0, "ps_klt": false, "ps_awao_flag": true, "space_before_paragraph": 0.0, "space_after_paragraph_flag": true, "ps_ir": 0.0, "space_after_paragraph": 10.0, "ps_sm": 0, "ps_ir_flag": true, "alignment": 1, "ps_sm_flag": false, "ps_ts": {"cv": {"opValue": [{"tbs_of": 504.0, "tbs_al": 2}], "op": "set"}}, "heading_id": "", "ps_awao": false, "alignment_flag": true, "indent_first_line": 18.0, "indent_line_flag": false, "line_space_flag": true, "line_space": 2.0, "ps_klt_flag": true, "space_before_paragraph_flag": true, "ps_kwn": false, "ps_ltr": true, "indent_first_line_flag": false, "heading_style": 0}, "fm": false}
+1443144992611|18178839968700900856|434|6c536d6e3c0503fe|14|adjust_style|{"ending_index": 189, "type": "as", "style_type": "list", "starting_index": 189, "style_modification": {"ls_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "ls_id": "kix.5semfigsznlz", "ls_nest": 0}, "fm": false}
+1443144992611|18178839968700900856|434|6c536d6e3c0503fe|14|adjust_style|{"ending_index": 191, "type": "as", "style_type": "paragraph", "starting_index": 191, "style_modification": {"ps_kwn_flag": true, "indent_line": 36.0, "ps_klt": false, "ps_awao_flag": true, "space_before_paragraph": 0.0, "space_after_paragraph_flag": true, "ps_ir": 0.0, "space_after_paragraph": 10.0, "ps_sm": 0, "ps_ir_flag": true, "alignment": 1, "ps_sm_flag": false, "ps_ts": {"cv": {"opValue": [{"tbs_of": 504.0, "tbs_al": 2}], "op": "set"}}, "heading_id": "", "ps_awao": false, "alignment_flag": true, "indent_first_line": 18.0, "indent_line_flag": false, "line_space_flag": true, "line_space": 2.0, "ps_klt_flag": true, "space_before_paragraph_flag": true, "ps_kwn": false, "ps_ltr": true, "indent_first_line_flag": false, "heading_style": 0}, "fm": false}
+1443144992611|18178839968700900856|434|6c536d6e3c0503fe|14|adjust_style|{"ending_index": 191, "type": "as", "style_type": "list", "starting_index": 191, "style_modification": {"ls_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "ls_id": "kix.5semfigsznlz", "ls_nest": 0}, "fm": false}
+1443144992611|18178839968700900856|434|6c536d6e3c0503fe|14|adjust_style|{"ending_index": 191, "type": "as", "style_type": "text", "starting_index": 190, "style_modification": {"italic_flag": true, "strikethrough_flag": true, "foreground_color_flag": true, "bold_flag": true, "font_size_flag": true, "underline_flag": true, "font_family_flag": true, "background_color_flag": true, "vertical_align_flag": true, "ts_sc_flag": true}, "fm": false}
+1443144996075|18178839968700900856|435|6c536d6e3c0503fe|15|insert|{"insert_before_index": 192, "string": "p", "type": "is"}
+1443144996375|18178839968700900856|436|6c536d6e3c0503fe|16|insert|{"insert_before_index": 193, "string": "age", "type": "is"}
+1443144996661|18178839968700900856|437|6c536d6e3c0503fe|17|insert|{"insert_before_index": 196, "string": " 3", "type": "is"}
+1443144996973|18178839968700900856|438|6c536d6e3c0503fe|18|insert|{"insert_before_index": 198, "string": " now", "type": "is"}
+1443145001320|18178839968700900856|439|6c536d6e3c0503fe|19|insert|{"insert_before_index": 191, "string": "page", "type": "is"}
+1443145001547|18178839968700900856|440|6c536d6e3c0503fe|20|insert|{"insert_before_index": 195, "string": " ", "type": "is"}
+1443145004365|18178839968700900856|441|6c536d6e3c0503fe|21|insert|{"insert_before_index": 190, "string": "p", "type": "is"}
+1443145004700|18178839968700900856|442|6c536d6e3c0503fe|22|insert|{"insert_before_index": 191, "string": "age", "type": "is"}
+1443145004912|18178839968700900856|443|6c536d6e3c0503fe|23|insert|{"insert_before_index": 194, "string": " 2", "type": "is"}
+1443145008838|18178839968700900856|444|6c536d6e3c0503fe|24|insert|{"insert_before_index": 173, "string": " p", "type": "is"}
+1443145009136|18178839968700900856|445|6c536d6e3c0503fe|25|insert|{"insert_before_index": 175, "string": "age ", "type": "is"}
+1443145009425|18178839968700900856|446|6c536d6e3c0503fe|26|insert|{"insert_before_index": 179, "string": "1", "type": "is"}
+1443146899607|18178839968700900856|447|6c536d6e3c0503fe|27|insert|{"insert_before_index": 203, "string": "3", "type": "is"}
+1443146905076|18178839968700900856|448|6c536d6e3c0503fe|28|delete|{"starting_index": 203, "ending_index": 203, "type": "ds"}
+1443146945795|18178839968700900856|449|16a7a1958315c59d|0|delete|{"starting_index": 80, "ending_index": 80, "type": "ds"}
+1443146946573|18178839968700900856|450|16a7a1958315c59d|1|delete|{"starting_index": 79, "ending_index": 79, "type": "ds"}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|insert|{"insert_before_index": 79, "string": "n", "type": "is"}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 79, "type": "as", "style_type": "doco_anchor", "starting_index": 79, "style_modification": {"datasheet_anchor": {"cv": {"opValue": ["kix.xfaoyq3xut9e"], "op": "set"}}}, "fm": false}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 79, "type": "as", "style_type": "import_warnings", "starting_index": 79, "style_modification": {"iws_iwids": {"cv": {"opValue": [], "op": "set"}}}, "fm": false}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 79, "type": "as", "style_type": "link", "starting_index": 79, "style_modification": {"lnks_link": null}, "fm": false}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 79, "type": "as", "style_type": "named_range", "starting_index": 79, "style_modification": {"nrs_ei": {"cv": {"opValue": [], "op": "set"}}}, "fm": false}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 79, "type": "as", "style_type": "text", "starting_index": 79, "style_modification": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": true, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "fm": false}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|insert|{"insert_before_index": 80, "string": "t", "type": "is"}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 80, "type": "as", "style_type": "doco_anchor", "starting_index": 80, "style_modification": {"datasheet_anchor": {"cv": {"opValue": ["kix.xfaoyq3xut9e"], "op": "set"}}}, "fm": false}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 80, "type": "as", "style_type": "import_warnings", "starting_index": 80, "style_modification": {"iws_iwids": {"cv": {"opValue": [], "op": "set"}}}, "fm": false}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 80, "type": "as", "style_type": "link", "starting_index": 80, "style_modification": {"lnks_link": null}, "fm": false}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 80, "type": "as", "style_type": "named_range", "starting_index": 80, "style_modification": {"nrs_ei": {"cv": {"opValue": [], "op": "set"}}}, "fm": false}
+1443146953492|18178839968700900856|451|16a7a1958315c59d|2|adjust_style|{"ending_index": 80, "type": "as", "style_type": "text", "starting_index": 80, "style_modification": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": true, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "fm": false}
+1443227042984|18178839968700900856|452|6c8102755d109739|0|add_elem|{"et": "list", "epm": {"le_nb": {"nl_3": {"b_a": 0, "b_gt": 10, "b_il": 144.0, "b_gf": "%3.", "b_ifl": 126.0}, "nl_2": {"b_a": 2, "b_gt": 15, "b_il": 108.0, "b_gf": "%2.", "b_ifl": 90.0}, "nl_1": {"b_a": 0, "b_gt": 13, "b_il": 72.0, "b_gf": "%1.", "b_ifl": 54.0}, "nl_0": {"b_a": 0, "b_gt": 10, "b_il": 36.0, "b_gf": "%0.", "b_ifl": 18.0}, "nl_7": {"b_a": 0, "b_gt": 13, "b_il": 288.0, "b_gf": "%7.", "b_ifl": 270.0}, "nl_6": {"b_a": 0, "b_gt": 10, "b_il": 252.0, "b_gf": "%6.", "b_ifl": 234.0}, "nl_5": {"b_a": 2, "b_gt": 15, "b_il": 216.0, "b_gf": "%5.", "b_ifl": 198.0}, "nl_4": {"b_a": 0, "b_gt": 13, "b_il": 180.0, "b_gf": "%4.", "b_ifl": 162.0}, "nl_8": {"b_a": 2, "b_gt": 15, "b_il": 324.0, "b_gf": "%8.", "b_ifl": 306.0}}}, "id": "kix.4u4nctk9luuu", "type": "ae"}
+1443227042984|18178839968700900856|452|6c8102755d109739|0|ue|{"epm": {"le_nb": {"nl_3": {"b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}}, "nl_2": {"b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}}, "nl_1": {"b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}}, "nl_0": {"b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}}, "nl_7": {"b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}}, "nl_6": {"b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}}, "nl_5": {"b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}}, "nl_4": {"b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}}, "nl_8": {"b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}}}}, "id": "kix.4u4nctk9luuu", "type": "ue"}
+1443227042984|18178839968700900856|452|6c8102755d109739|0|ue|{"epm": {"le_nb": {"nl_3": {"b_ifl": 126, "b_il": 144}, "nl_2": {"b_ifl": 90, "b_il": 108}, "nl_1": {"b_ifl": 54, "b_il": 72}, "nl_0": {"b_ifl": 18, "b_il": 36}, "nl_7": {"b_ifl": 270, "b_il": 288}, "nl_6": {"b_ifl": 234, "b_il": 252}, "nl_5": {"b_ifl": 198, "b_il": 216}, "nl_4": {"b_ifl": 162, "b_il": 180}, "nl_8": {"b_ifl": 306, "b_il": 324}}}, "id": "kix.4u4nctk9luuu", "type": "ue"}
+1443227042984|18178839968700900856|452|6c8102755d109739|0|adjust_style|{"ending_index": 180, "type": "as", "style_type": "list", "starting_index": 180, "style_modification": {"ls_ts": {"italic_flag": true, "strikethrough_flag": true, "foreground_color_flag": true, "bold_flag": true, "font_size_flag": true, "underline": false, "underline_flag": false, "font_family_flag": true, "background_color_flag": true, "vertical_align_flag": true, "ts_sc_flag": true}, "ls_id": "kix.4u4nctk9luuu", "ls_nest": 0}, "fm": false}
+1443227042984|18178839968700900856|452|6c8102755d109739|0|adjust_style|{"ending_index": 180, "type": "as", "style_type": "paragraph", "starting_index": 180, "style_modification": {"ps_sm_flag": false, "indent_line_flag": false, "indent_line": 36.0, "ps_sm": 0, "indent_first_line_flag": false, "indent_first_line": 18.0}, "fm": false}
+1443227133318|18178839968700900856|453|6c8102755d109739|1|insert|{"insert_before_index": 180, "string": "\n", "type": "is"}
+1443227133318|18178839968700900856|453|6c8102755d109739|1|adjust_style|{"ending_index": 180, "type": "as", "style_type": "paragraph", "starting_index": 180, "style_modification": {"ps_kwn_flag": true, "indent_line": 36.0, "ps_klt": false, "ps_awao_flag": true, "space_before_paragraph": 0.0, "space_after_paragraph_flag": true, "ps_ir": 0.0, "space_after_paragraph": 10.0, "ps_sm": 0, "ps_ir_flag": true, "alignment": 1, "ps_sm_flag": false, "ps_ts": {"cv": {"opValue": [{"tbs_of": 504.0, "tbs_al": 2}], "op": "set"}}, "heading_id": "", "ps_awao": false, "alignment_flag": true, "indent_first_line": 18.0, "indent_line_flag": false, "line_space_flag": true, "line_space": 2.0, "ps_klt_flag": true, "space_before_paragraph_flag": true, "ps_kwn": false, "ps_ltr": true, "indent_first_line_flag": false, "heading_style": 0}, "fm": false}
+1443227133318|18178839968700900856|453|6c8102755d109739|1|adjust_style|{"ending_index": 180, "type": "as", "style_type": "list", "starting_index": 180, "style_modification": {"ls_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "ls_id": "kix.4u4nctk9luuu", "ls_nest": 0}, "fm": false}
+1443227147804|18178839968700900856|454|6c8102755d109739|2|insert|{"insert_before_index": 181, "string": "sa", "type": "is"}
+1443227148566|18178839968700900856|455|6c8102755d109739|3|insert|{"insert_before_index": 183, "string": "ve", "type": "is"}
+1443227148779|18178839968700900856|456|6c8102755d109739|4|insert|{"insert_before_index": 185, "string": "d", "type": "is"}
+1443299530455|18178839968700900856|457|50182af4f2e5e4cd|0|del_elem|{"id": "kix.ypx2bq5kv8jb", "type": "de"}
+1443299530455|18178839968700900856|457|50182af4f2e5e4cd|0|delete|{"starting_index": 188, "ending_index": 188, "type": "ds"}
+1443299530455|18178839968700900856|457|50182af4f2e5e4cd|0|insert|{"insert_before_index": 188, "string": "w", "type": "is"}
+1443299531288|10850187308681885490|458|8aad5ec5002bab2|0|insert|{"insert_before_index": 186, "string": "p", "type": "is"}
+1443299543561|18178839968700900856|459|50182af4f2e5e4cd|1|insert|{"insert_before_index": 187, "string": "w", "type": "is"}
+1443299578508|18178839968700900856|460|50182af4f2e5e4cd|2|insert|{"insert_before_index": 190, "string": "w", "type": "is"}
+1443299578802|10850187308681885490|461|8aad5ec5002bab2|1|insert|{"insert_before_index": 187, "string": "p", "type": "is"}
+1443299605815|18178839968700900856|462|50182af4f2e5e4cd|3|delete|{"starting_index": 188, "ending_index": 188, "type": "ds"}
+1443299605815|18178839968700900856|462|50182af4f2e5e4cd|3|delete|{"starting_index": 187, "ending_index": 187, "type": "ds"}
+1443299606130|18178839968700900856|463|50182af4f2e5e4cd|4|delete|{"starting_index": 186, "ending_index": 186, "type": "ds"}
+1443299637025|18178839968700900856|464|50182af4f2e5e4cd|5|insert|{"insert_before_index": 186, "string": "w", "type": "is"}
+1443299637317|10850187308681885490|465|8aad5ec5002bab2|2|insert|{"insert_before_index": 186, "string": "p", "type": "is"}
+1443299655977|18178839968700900856|466|50182af4f2e5e4cd|6|insert|{"insert_before_index": 187, "string": "w", "type": "is"}
+1443299656278|10850187308681885490|467|8aad5ec5002bab2|3|insert|{"insert_before_index": 186, "string": "p", "type": "is"}
+1443301382726|18178839968700900856|468|50182af4f2e5e4cd|7|insert|{"insert_before_index": 190, "string": "fwe", "type": "is"}
+1443301382972|18178839968700900856|469|50182af4f2e5e4cd|8|insert|{"insert_before_index": 193, "string": "few", "type": "is"}
+1443301383390|18178839968700900856|470|50182af4f2e5e4cd|9|insert|{"insert_before_index": 196, "string": "fefw", "type": "is"}
+1443301383423|10850187308681885490|471|196693bafd16e0ca|0|insert|{"insert_before_index": 190, "string": "ygygyg", "type": "is"}
+1443301383709|18178839968700900856|472|50182af4f2e5e4cd|10|insert|{"insert_before_index": 206, "string": "fe", "type": "is"}
+1443301384017|18178839968700900856|473|50182af4f2e5e4cd|11|insert|{"insert_before_index": 208, "string": "wf", "type": "is"}
+1443301384236|10850187308681885490|474|196693bafd16e0ca|1|insert|{"insert_before_index": 196, "string": "gygygy", "type": "is"}
+1443301384428|18178839968700900856|475|50182af4f2e5e4cd|12|insert|{"insert_before_index": 216, "string": "wefe", "type": "is"}
+1443301384660|10850187308681885490|476|196693bafd16e0ca|2|insert|{"insert_before_index": 202, "string": "yy", "type": "is"}
+1443301384825|18178839968700900856|477|50182af4f2e5e4cd|13|insert|{"insert_before_index": 222, "string": "ee", "type": "is"}
+1443301384985|10850187308681885490|478|196693bafd16e0ca|3|insert|{"insert_before_index": 204, "string": "y", "type": "is"}
+1443301385180|18178839968700900856|479|50182af4f2e5e4cd|14|insert|{"insert_before_index": 225, "string": "w", "type": "is"}
+1443301386732|18178839968700900856|480|50182af4f2e5e4cd|15|insert|{"insert_before_index": 226, "string": "bb", "type": "is"}
+1443301386858|10850187308681885490|481|196693bafd16e0ca|4|insert|{"insert_before_index": 205, "string": "aa", "type": "is"}
+1443301387039|18178839968700900856|482|50182af4f2e5e4cd|16|insert|{"insert_before_index": 230, "string": "bb", "type": "is"}
+1443301387265|10850187308681885490|483|196693bafd16e0ca|5|insert|{"insert_before_index": 207, "string": "aaaa", "type": "is"}
+1443301387302|18178839968700900856|484|50182af4f2e5e4cd|17|insert|{"insert_before_index": 236, "string": "bb", "type": "is"}
+1443301387583|10850187308681885490|485|196693bafd16e0ca|6|insert|{"insert_before_index": 211, "string": "aa", "type": "is"}
+1443301387666|18178839968700900856|486|50182af4f2e5e4cd|18|insert|{"insert_before_index": 240, "string": "bb", "type": "is"}
+1443301387827|10850187308681885490|487|196693bafd16e0ca|7|insert|{"insert_before_index": 213, "string": "a", "type": "is"}
+1443301388090|18178839968700900856|488|50182af4f2e5e4cd|19|insert|{"insert_before_index": 243, "string": "b", "type": "is"}
+1443301392352|10850187308681885490|489|196693bafd16e0ca|8|insert|{"insert_before_index": 214, "string": "aa", "type": "is"}
+1443301392385|18178839968700900856|490|50182af4f2e5e4cd|20|insert|{"insert_before_index": 246, "string": "bb", "type": "is"}
+1443301392671|10850187308681885490|491|196693bafd16e0ca|9|insert|{"insert_before_index": 216, "string": "aa", "type": "is"}
+1443301392874|18178839968700900856|492|50182af4f2e5e4cd|21|insert|{"insert_before_index": 250, "string": "bb", "type": "is"}
+1443301392952|10850187308681885490|493|196693bafd16e0ca|10|insert|{"insert_before_index": 218, "string": "aa", "type": "is"}
+1443301393386|18178839968700900856|494|50182af4f2e5e4cd|22|insert|{"insert_before_index": 254, "string": "bbb", "type": "is"}
+1443301401366|10850187308681885490|495|196693bafd16e0ca|11|delete|{"starting_index": 256, "ending_index": 256, "type": "ds"}
+1443301401366|10850187308681885490|495|196693bafd16e0ca|11|delete|{"starting_index": 255, "ending_index": 255, "type": "ds"}
+1443301401584|18178839968700900856|496|50182af4f2e5e4cd|23|insert|{"insert_before_index": 255, "string": "bb", "type": "is"}
+1443301401671|10850187308681885490|497|196693bafd16e0ca|12|delete|{"starting_index": 254, "ending_index": 254, "type": "ds"}
+1443301401671|10850187308681885490|497|196693bafd16e0ca|12|delete|{"starting_index": 253, "ending_index": 253, "type": "ds"}
+1443301401963|18178839968700900856|498|50182af4f2e5e4cd|24|insert|{"insert_before_index": 255, "string": "bb", "type": "is"}
+1443301402060|10850187308681885490|499|196693bafd16e0ca|13|delete|{"starting_index": 252, "ending_index": 252, "type": "ds"}
+1443301402060|10850187308681885490|499|196693bafd16e0ca|13|delete|{"starting_index": 251, "ending_index": 251, "type": "ds"}
+1443301402060|10850187308681885490|499|196693bafd16e0ca|13|delete|{"starting_index": 250, "ending_index": 250, "type": "ds"}
+1443301402206|18178839968700900856|500|50182af4f2e5e4cd|25|insert|{"insert_before_index": 254, "string": "bb", "type": "is"}
+1443301402339|10850187308681885490|501|196693bafd16e0ca|14|delete|{"starting_index": 249, "ending_index": 249, "type": "ds"}
+1443301402339|10850187308681885490|501|196693bafd16e0ca|14|delete|{"starting_index": 248, "ending_index": 248, "type": "ds"}
+1443301402675|10850187308681885490|502|196693bafd16e0ca|15|delete|{"starting_index": 247, "ending_index": 247, "type": "ds"}
+1443301402675|10850187308681885490|502|196693bafd16e0ca|15|delete|{"starting_index": 246, "ending_index": 246, "type": "ds"}
+1443301402719|18178839968700900856|503|50182af4f2e5e4cd|26|insert|{"insert_before_index": 252, "string": "bbb", "type": "is"}
+1443301402887|10850187308681885490|504|196693bafd16e0ca|16|delete|{"starting_index": 245, "ending_index": 245, "type": "ds"}
+1443301402887|10850187308681885490|504|196693bafd16e0ca|16|delete|{"starting_index": 244, "ending_index": 244, "type": "ds"}
+1443301403114|18178839968700900856|505|50182af4f2e5e4cd|27|insert|{"insert_before_index": 253, "string": "bbb", "type": "is"}
+1443301403243|10850187308681885490|506|196693bafd16e0ca|17|delete|{"starting_index": 243, "ending_index": 243, "type": "ds"}
+1443301403243|10850187308681885490|506|196693bafd16e0ca|17|delete|{"starting_index": 242, "ending_index": 242, "type": "ds"}
+1443301403558|18178839968700900856|507|50182af4f2e5e4cd|28|insert|{"insert_before_index": 254, "string": "bbb", "type": "is"}
+1443301403734|10850187308681885490|508|196693bafd16e0ca|18|delete|{"starting_index": 241, "ending_index": 241, "type": "ds"}
+1443301403734|10850187308681885490|508|196693bafd16e0ca|18|delete|{"starting_index": 240, "ending_index": 240, "type": "ds"}
+1443301403734|10850187308681885490|508|196693bafd16e0ca|18|delete|{"starting_index": 239, "ending_index": 239, "type": "ds"}
+1443301403844|18178839968700900856|509|50182af4f2e5e4cd|29|insert|{"insert_before_index": 254, "string": "b", "type": "is"}
+1443301404114|10850187308681885490|510|196693bafd16e0ca|19|delete|{"starting_index": 238, "ending_index": 238, "type": "ds"}
+1443301404114|10850187308681885490|510|196693bafd16e0ca|19|delete|{"starting_index": 237, "ending_index": 237, "type": "ds"}
+1443301404378|10850187308681885490|511|196693bafd16e0ca|20|delete|{"starting_index": 236, "ending_index": 236, "type": "ds"}
+1443301404378|10850187308681885490|511|196693bafd16e0ca|20|delete|{"starting_index": 235, "ending_index": 235, "type": "ds"}
+1443301404623|18178839968700900856|512|50182af4f2e5e4cd|30|insert|{"insert_before_index": 251, "string": "bb", "type": "is"}
+1443301404846|10850187308681885490|513|196693bafd16e0ca|21|delete|{"starting_index": 234, "ending_index": 234, "type": "ds"}
+1443301404846|10850187308681885490|513|196693bafd16e0ca|21|delete|{"starting_index": 233, "ending_index": 233, "type": "ds"}
+1443301404846|10850187308681885490|513|196693bafd16e0ca|21|delete|{"starting_index": 232, "ending_index": 232, "type": "ds"}
+1443301404961|18178839968700900856|514|50182af4f2e5e4cd|31|insert|{"insert_before_index": 250, "string": "bb", "type": "is"}
+1443301405203|10850187308681885490|515|196693bafd16e0ca|22|delete|{"starting_index": 231, "ending_index": 231, "type": "ds"}
+1443301405203|10850187308681885490|515|196693bafd16e0ca|22|delete|{"starting_index": 230, "ending_index": 230, "type": "ds"}
+1443301405350|18178839968700900856|516|50182af4f2e5e4cd|32|insert|{"insert_before_index": 250, "string": "bb", "type": "is"}
+1443301405574|10850187308681885490|517|196693bafd16e0ca|23|delete|{"starting_index": 229, "ending_index": 229, "type": "ds"}
+1443301405574|10850187308681885490|517|196693bafd16e0ca|23|delete|{"starting_index": 228, "ending_index": 228, "type": "ds"}
+1443301405724|18178839968700900856|518|50182af4f2e5e4cd|33|insert|{"insert_before_index": 250, "string": "bb", "type": "is"}
+1443301405943|10850187308681885490|519|196693bafd16e0ca|24|delete|{"starting_index": 227, "ending_index": 227, "type": "ds"}
+1443301405943|10850187308681885490|519|196693bafd16e0ca|24|delete|{"starting_index": 226, "ending_index": 226, "type": "ds"}
+1443301406142|18178839968700900856|520|50182af4f2e5e4cd|34|insert|{"insert_before_index": 250, "string": "bb", "type": "is"}
+1443301406281|10850187308681885490|521|196693bafd16e0ca|25|delete|{"starting_index": 225, "ending_index": 225, "type": "ds"}
+1443301406559|10850187308681885490|522|196693bafd16e0ca|26|delete|{"starting_index": 224, "ending_index": 224, "type": "ds"}
+1443301406869|18178839968700900856|523|50182af4f2e5e4cd|35|insert|{"insert_before_index": 250, "string": "b", "type": "is"}
+1443301413172|10850187308681885490|524|196693bafd16e0ca|27|delete|{"starting_index": 250, "ending_index": 250, "type": "ds"}
+1443301414281|10850187308681885490|525|196693bafd16e0ca|28|delete|{"starting_index": 249, "ending_index": 249, "type": "ds"}
+1443301414828|10850187308681885490|526|196693bafd16e0ca|29|delete|{"starting_index": 248, "ending_index": 248, "type": "ds"}
+1443301414828|10850187308681885490|526|196693bafd16e0ca|29|delete|{"starting_index": 247, "ending_index": 247, "type": "ds"}
+1443301414828|10850187308681885490|526|196693bafd16e0ca|29|delete|{"starting_index": 246, "ending_index": 246, "type": "ds"}
+1443301414828|10850187308681885490|526|196693bafd16e0ca|29|delete|{"starting_index": 245, "ending_index": 245, "type": "ds"}
+1443301414828|10850187308681885490|526|196693bafd16e0ca|29|delete|{"starting_index": 244, "ending_index": 244, "type": "ds"}
+1443301414828|10850187308681885490|526|196693bafd16e0ca|29|delete|{"starting_index": 243, "ending_index": 243, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 242, "ending_index": 242, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 241, "ending_index": 241, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 240, "ending_index": 240, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 239, "ending_index": 239, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 238, "ending_index": 238, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 237, "ending_index": 237, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 236, "ending_index": 236, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 235, "ending_index": 235, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 234, "ending_index": 234, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 233, "ending_index": 233, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 232, "ending_index": 232, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 231, "ending_index": 231, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 230, "ending_index": 230, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 229, "ending_index": 229, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 228, "ending_index": 228, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 227, "ending_index": 227, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 226, "ending_index": 226, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 225, "ending_index": 225, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 224, "ending_index": 224, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 223, "ending_index": 223, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 222, "ending_index": 222, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 221, "ending_index": 221, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 220, "ending_index": 220, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 219, "ending_index": 219, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 218, "ending_index": 218, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 217, "ending_index": 217, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 216, "ending_index": 216, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 215, "ending_index": 215, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 214, "ending_index": 214, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 213, "ending_index": 213, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 212, "ending_index": 212, "type": "ds"}
+1443301416153|10850187308681885490|527|196693bafd16e0ca|30|delete|{"starting_index": 211, "ending_index": 211, "type": "ds"}
+1443301418127|18178839968700900856|528|50182af4f2e5e4cd|36|insert|{"insert_before_index": 211, "string": "b", "type": "is"}
+1443301418247|10850187308681885490|529|196693bafd16e0ca|31|delete|{"starting_index": 210, "ending_index": 210, "type": "ds"}
+1443301418615|18178839968700900856|530|50182af4f2e5e4cd|37|insert|{"insert_before_index": 211, "string": "bb", "type": "is"}
+1443301418848|10850187308681885490|531|196693bafd16e0ca|32|delete|{"starting_index": 210, "ending_index": 210, "type": "ds"}
+1443301418848|10850187308681885490|531|196693bafd16e0ca|32|delete|{"starting_index": 209, "ending_index": 209, "type": "ds"}
+1443301418984|18178839968700900856|532|50182af4f2e5e4cd|38|insert|{"insert_before_index": 211, "string": "bb", "type": "is"}
+1443301419117|10850187308681885490|533|196693bafd16e0ca|33|delete|{"starting_index": 210, "ending_index": 210, "type": "ds"}
+1443301419117|10850187308681885490|533|196693bafd16e0ca|33|delete|{"starting_index": 209, "ending_index": 209, "type": "ds"}
+1443301419324|18178839968700900856|534|50182af4f2e5e4cd|39|insert|{"insert_before_index": 211, "string": "bb", "type": "is"}
+1443301419509|10850187308681885490|535|196693bafd16e0ca|34|delete|{"starting_index": 210, "ending_index": 210, "type": "ds"}
+1443301419509|10850187308681885490|535|196693bafd16e0ca|34|delete|{"starting_index": 209, "ending_index": 209, "type": "ds"}
+1443301419659|18178839968700900856|536|50182af4f2e5e4cd|40|insert|{"insert_before_index": 211, "string": "bb", "type": "is"}
+1443301419886|10850187308681885490|537|196693bafd16e0ca|35|delete|{"starting_index": 208, "ending_index": 208, "type": "ds"}
+1443301419886|10850187308681885490|537|196693bafd16e0ca|35|delete|{"starting_index": 209, "ending_index": 209, "type": "ds"}
+1443301420105|18178839968700900856|538|50182af4f2e5e4cd|41|insert|{"insert_before_index": 211, "string": "bbbb", "type": "is"}
+1443301420316|10850187308681885490|539|196693bafd16e0ca|36|delete|{"starting_index": 210, "ending_index": 210, "type": "ds"}
+1443301420766|10850187308681885490|540|196693bafd16e0ca|37|delete|{"starting_index": 209, "ending_index": 209, "type": "ds"}
+1443301420766|10850187308681885490|540|196693bafd16e0ca|37|delete|{"starting_index": 212, "ending_index": 212, "type": "ds"}
+1443301420843|18178839968700900856|541|50182af4f2e5e4cd|42|insert|{"insert_before_index": 212, "string": "bbbb", "type": "is"}
+1443301421046|10850187308681885490|542|196693bafd16e0ca|38|delete|{"starting_index": 211, "ending_index": 211, "type": "ds"}
+1443301421272|18178839968700900856|543|50182af4f2e5e4cd|43|insert|{"insert_before_index": 215, "string": "bbb", "type": "is"}
+1443301421483|10850187308681885490|544|196693bafd16e0ca|39|delete|{"starting_index": 210, "ending_index": 210, "type": "ds"}
+1443301421483|10850187308681885490|544|196693bafd16e0ca|39|delete|{"starting_index": 213, "ending_index": 213, "type": "ds"}
+1443301421676|18178839968700900856|545|50182af4f2e5e4cd|44|insert|{"insert_before_index": 216, "string": "b", "type": "is"}
+1443301421839|10850187308681885490|546|196693bafd16e0ca|40|delete|{"starting_index": 212, "ending_index": 212, "type": "ds"}
+1443301421839|10850187308681885490|546|196693bafd16e0ca|40|delete|{"starting_index": 214, "ending_index": 214, "type": "ds"}
+1443301422127|18178839968700900856|547|50182af4f2e5e4cd|45|insert|{"insert_before_index": 215, "string": "bb", "type": "is"}
+1443301422270|10850187308681885490|548|196693bafd16e0ca|41|delete|{"starting_index": 214, "ending_index": 214, "type": "ds"}
+1443301422481|18178839968700900856|549|50182af4f2e5e4cd|46|insert|{"insert_before_index": 216, "string": "bb", "type": "is"}
+1443301422576|10850187308681885490|550|196693bafd16e0ca|42|delete|{"starting_index": 213, "ending_index": 213, "type": "ds"}
+1443301422821|18178839968700900856|551|50182af4f2e5e4cd|47|insert|{"insert_before_index": 217, "string": "b", "type": "is"}
+1443301422874|10850187308681885490|552|196693bafd16e0ca|43|delete|{"starting_index": 214, "ending_index": 214, "type": "ds"}
+1443301423078|18178839968700900856|553|50182af4f2e5e4cd|48|insert|{"insert_before_index": 217, "string": "b", "type": "is"}
+1443301423190|10850187308681885490|554|196693bafd16e0ca|44|delete|{"starting_index": 215, "ending_index": 215, "type": "ds"}
+1443301423479|18178839968700900856|555|50182af4f2e5e4cd|49|insert|{"insert_before_index": 217, "string": "bb", "type": "is"}
+1443301423602|10850187308681885490|556|196693bafd16e0ca|45|delete|{"starting_index": 214, "ending_index": 214, "type": "ds"}
+1443301423965|10850187308681885490|557|196693bafd16e0ca|46|delete|{"starting_index": 215, "ending_index": 215, "type": "ds"}
+1443301423982|18178839968700900856|558|50182af4f2e5e4cd|50|insert|{"insert_before_index": 217, "string": "b", "type": "is"}
+1443301424284|10850187308681885490|559|196693bafd16e0ca|47|delete|{"starting_index": 216, "ending_index": 216, "type": "ds"}
+1443301424311|18178839968700900856|560|50182af4f2e5e4cd|51|insert|{"insert_before_index": 217, "string": "b", "type": "is"}
+1443301424679|10850187308681885490|561|196693bafd16e0ca|48|delete|{"starting_index": 215, "ending_index": 215, "type": "ds"}
+1443301424765|18178839968700900856|562|50182af4f2e5e4cd|52|insert|{"insert_before_index": 217, "string": "b", "type": "is"}
+1443301425766|10850187308681885490|563|196693bafd16e0ca|49|insert|{"insert_before_index": 216, "string": "b", "type": "is"}
+1443301425790|18178839968700900856|564|50182af4f2e5e4cd|53|insert|{"insert_before_index": 219, "string": "b", "type": "is"}
+1443301426374|18178839968700900856|565|50182af4f2e5e4cd|54|insert|{"insert_before_index": 220, "string": "b", "type": "is"}
+1443301426383|10850187308681885490|566|196693bafd16e0ca|50|insert|{"insert_before_index": 217, "string": "b", "type": "is"}
+1443301426603|18178839968700900856|567|50182af4f2e5e4cd|55|insert|{"insert_before_index": 222, "string": "b", "type": "is"}
+1443301426710|10850187308681885490|568|196693bafd16e0ca|51|insert|{"insert_before_index": 218, "string": "b", "type": "is"}
+1443301429032|10850187308681885490|569|196693bafd16e0ca|52|insert|{"insert_before_index": 219, "string": "a", "type": "is"}
+1443301429087|18178839968700900856|570|50182af4f2e5e4cd|56|insert|{"insert_before_index": 225, "string": "b", "type": "is"}
+1443301429377|10850187308681885490|571|196693bafd16e0ca|53|insert|{"insert_before_index": 220, "string": "a", "type": "is"}
+1443301429413|18178839968700900856|572|50182af4f2e5e4cd|57|insert|{"insert_before_index": 227, "string": "b", "type": "is"}
+1443301429683|10850187308681885490|573|196693bafd16e0ca|54|insert|{"insert_before_index": 221, "string": "a", "type": "is"}
+1443301429694|18178839968700900856|574|50182af4f2e5e4cd|58|insert|{"insert_before_index": 229, "string": "b", "type": "is"}
+1443301430001|10850187308681885490|575|196693bafd16e0ca|55|insert|{"insert_before_index": 222, "string": "a", "type": "is"}
+1443301430021|18178839968700900856|576|50182af4f2e5e4cd|59|insert|{"insert_before_index": 231, "string": "b", "type": "is"}
+1443301430325|10850187308681885490|577|196693bafd16e0ca|56|insert|{"insert_before_index": 223, "string": "a", "type": "is"}
+1443301430355|18178839968700900856|578|50182af4f2e5e4cd|60|insert|{"insert_before_index": 233, "string": "b", "type": "is"}
+1443301430630|10850187308681885490|579|196693bafd16e0ca|57|insert|{"insert_before_index": 224, "string": "a", "type": "is"}
+1443301430715|18178839968700900856|580|50182af4f2e5e4cd|61|insert|{"insert_before_index": 235, "string": "b", "type": "is"}
+1443301430951|10850187308681885490|581|196693bafd16e0ca|58|insert|{"insert_before_index": 225, "string": "a", "type": "is"}
+1443301431217|18178839968700900856|582|50182af4f2e5e4cd|62|insert|{"insert_before_index": 237, "string": "bb", "type": "is"}
+1443301431244|10850187308681885490|583|196693bafd16e0ca|59|insert|{"insert_before_index": 226, "string": "a", "type": "is"}
+1443301431536|18178839968700900856|584|50182af4f2e5e4cd|63|insert|{"insert_before_index": 240, "string": "b", "type": "is"}
+1443301431713|10850187308681885490|585|196693bafd16e0ca|60|insert|{"insert_before_index": 227, "string": "aa", "type": "is"}
+1443301431834|18178839968700900856|586|50182af4f2e5e4cd|64|insert|{"insert_before_index": 243, "string": "b", "type": "is"}
+1443301432112|18178839968700900856|587|50182af4f2e5e4cd|65|insert|{"insert_before_index": 244, "string": "b", "type": "is"}
+1443301432139|10850187308681885490|588|196693bafd16e0ca|61|insert|{"insert_before_index": 229, "string": "a", "type": "is"}
+1443301432426|10850187308681885490|589|196693bafd16e0ca|62|insert|{"insert_before_index": 230, "string": "a", "type": "is"}
+1443301432691|10850187308681885490|590|196693bafd16e0ca|63|insert|{"insert_before_index": 231, "string": "a", "type": "is"}
+1443301432729|18178839968700900856|591|50182af4f2e5e4cd|66|insert|{"insert_before_index": 248, "string": "bb", "type": "is"}
+1443301653247|10850187308681885490|592|196693bafd16e0ca|64|insert|{"insert_before_index": 214, "string": "g", "type": "is"}
+1443301656637|10850187308681885490|593|196693bafd16e0ca|65|insert|{"insert_before_index": 211, "string": "u", "type": "is"}
+1443301660183|10850187308681885490|594|196693bafd16e0ca|66|insert|{"insert_before_index": 212, "string": "hgfh", "type": "is"}
+1443301660397|10850187308681885490|595|196693bafd16e0ca|67|insert|{"insert_before_index": 216, "string": "f", "type": "is"}
+1443301660660|18178839968700900856|596|50182af4f2e5e4cd|67|delete|{"starting_index": 188, "ending_index": 256, "type": "ds"}
+1443301660924|10850187308681885490|597|196693bafd16e0ca|68|null|{"type": "null"}
+1443302186089|18178839968700900856|598|50182af4f2e5e4cd|68|delete|{"starting_index": 28, "ending_index": 53, "type": "ds"}
+1443302186089|18178839968700900856|598|50182af4f2e5e4cd|68|insert|{"insert_before_index": 154, "string": "owisthisleftalignCRAJLCLri", "type": "is"}
+1443302186089|18178839968700900856|598|50182af4f2e5e4cd|68|adjust_style|{"ending_index": 179, "type": "as", "style_type": "text", "starting_index": 154, "style_modification": {"italic_flag": true, "strikethrough_flag": true, "foreground_color_flag": true, "font_size": 16.0, "bold_flag": true, "font_size_flag": false, "underline_flag": true, "font_family": "Trebuchet MS", "font_family_flag": false, "background_color_flag": true, "vertical_align_flag": true, "ts_sc_flag": true}, "fm": false}
+1443302186089|18178839968700900856|598|50182af4f2e5e4cd|68|add_elem|{"et": "list", "epm": {"le_nb": {"nl_3": {"b_sn": 1, "b_gf": "%3.", "b_a": 0, "b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "b_il": 180.0, "b_gs": "", "b_gt": 10, "b_ifl": 162.0}, "nl_2": {"b_sn": 1, "b_gf": "%2.", "b_a": 2, "b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "b_il": 144.0, "b_gs": "", "b_gt": 15, "b_ifl": 126.0}, "nl_1": {"b_sn": 1, "b_gf": "%1.", "b_a": 0, "b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "b_il": 108.0, "b_gs": "", "b_gt": 13, "b_ifl": 90.0}, "nl_0": {"b_sn": 1, "b_gf": "%0.", "b_a": 0, "b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "b_il": 72.0, "b_gs": "", "b_gt": 10, "b_ifl": 54.0}, "nl_7": {"b_sn": 1, "b_gf": "%7.", "b_a": 0, "b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "b_il": 324.0, "b_gs": "", "b_gt": 13, "b_ifl": 306.0}, "nl_6": {"b_sn": 1, "b_gf": "%6.", "b_a": 0, "b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "b_il": 288.0, "b_gs": "", "b_gt": 10, "b_ifl": 270.0}, "nl_5": {"b_sn": 1, "b_gf": "%5.", "b_a": 2, "b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "b_il": 252.0, "b_gs": "", "b_gt": 15, "b_ifl": 234.0}, "nl_4": {"b_sn": 1, "b_gf": "%4.", "b_a": 0, "b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "b_il": 216.0, "b_gs": "", "b_gt": 13, "b_ifl": 198.0}, "nl_8": {"b_sn": 1, "b_gf": "%8.", "b_a": 2, "b_ts": {"foreground_color": "#000000", "italic_flag": true, "strikethrough_flag": true, "font_size": 11.0, "foreground_color_flag": true, "italic": false, "bold_flag": true, "font_size_flag": true, "underline": false, "vertical_align_flag": true, "underline_flag": false, "vertical_align": "nor", "font_family": "Arial", "background_color": null, "ts_sc": false, "font_family_flag": true, "background_color_flag": true, "bold": false, "strikethrough": false, "ts_sc_flag": true}, "b_il": 360.0, "b_gs": "", "b_gt": 15, "b_ifl": 342.0}}}, "id": "kix.15s52422gt4d", "type": "ae"}
+1443302186089|18178839968700900856|598|50182af4f2e5e4cd|68|adjust_style|{"ending_index": 179, "type": "as", "style_type": "doco_anchor", "starting_index": 154, "style_modification": {"datasheet_anchor": {"cv": {"opValue": [], "op": "set"}}}, "fm": false}
+1443302186089|18178839968700900856|598|50182af4f2e5e4cd|68|adjust_style|{"ending_index": 179, "type": "as", "style_type": "import_warnings", "starting_index": 154, "style_modification": {"iws_iwids": {"cv": {"opValue": [], "op": "set"}}}, "fm": false}
+1443302186089|18178839968700900856|598|50182af4f2e5e4cd|68|adjust_style|{"ending_index": 179, "type": "as", "style_type": "link", "starting_index": 154, "style_modification": {"lnks_link": null}, "fm": false}
+1443302186089|18178839968700900856|598|50182af4f2e5e4cd|68|adjust_style|{"ending_index": 179, "type": "as", "style_type": "text", "starting_index": 154, "style_modification": {"italic_flag": true, "strikethrough_flag": true, "foreground_color_flag": true, "font_size": 16.0, "bold_flag": true, "font_size_flag": false, "underline_flag": true, "font_family": "Trebuchet MS", "font_family_flag": false, "background_color_flag": true, "vertical_align_flag": true, "ts_sc_flag": true}, "fm": false}
+1443302802173|18178839968700900856|599|50182af4f2e5e4cd|69|delete|{"starting_index": 61, "ending_index": 61, "type": "ds"}
+1443302802589|18178839968700900856|600|50182af4f2e5e4cd|70|delete|{"starting_index": 60, "ending_index": 60, "type": "ds"}
+1443302803659|18178839968700900856|601|50182af4f2e5e4cd|71|delete|{"starting_index": 59, "ending_index": 59, "type": "ds"}
+1443302804297|18178839968700900856|602|50182af4f2e5e4cd|72|delete|{"starting_index": 58, "ending_index": 58, "type": "ds"}
+1443302804525|18178839968700900856|603|50182af4f2e5e4cd|73|delete|{"starting_index": 57, "ending_index": 57, "type": "ds"}
+1443302804525|18178839968700900856|603|50182af4f2e5e4cd|73|delete|{"starting_index": 56, "ending_index": 56, "type": "ds"}
+1443302804861|18178839968700900856|604|50182af4f2e5e4cd|74|delete|{"starting_index": 55, "ending_index": 55, "type": "ds"}
+1443302806979|18178839968700900856|605|50182af4f2e5e4cd|75|delete|{"starting_index": 88, "ending_index": 88, "type": "ds"}
+1443302807601|18178839968700900856|606|50182af4f2e5e4cd|76|delete|{"starting_index": 87, "ending_index": 87, "type": "ds"}
+1443302807601|18178839968700900856|606|50182af4f2e5e4cd|76|delete|{"starting_index": 86, "ending_index": 86, "type": "ds"}
+1443302820121|18178839968700900856|607|50182af4f2e5e4cd|77|insert|{"insert_before_index": 22, "string": " ", "type": "is"}
+1443302821245|18178839968700900856|608|50182af4f2e5e4cd|78|insert|{"insert_before_index": 25, "string": " ", "type": "is"}
+1443302822489|18178839968700900856|609|50182af4f2e5e4cd|79|insert|{"insert_before_index": 28, "string": " ", "type": "is"}
+1443302825376|18178839968700900856|610|50182af4f2e5e4cd|80|insert|{"insert_before_index": 31, "string": " ", "type": "is"}
+1443302828078|18178839968700900856|611|50182af4f2e5e4cd|81|insert|{"insert_before_index": 35, "string": " ", "type": "is"}
+1443302829748|18178839968700900856|612|50182af4f2e5e4cd|82|insert|{"insert_before_index": 42, "string": " ", "type": "is"}
+1443302836583|18178839968700900856|613|50182af4f2e5e4cd|83|insert|{"insert_before_index": 48, "string": " ", "type": "is"}
+1443302838876|18178839968700900856|614|50182af4f2e5e4cd|84|insert|{"insert_before_index": 62, "string": " ", "type": "is"}
+1443302838876|18178839968700900856|614|50182af4f2e5e4cd|84|adjust_style|{"ending_index": 62, "type": "as", "style_type": "doco_anchor", "starting_index": 62, "style_modification": {"datasheet_anchor": {"cv": {"opValue": [], "op": "set"}}}, "fm": false}
+1443302839155|18178839968700900856|615|50182af4f2e5e4cd|85|insert|{"insert_before_index": 63, "string": " ", "type": "is"}
+1443302847953|18178839968700900856|616|50182af4f2e5e4cd|86|delete|{"starting_index": 131, "ending_index": 136, "type": "ds"}
+1443302847953|18178839968700900856|616|50182af4f2e5e4cd|86|insert|{"insert_before_index": 131, "string": "2n", "type": "is"}
+1443302848263|18178839968700900856|617|50182af4f2e5e4cd|87|insert|{"insert_before_index": 133, "string": "sd", "type": "is"}
+1443302848896|18178839968700900856|618|50182af4f2e5e4cd|88|delete|{"starting_index": 134, "ending_index": 134, "type": "ds"}
+1443302848896|18178839968700900856|618|50182af4f2e5e4cd|88|delete|{"starting_index": 133, "ending_index": 133, "type": "ds"}
+1443302848896|18178839968700900856|618|50182af4f2e5e4cd|88|insert|{"insert_before_index": 133, "string": "d", "type": "is"}
+1443302851194|18178839968700900856|619|50182af4f2e5e4cd|89|delete|{"starting_index": 139, "ending_index": 139, "type": "ds"}
+1443302851194|18178839968700900856|619|50182af4f2e5e4cd|89|delete|{"starting_index": 138, "ending_index": 138, "type": "ds"}
+1443302851538|18178839968700900856|620|50182af4f2e5e4cd|90|delete|{"starting_index": 137, "ending_index": 137, "type": "ds"}
+1443302851936|18178839968700900856|621|50182af4f2e5e4cd|91|delete|{"starting_index": 136, "ending_index": 136, "type": "ds"}
+1443302852494|18178839968700900856|622|50182af4f2e5e4cd|92|delete|{"starting_index": 135, "ending_index": 135, "type": "ds"}
+1443302855769|18178839968700900856|623|50182af4f2e5e4cd|93|delete|{"starting_index": 136, "ending_index": 170, "type": "ds"}
+1443302855769|18178839968700900856|623|50182af4f2e5e4cd|93|insert|{"insert_before_index": 136, "string": "nu", "type": "is"}
+1443302856246|18178839968700900856|624|50182af4f2e5e4cd|94|insert|{"insert_before_index": 138, "string": "mlis", "type": "is"}
+1443302856527|18178839968700900856|625|50182af4f2e5e4cd|95|insert|{"insert_before_index": 142, "string": "t1", "type": "is"}
+1443302858294|18178839968700900856|626|50182af4f2e5e4cd|96|delete|{"starting_index": 151, "ending_index": 151, "type": "ds"}
+1443302858294|18178839968700900856|626|50182af4f2e5e4cd|96|delete|{"starting_index": 150, "ending_index": 150, "type": "ds"}
+1443302858579|18178839968700900856|627|50182af4f2e5e4cd|97|delete|{"starting_index": 149, "ending_index": 149, "type": "ds"}
+1443302858579|18178839968700900856|627|50182af4f2e5e4cd|97|delete|{"starting_index": 148, "ending_index": 148, "type": "ds"}
+1443302858867|18178839968700900856|628|50182af4f2e5e4cd|98|delete|{"starting_index": 147, "ending_index": 147, "type": "ds"}
+1443302858867|18178839968700900856|628|50182af4f2e5e4cd|98|delete|{"starting_index": 146, "ending_index": 146, "type": "ds"}
+1443302859299|18178839968700900856|629|50182af4f2e5e4cd|99|delete|{"starting_index": 145, "ending_index": 145, "type": "ds"}
+1443302859299|18178839968700900856|629|50182af4f2e5e4cd|99|insert|{"insert_before_index": 145, "string": "e", "type": "is"}
+1443302859524|18178839968700900856|630|50182af4f2e5e4cd|100|insert|{"insert_before_index": 146, "string": "lem", "type": "is"}
+1443302859871|18178839968700900856|631|50182af4f2e5e4cd|101|insert|{"insert_before_index": 149, "string": "2", "type": "is"}
+1443302866263|18178839968700900856|632|50182af4f2e5e4cd|102|insert|{"insert_before_index": 158, "string": "lat", "type": "is"}
+1443302866415|18178839968700900856|633|50182af4f2e5e4cd|103|insert|{"insert_before_index": 161, "string": "ex", "type": "is"}
+1443302866811|18178839968700900856|634|50182af4f2e5e4cd|104|insert|{"insert_before_index": 163, "string": ": ", "type": "is"}
+1443302874327|18178839968700900856|635|50182af4f2e5e4cd|105|adjust_style|{"ending_index": 173, "type": "as", "style_type": "paragraph", "starting_index": 173, "style_modification": {"ps_kwn_flag": true, "indent_line": 31.5, "ps_klt": false, "ps_awao_flag": true, "space_before_paragraph": 0.0, "space_after_paragraph_flag": true, "ps_ir": 0.0, "space_after_paragraph": 10.0, "ps_sm": 1, "ps_ir_flag": true, "alignment": 1, "ps_sm_flag": true, "ps_ts": {"cv": {"opValue": [{"tbs_of": 504.0, "tbs_al": 2}], "op": "set"}}, "heading_id": "", "ps_awao": false, "alignment_flag": true, "indent_first_line": 63.0, "indent_line_flag": true, "line_space_flag": true, "line_space": 2.0, "ps_klt_flag": true, "space_before_paragraph_flag": true, "ps_kwn": false, "ps_ltr": true, "indent_first_line_flag": true, "heading_style": 0}, "fm": false}
+1443302874327|18178839968700900856|635|50182af4f2e5e4cd|105|adjust_style|{"ending_index": 173, "type": "as", "style_type": "list", "starting_index": 173, "style_modification": {"ls_ts": null, "ls_id": null, "ls_nest": 0}, "fm": false}
+1443302874327|18178839968700900856|635|50182af4f2e5e4cd|105|delete|{"starting_index": 157, "ending_index": 157, "type": "ds"}
+1443302874835|18178839968700900856|636|50182af4f2e5e4cd|106|delete|{"starting_index": 156, "ending_index": 156, "type": "ds"}
+1443302874835|18178839968700900856|636|50182af4f2e5e4cd|106|delete|{"starting_index": 155, "ending_index": 155, "type": "ds"}
+1443302875154|18178839968700900856|637|50182af4f2e5e4cd|107|delete|{"starting_index": 154, "ending_index": 154, "type": "ds"}
+1443302875154|18178839968700900856|637|50182af4f2e5e4cd|107|delete|{"starting_index": 153, "ending_index": 153, "type": "ds"}
+1443302875559|18178839968700900856|638|50182af4f2e5e4cd|108|delete|{"starting_index": 152, "ending_index": 152, "type": "ds"}

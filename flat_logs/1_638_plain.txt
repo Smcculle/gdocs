@@ -1,0 +1,12 @@
+   this IS MY HEADING JR JC Lh ght margin moves newleftindent  About to change the papertype:=
+A number twof
+bullet listbf
+bullet 2nd
+
+numlist1
+elem2
+latex: 2
+
+page 2page 
+page 3 now
+?
