@@ -1,17 +1,21 @@
-import ConfigParser
+#!/usr/bin/env python
+
+
 import os
 import sys
-import urllib
 import json
+import ConfigParser
 from collections import namedtuple
+import urllib
+
 import httplib2
-from oauth2client.file import Storage
-from oauth2client.client import flow_from_clientsecrets
 
 from apiclient.discovery import build
 
 # ***requires oauth2client version 1.3.2***
 from oauth2client.tools import run
+from oauth2client.file import Storage
+from oauth2client.client import flow_from_clientsecrets
 
 import log2csv
 import csv2plain
@@ -104,7 +108,7 @@ def start_service():
 def get_drawings(drawing_ids, service, file_id):
     drawings = []
     for drawing_id in drawing_ids:
-        #url = DRAW_PATH.format(d_id=drawing_id[0], w=drawing_id[1], h=drawing_id[2])
+        # url = DRAW_PATH.format(d_id=drawing_id[0], w=drawing_id[1], h=drawing_id[2])
         url = DRAW_PATH.format(d_id=drawing_id.d_id, w=drawing_id.width, h=drawing_id.height)
         response, content = service._http.request(url)
         extension = get_extension(response)
@@ -114,12 +118,7 @@ def get_drawings(drawing_ids, service, file_id):
 
 
 def get_render_request(image_ids, file_id):
-    """
-    Returns request to retrieve images with image_ids contained in file with file_id
-    :param image_ids:
-    :param file_id:
-    :return:
-    """
+    """ Returns url request to retrieve images with image_ids contained in file with file_id"""
     image_ids = set(image_ids)
     data = {}
     for i, img_id in enumerate(image_ids):
@@ -135,6 +134,8 @@ def get_render_request(image_ids, file_id):
 
 
 def get_image_links(image_ids, service, file_id):
+    """ Sends url request to google API which returns a link for each image resource, returns
+    dictionary of tuples containing those links along with each image_id associated with link"""
     render_url, request_body, my_headers = get_render_request(image_ids, file_id)
     try:
         response, content = service._http.request(render_url, method='POST',
@@ -143,7 +144,7 @@ def get_image_links(image_ids, service, file_id):
         # keep assocation of image ids with image
         for i, img_id in enumerate(image_ids):
             key = 'r' + str(i)
-            content[key] = [content.pop(key), img_id]
+            content[key] = (content.pop(key), img_id)
         return content
     except:
         print 'Unable to retrieve image resources'
@@ -160,6 +161,8 @@ def get_extension(html_response):
 
 
 def get_images(image_ids, service, file_id):
+    """ Gets a list of links and resolves each one, returning a list of tuples containing
+    (image, extension, img_id) for each image resource"""
     images = []
     links = get_image_links(image_ids, service, file_id)
     for url, img_id in links.itervalues():
@@ -171,6 +174,7 @@ def get_images(image_ids, service, file_id):
 
 
 def get_comments(comment_anchors, service, file_id):
+    """ Gets comments and replies to those comments.  Deleted comments show up as blank"""
     url = ''.join(('https://www.googleapis.com/drive/v2/files/',
                    file_id,
                    r'/comments?includeDeleted=true'
@@ -210,52 +214,24 @@ def get_doc_objects(flat_log):
             i = line.index('{')
             line_dict = json.loads(line[i:])
             if 'style_type' in line_dict:
-                if line_dict['style_type'] == 'doco_anchor':    # comment anchor
+                if line_dict['style_type'] == 'doco_anchor':  # comment anchor
                     c_id = line_dict['style_mod']['datasheet_anchor']['cv']['opValue']
                     if c_id:
                         comment_anchors += c_id if type(c_id) == list else [c_id]
-                elif 'datasheet_anchor' in line_dict:           # data anchor for comment
+                elif 'datasheet_anchor' in line_dict:  # data anchor for comment
                     c_id = line_dict['datasheet_anchor']['cv']['opValue']
                     if c_id:
                         comment_anchors += c_id if type(c_id) == list else [c_id]
             elif 'epm' in line_dict and 'ee_eo' in line_dict['epm']:
                 if 'img_cosmoId' in line_dict['epm']['ee_eo']:  # image located
                     image_ids.add(line_dict['epm']['ee_eo']['img_cosmoId'])
-                elif 'd_id' in line_dict['epm']['ee_eo']: # drawing located
-                    d_id = line_dict['epm']['ee_eo']['d_id']
-                    img_wth = line_dict['epm']['ee_eo']['img_wth']
-                    img_ht = line_dict['epm']['ee_eo']['img_ht']
-                    drawing_ids.append(drawing(d_id, int(img_wth), int(img_ht)))
+                elif 'd_id' in line_dict['epm']['ee_eo']:  # drawing located
+                    mod_add_drawing(drawing, drawing_ids, line_dict)
             elif 'type' in line_dict:
-                if line_dict['type'] == 'iss':   # suggestions located
-                    sug_id = line_dict['sug_id']
-                    ins_index = line_dict['ins_index']
-                    string = line_dict['string']
-
-                    # check if suggestion exists, create otherwise
-                    if sug_id in suggestions:
-                        suggestions[sug_id] = csv2plain.insert(suggestions[sug_id],
-                                                               string, ins_index)
-                    else:
-                        suggestions[sug_id] = string
-
-                elif line_dict['type'] == 'dss' and sug_id in line_dict:
-                    start_index = line_dict['start_index']
-                    end_index = line_dict['end_index']
-                    try:
-                        sug_id = line_dict['sug_id']
-                    except KeyError:
-                        print "key error in sugid"
-                        print line_dict
-                        sys.exit(2)
-
-                    # remove later#
-                    if sug_id not in suggestions:
-                        print 'Trying to delete suggestion that does not exist'
-                        raise
-
-                    suggestions[sug_id] = csv2plain.delete(suggestions[sug_id],
-                                                           start_index, end_index)
+                if line_dict['type'] == 'iss':  # suggestions located
+                    mod_insert_suggestion(line_dict, suggestions)
+                elif line_dict['type'] == 'dss' and 'sug_id' in line_dict:
+                    mod_delete_suggestion(line_dict, suggestions)
 
         except ValueError:
             pass  # either chunked or changelog header without dict, no action needed
@@ -263,7 +239,50 @@ def get_doc_objects(flat_log):
     return comment_anchors, image_ids, drawing_ids, suggestions
 
 
+def mod_add_drawing(drawing, drawing_ids, line_dict):
+    """ Inserts a drawing namedtuple containing id, width, and height to drawing_ids"""
+    d_id = line_dict['epm']['ee_eo']['d_id']
+    img_wth = line_dict['epm']['ee_eo']['img_wth']
+    img_ht = line_dict['epm']['ee_eo']['img_ht']
+    drawing_ids.append(drawing(d_id, int(img_wth), int(img_ht)))
+
+
+def mod_delete_suggestion(line_dict, suggestions):
+    """ Modifies suggestions to delete text from the given suggestion from start to end index"""
+    start_index = line_dict['start_index']
+    end_index = line_dict['end_index']
+    try:
+        sug_id = line_dict['sug_id']
+    except KeyError:
+        print "key error in sugid"
+        print line_dict
+        sys.exit(2)
+
+    # remove later#
+    if sug_id not in suggestions:
+        print 'Trying to delete suggestion that does not exist'
+        raise
+    suggestions[sug_id] = csv2plain.delete(suggestions[sug_id],
+                                           start_index, end_index)
+
+
+def mod_insert_suggestion(line_dict, suggestions):
+    """ Modifies suggestions to add text to a given suggestion at index"""
+    sug_id = line_dict['sug_id']
+    ins_index = line_dict['ins_index']
+    string = line_dict['string']
+
+    # check if suggestion exists, create otherwise
+    if sug_id in suggestions:
+        suggestions[sug_id] = csv2plain.insert(suggestions[sug_id],
+                                               string, ins_index)
+    else:
+        suggestions[sug_id] = string
+
+
 def process_doc(log, service, file_id, start, end):
+    """ Using google changelog, retrieves comments, suggestions, images, and drawings
+    associated with that log and sends them to be outputted.  """
     flat_log = log2csv.get_flat_log(log)
     comment_anchors, image_ids, drawing_ids, suggestions = get_doc_objects(flat_log)
     plain_text = csv2plain.parse_log(flat_log)
@@ -308,7 +327,7 @@ def write_doc(docname, plain_text, comments, images, drawings, start, end, sugge
 
 
 def get_slide_objects(log):
-    """ Gets objects associated with slide from the log"""
+    """ Gets objects(only images for now) associated with slide from the log"""
     image_ids = {}
     for line in log['changelog']:
         # line[0][0] is action type, 4 is multiset, 44 is insert image action
@@ -333,6 +352,8 @@ def get_slide_objects(log):
 
 
 def process_slide(log, service, file_id, start, end):
+    """ Processing for slides to retrieve all iamges and plain text from every box in each slide,
+    outputs to a directory with a folder for each slide"""
     image_ids = get_slide_objects(log)
     images = get_images(image_ids.keys(), service, file_id)
 
@@ -350,7 +371,6 @@ def process_slide(log, service, file_id, start, end):
 
 
 def main(argv):
-
     print 'Downloads the plain-text as of end revision as well as the images and comments ' \
           'associated with the file, even deleted images. \n*Presentations only support starting ' \
           'from revision 1.  \n\n'
