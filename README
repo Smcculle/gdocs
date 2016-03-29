@@ -1,0 +1,16 @@
+config/ must be set up with your application's credentials in order to authorize with google API
+to use gdocsFx.py.  Other files require google changelogs.
+
+Use gdocsFx without any arguments to retrieve either a slide or presentation file log from
+the google drive account associated with your config information.  The plain text, images, comments,
+and suggestions are output to a directory.  Deleted images are also shown.  gdocsFX uses the other
+scripts log2csv, csv2plain, and slide2plain.
+
+log2csv.py takes a google changelog and outputs a flat version with key translations provided by mappings.py.
+log2csv output can be used by csv2plain to extract plain text.
+
+csv2plain takes output from log2csv in order to generate all plain text from the file.
+
+slide2plain takes a google changelog from a slides file and outputs the images +plain text for each
+box contained in each slide in a specified directory.  Each slide is output to a separate folder, with
+each text box contained in that slide a separate text file.
