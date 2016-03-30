@@ -73,11 +73,11 @@ def del_box(line):
     """ Deletes a box from the given slide """
     for box in line[1]:
         try:
-            # parent = box_dict['slide']
+            parent = box_dict[box]['slide']
             del box_dict[box]
-            slide_dict['slide'].remove(box)
-        except:
-            "key error deleting", box, 'in line = ', line
+            slide_dict[parent].remove(box)
+        except KeyError:
+            'Error while deleting box {}'.format(box)
 
 
 def del_slide(line):
@@ -138,7 +138,7 @@ def write_output(box_dict, slide_dict, slide_list, images=None, base_dir=BASE_DI
             if box_dict[box]['string']:
                 filename = path + slidei + '_' + 'box' + str(j) + '.txt'
                 with open(filename, 'w') as ofile:
-                    ofile.write(box_dict[box]['string'])
+                    ofile.write(box_dict[box]['string'].encode('utf8'))
         if images and slide in images:
             for j, img in enumerate(images[slide]):
                 extension = img[1]
@@ -172,9 +172,6 @@ def main(argv):
         else:
             print __doc__
             sys.exit("Incorrect arguments")
-
-    print argv
-    raw_input('wait...')
 
     if not os.path.isfile(filename):
         print 'No file found. ', __doc__
