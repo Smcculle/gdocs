@@ -6,14 +6,13 @@ import sys
 import json
 import ConfigParser
 from collections import namedtuple
+import argparse
 import urllib
-
 import httplib2
 
-from apiclient.discovery import build
+from googleapiclient.discovery import build
 
-# ***requires oauth2client version 1.3.2***
-from oauth2client.tools import run
+from oauth2client.tools import run_flow, argparser as oargparser
 from oauth2client.file import Storage
 from oauth2client.client import flow_from_clientsecrets
 
@@ -97,8 +96,10 @@ def start_service():
     storage = Storage(tokens)
     credentials = storage.get()
 
+    # run_flow requires a wrapped tools.argparse object to handle command line arguments
+    flags = argparse.ArgumentParser(parents=[oargparser]).parse_args()
     if credentials is None or credentials.invalid:
-        credentials = run(flow, storage)
+        credentials = run_flow(flow, storage, flags)
     http = httplib2.Http()
     http = credentials.authorize(http)
     service = build("drive", "v2", http=http)
