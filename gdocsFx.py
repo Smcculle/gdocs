@@ -12,7 +12,7 @@ import httplib2
 
 from googleapiclient.discovery import build
 
-from oauth2client.tools import run_flow, argparser as oargparser
+from oauth2client.tools import run_flow, _CLIENT_SECRETS_MESSAGE, argparser as oargparser
 from oauth2client.file import Storage
 from oauth2client.client import flow_from_clientsecrets
 
@@ -80,14 +80,8 @@ def start_service():
     # Console <http://code.google.com/apis/console>
     client_secrets = config.get('gdrive', 'configurationfile')
 
-    missing_client_secrets_message = """
-  WARNING: Please configure OAuth 2.0
-  To make this sample run you will need to populate the config/gdrive_config.json file
-  found at:
-     %s
-  with information from the APIs Console <https://code.google.com/apis/console>.
-
-  """ % os.path.join(os.path.dirname(__file__), client_secrets)
+    missing_client_secrets_message = _CLIENT_SECRETS_MESSAGE % os.path.join(
+        os.path.dirname(__file__), client_secrets)
 
     flow = flow_from_clientsecrets(client_secrets,
                                    scope='https://www.googleapis.com/auth/drive',
