@@ -6,6 +6,9 @@
 import sys
 import os
 import json
+import ntpath
+
+BASE_DIR = 'flat_logs/plaintext/'
 
 
 def insert(old_string, new_string, index):
@@ -23,7 +26,8 @@ def delete(old_string, starting_index, ending_index):
 
 
 def write(s, filename):
-    outfile = filename.replace('_out', '_plain')
+    outfile = filename.replace('_flat', '_plain')
+    outfile = '{base_dir}{outfile}'.format(base_dir=BASE_DIR, outfile=ntpath.basename(outfile))
     with open(outfile, 'w') as f:
         f.write(s)
     print "finished writing to", outfile
@@ -31,12 +35,13 @@ def write(s, filename):
 
 def get_dict(line):
     """ converts string dictionary at end of line in log to dictionary object"""
+    i = line.index('{')
     try:
-        i = line.index('{')
         log_dict = json.loads(line[i:])
-        return log_dict
     except ValueError:
         raise  # should not have a line without dictionary
+    else:
+        return log_dict
 
 
 def parse_log(log):
@@ -80,7 +85,7 @@ def main(argv):
         filename = argv[0]
 
     if not os.path.isfile(filename):
-        print 'No file found.', helpmsg
+        print 'File named {} could not be found. '.format(filename), __doc__
         sys.exit(2)
 
     with open(filename, 'r') as f:

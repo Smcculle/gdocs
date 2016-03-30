@@ -1,4 +1,7 @@
 # := unknown abbreviations
+import os
+import errno
+
 _MAPPINGS = {
     "ty": "type",
     "st": "style_type",
@@ -146,3 +149,12 @@ list insertion associated with epm: le_nb
 def remap(old_key):
     """ Remaps given key if present in mapping dictionary, or returns old_key otherwise """
     return _MAPPINGS.get(old_key, old_key)
+
+
+def ensure_path(path):
+    """ Attempts to make a directory and raises exception if there is an issue"""
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:  # ignore already exists error, raise otherwise
+            raise

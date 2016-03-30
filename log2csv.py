@@ -1,12 +1,19 @@
+"""log2csv takes a google changelog and converts it into a flattened log separated by delimiter,
+default '|'.  Output is saved in flat_logs folder with _flat appended to the name
+Usage: python log2csv.py <inputfiles>.    May use wildcards for file.
+Ex: python log2csv.py changelogs/*.txt
+"""
+
 import sys
 from collections import OrderedDict
 
 import json
 import glob
 
-import mappings
+import misc.mappings as mappings
 
 CHUNKED_ORDER = ['si', 'ei', 'st']
+DELIMITER = '|'
 
 
 def rename_keys(log_dict):
@@ -29,17 +36,25 @@ def rename_keys(log_dict):
 
 def to_file(flat_log, filename):
     """writes log to file in CSV format"""
-    filename = filename.replace('.txt', '_out.txt')
+    filename = filename.replace('.txt', '_flat.txt')
+    # changelogs/1_413.txt
 
-    if 'logs' in filename:
-        filename = filename.replace('logs', 'output')
+    if 'changelogs' in filename:
+        filename = filename.replace('changelogs/', 'flat_logs/')
     else:
-        filename = 'output/' + filename
+        filename = 'flat_logs/plaintext/' + filename
+
+    ensure_path(filename)
 
     with open(filename, 'w') as outfile:
         for line in flat_log:
             outfile.write(line + '\n')
     print "finished with", filename
+
+
+def ensure_path(filename):
+    path = filename[:filename.rfind('/')]
+    mappings.ensure_path(path)
 
 
 def flatten_mts(entry, line_copy, line):
@@ -87,12 +102,12 @@ def parse_log(c_log, flat_log):
             line_copy = []
             flatten_mts(entry[0], line_copy, line)
             for item in line_copy:
-                flat_log.append('|'.join(str(col) for col in item))
+                flat_log.append(DELIMITER.join(str(col) for col in item))
         else:
             action_type = mappings.remap(entry[0]['ty'])
             line.append(action_type)
             line.append(json.dumps(rename_keys(entry[0])))
-            flat_log.append('|'.join(str(entry) for entry in line))
+            flat_log.append(DELIMITER.join(str(entry) for entry in line))
 
 
 def parse_snapshot(snapshot, flat_log):
@@ -111,7 +126,7 @@ def parse_snapshot(snapshot, flat_log):
     # parse style modifications
     for entry in snapshot:
         line = get_snapshot_line(snapshot_entry=entry)
-        flat_log.append('|'.join(str(item) for item in line))
+        flat_log.append(DELIMITER.join(str(item) for item in line))
 
 
 def get_snapshot_line(snapshot_entry):
@@ -158,13 +173,11 @@ def main(argv):
         for arg in argv:
             files += glob.glob(arg)
     else:
-        print 'usage: python log2csv.py <inputfiles>  \nMay use wildcards for file.', \
-            ' Ex: python log2csv.py logs/*.txt'
+        print __doc__
         sys.exit(2)
 
     if not files:
-        print 'No files found.  Usage: python log2csv.py <inputfiles>  \nMay use wildcards', \
-            ' for file. Ex: python log2csv.py logs/*.txt'
+        print 'No files found.  ', __doc__
         sys.exit(2)
 
     for doc in files:
@@ -172,19 +185,9 @@ def main(argv):
             data = infile.read()
             if data[0] == ')':
                 data = data[5:]
-        '''
-        log = json.loads(data)
-        flat_log = []
-
-        try:
-            parse_snapshot(log['chunkedSnapshot'], flat_log)
-            parse_log(log['changelog'], flat_log)
-        except KeyError:
-            raise
-        '''
-        data = json.loads(data)
-        flat_log = get_flat_log(data)
-        to_file(flat_log, doc)
+            data = json.loads(data)
+            flat_log = get_flat_log(data)
+            to_file(flat_log, doc)
 
 
 if __name__ == '__main__':
