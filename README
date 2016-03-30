@@ -1,3 +1,7 @@
+package requirements listed in requirements.txt: pip install -r requirements.txt
+google-api-python-client installs needed packages six, uritemplate, oauth2client,
+and httplib2.
+
 config/ must be set up with your application's credentials (client id, client secret) in order to
 authorize access to your google account through API for gdocsFx.py.  Other files require google
 changelogs or output from log2csv.py
