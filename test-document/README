@@ -1,0 +1,8 @@
+This test document shows an example of retrieving previously deleted images, 
+accepted comments, and accepted suggestions.  The saved PDF of each revision is 
+included.  In 1-42, the suggestion has been accepted and added to the text of 
+the file. Revision 43 deletes everything in the file, so 1-43 appears to be a
+blank page, but the comments, suggestions, and images are retrievable.  
+
+Any deleted comments have their content stripped, so only the accepted or 
+current comments are visible.  
