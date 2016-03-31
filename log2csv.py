@@ -42,7 +42,7 @@ def to_file(flat_log, filename):
     if 'changelogs' in filename:
         filename = filename.replace('changelogs/', 'flat_logs/')
     else:
-        filename = 'flat_logs/plaintext/' + filename
+        filename = 'flat_logs/' + filename
 
     ensure_path(filename)
 
