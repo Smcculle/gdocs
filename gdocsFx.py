@@ -293,7 +293,7 @@ def process_doc(log, service, file_id, start, end):
 # refactor for list(**args)
 def write_doc(docname, plain_text, comments, images, drawings, start, end, suggestions):
     """ Writes all document objects retrieved from the log """
-    base_dir = '{}_{}-{}/'.format(docname, str(start), str(end))
+    base_dir = './downloaded/gdocs/{}_{}-{}/'.format(docname, str(start), str(end))
     slide2plain.makedir(base_dir)
 
     for i, drawing in enumerate(drawings):
@@ -361,7 +361,7 @@ def process_slide(log, service, file_id, start, end):
         else:
             slide_images[slide_id] = [img]
 
-    path = '{}_{}-{}/'.format(get_title(service, file_id), str(start), str(end))
+    path = './downloaded/gslide/{}_{}-{}/'.format(get_title(service, file_id), str(start), str(end))
     slide2plain.write_objects(log, slide_images, path)
 
 
