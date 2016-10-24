@@ -3,10 +3,10 @@ google-api-python-client installs needed packages six, uritemplate, oauth2client
 and httplib2.
 
 config/ must be set up with your application's credentials (client id, client secret) in order to
-authorize access to your google account through API for gdocsFx.py.  Other files require google
+authorize access to your google account through API for kumodocs.py.  Other files require google
 changelogs or output from log2csv.py
 
-Use gdocsFx without any arguments to retrieve either a slide or presentation file log from
+Use kumodocs without any arguments to retrieve either a slide or presentation file log from
 the google drive account associated with your config information.  The plain text, images, comments,
 and suggestions are output to a directory.  Deleted images are also shown.  gdocsFX uses the other
 scripts log2csv, csv2plain, and slide2plain.

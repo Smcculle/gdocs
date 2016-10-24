@@ -12,7 +12,7 @@ import errno
 
 BASE_DIR = 'gslide/'
 box_dict = {}
-slide_dict = {'p': ['i0', 'i1']}
+slide_dict = {'p': ['i0', 'i1', 'i3']}
 # keep order of slides
 slide_list = ['p']
 
@@ -31,6 +31,8 @@ def add_box(line):
     """ Adds a new box to the collection of boxes"""
     box_attrib = {}
     slide = line[5]
+    if slide.endswith(':notes'):
+        slide = slide.replace(':notes', '')
     box_id = line[1]
     box_attrib['slide'] = slide
     box_attrib['string'] = ''
@@ -69,6 +71,13 @@ def add_slide(line):
         slide_dict[slide_id] = []
 
 
+def move_slide(line):
+    """ Swap slides at position line[1] and line[2] in slide_list"""
+    start_index = line[1]
+    end_index = line[2]
+    slide_list[start_index], slide_list[end_index] = slide_list[end_index], slide_list[start_index]
+
+
 def del_box(line):
     """ Deletes a box from the given slide """
     for box in line[1]:
@@ -102,15 +111,15 @@ def parse(data):
     # first slide id is 'p'
     box_dict['i0'] = {'slide': 'p', 'string': ''}
     box_dict['i1'] = {'slide': 'p', 'string': ''}
+    box_dict['i3'] = {'slide': 'p', 'string': ''}
     for entry in data:
         line = entry[0]
         parse_line(line)
 
-
 def parse_line(line):
     """ Given a line in the log, calls a function based on the appropriate action listed in line """
     functions = {15: add_text, 4: parse_mts, 16: del_text, 3: add_box,
-                 12: add_slide, 13: del_slide, 0: del_box}
+                 12: add_slide, 13: del_slide, 0: del_box, 14: move_slide}
     action = line[0]
     if action in functions:
         func = functions[action]
