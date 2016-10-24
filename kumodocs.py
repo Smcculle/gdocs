@@ -44,7 +44,7 @@ def choose_file(service, drive_type):
     files = list_files(service, drive_type)
     print '\nChoose a file from the list below'
     for i, file_ in enumerate(files):
-        print '{}: \t{}'.format(i, file_['title'])1
+        print '{}: \t{}'.format(i, file_['title'])
 
     choice = int(raw_input('\nChoose a file:  '))
     print 'Chose file {}'.format(files[choice]['title'])
