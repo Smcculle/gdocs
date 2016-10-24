@@ -1,5 +1,5 @@
 """Usage: python slide2plain.py <inputfile> [output_dir]. Takes single raw changelog from slides.
-Ex: \tpython slide2plain.py slogs/1_317.txt.  Outputs a directory named oslide/ by default
+Ex: \tpython slide2plain.py slogs/1_317.txt.  Outputs a directory named gslide/ by default
 containing a folder for each slide page"""
 
 import os
@@ -10,7 +10,7 @@ import errno
 
 # todo:better solution to slide/box dict, clean
 
-BASE_DIR = 'oslide/'
+BASE_DIR = 'gslide/'
 box_dict = {}
 slide_dict = {'p': ['i0', 'i1']}
 # keep order of slides
