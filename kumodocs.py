@@ -46,9 +46,17 @@ def choose_file(service, drive_type):
     for i, file_ in enumerate(files):
         print '{}: \t{}'.format(i, file_['title'])
 
-    choice = int(raw_input('\nChoose a file:  '))
+    choice = None
+    while choice is None:
+        try:
+            choice = int(raw_input('\nChoose a file:  '))
+            file_id = files[choice]['id']
+        except Exception as e:
+            print('invalid choice')
+            choice = None
+
     print 'Chose file {}'.format(files[choice]['title'])
-    file_id = files[choice]['id']
+
     revisions = service.revisions().list(fileId=file_id).execute()
     max_rev = revisions['items'][-1]['id']
     return str(file_id), max_rev
@@ -369,14 +377,41 @@ def main(argv):
     print 'Downloads the plain-text as of end revision as well as the images and comments ' \
           'associated with the file, even deleted images. \n*Presentations only support starting ' \
           'from revision 1.  \n\n'
-    choice = int(raw_input('Enter ' + ', '.join(
-        '{} for {}'.format(index, service) for index, service in DRIVE_TYPE.iteritems()) + ': '))
     global DRIVE
-    DRIVE = DRIVE_TYPE[choice]
+
+    choice = None
+    while choice is None:
+        try:
+            choice = int(raw_input('Enter ' + ', '.join(
+                '{} for {}'.format(index, service)
+                for index, service in DRIVE_TYPE.iteritems()) + ': '))
+            try:
+                DRIVE = DRIVE_TYPE[choice]
+            except KeyError:
+                raise
+        except (ValueError, KeyError) as e:
+            print('invalid choice\n')
+            choice = None
+
     service = start_service()
     file_id, max_revs = choose_file(service, drive_type=DRIVE)
-    start = int(raw_input("Start from revision(max {}): ".format(max_revs)))
-    end = int(raw_input("End at revision(max {}): ".format(max_revs)))
+    start, end = 0, 0
+    max_revs = int(max_revs)
+    while start < 1 or start >= max_revs:
+        try:
+            start = int(raw_input("Start from revision(max {}): ".format(max_revs)))
+            if start < 1 or start >= max_revs:
+                raise ValueError
+        except ValueError:
+            print("invalid revision choice\n")
+
+    while end == 0 or end > max_revs:
+        try:
+            end = int(raw_input("End at revision(max {}): ".format(max_revs)))
+            if end == 0 or end > max_revs:
+                raise ValueError
+        except ValueError:
+            print("invalid revision choice\n")
 
     url = create_URL(file_id, start, end)
     response, log = service._http.request(url)
