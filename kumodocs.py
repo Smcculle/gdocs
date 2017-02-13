@@ -1,5 +1,8 @@
-#! python2
+#! /usr/bin/python2.7
 
+# comments API
+# https://www.googleapis.com/drive/v3/files/1-x74jkh4s5LEJLWqKUNcV_9EMQjQ4Gm4sV4YVJy9FJo/comments?fields=comments(anchor, content)
+# &includeDeleted=true for metadata on deleted comments
 
 import os
 import sys
@@ -243,7 +246,7 @@ def get_doc_objects(flat_log):
 
 
 def mod_add_drawing(drawing, drawing_ids, line_dict):
-    """ Inserts a drawing namedtuple containing id, width, and height to drawing_ids"""
+    """ Modifies drawing_ids to add a drawing namedtuple containing id, width, and height """
     d_id = line_dict['epm']['ee_eo']['d_id']
     img_wth = line_dict['epm']['ee_eo']['img_wth']
     img_ht = line_dict['epm']['ee_eo']['img_ht']

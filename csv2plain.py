@@ -62,12 +62,12 @@ def parse_log(log):
         try:
             action_dict = get_dict(line)
 
-            if action_dict['type'] == 'is':
+            if action_dict['type'].startswith('is'):
                 i = action_dict['ins_index']
                 s = action_dict['string']
                 plain_text = insert(old_string=plain_text, new_string=s, index=i)
 
-            elif action_dict['type'] == 'ds':
+            elif action_dict['type'].startswith('ds'):
                 si = action_dict['start_index']
                 ei = action_dict['end_index']
                 plain_text = delete(old_string=plain_text, starting_index=si, ending_index=ei)
