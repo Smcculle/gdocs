@@ -3,10 +3,10 @@
  Ex: \tpython log2csv.py flat_logs/1_413_out.txt
 """
 
-import sys
-import os
 import json
 import ntpath
+import os
+import sys
 
 BASE_DIR = 'flat_logs/plaintext/'
 
@@ -71,7 +71,7 @@ def parse_log(log):
                 si = action_dict['start_index']
                 ei = action_dict['end_index']
                 plain_text = delete(old_string=plain_text, starting_index=si, ending_index=ei)
-        except:
+        except ValueError:
             pass
 
     return plain_text

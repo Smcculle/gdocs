@@ -1,15 +1,18 @@
-import os.path, sys
+import json
+import os.path
+import sys
 import time
 from collections import Counter
 from datetime import timedelta
-import json
 
 
-# todo*:  Index starting better for slide logs not beginning at 1, control output with flag (console vs log)
+# todo*:  Index starting better for slide logs not beginning at 1, control output with flag
+#                                                                               (console vs log)
 # todo:  map gid to account name through retrieving history with changelog.
 # todo:  stats for pages that don't start at revision 1
 # todo: refactor similar code into 1 function, remove old print
-# var historyUrl = baseUrl + docId + "/revisions/history?id=" + docId + "&start=1&end=-1&zoom_level=0&token=" + token
+# var historyUrl = baseUrl + docId + "/revisions/history?id="
+# + docId + "&start=1&end=-1&zoom_level=0&token=" + token
 
 def get_list(line):
     """Returns line in a list format, discarding the style dictionary at the end"""
@@ -80,9 +83,9 @@ def parse_slide(data, filename):
             action = action_dict[line[0][0]]
         except KeyError:
             action = 'unknown'
-        time = line[1]
+        # time = line[1]
         google_id = line[2]
-        revision = line[3]
+        # revision = line[3]
         sid = line[4]
 
         counter['revisions'] += 1
@@ -143,7 +146,8 @@ def parse_doc(data, filename):
 
 
 def main(argv):
-    helpmsg = 'Usage: python drivestats.py <inputfile>. Takes single output log from log2csv or raw changelog from slides\n' \
+    helpmsg = 'Usage: python drivestats.py <inputfile>. Takes single output log from log2csv or \
+               raw changelog from slides\n' \
               'Ex: \tpython drivestats.py output/1_254_out.txt  or\n' \
               '  \tpython drivestats.py slogs/1_317.txt'
     if not argv:

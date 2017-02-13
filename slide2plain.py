@@ -2,11 +2,10 @@
 Ex: \tpython slide2plain.py slogs/1_317.txt.  Outputs a directory named gslide/ by default
 containing a folder for each slide page"""
 
+import errno
+import json
 import os
 import sys
-import json
-import errno
-
 
 # todo:better solution to slide/box dict, clean
 
@@ -115,6 +114,7 @@ def parse(data):
     for entry in data:
         line = entry[0]
         parse_line(line)
+
 
 def parse_line(line):
     """ Given a line in the log, calls a function based on the appropriate action listed in line """

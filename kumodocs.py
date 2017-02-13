@@ -1,26 +1,26 @@
 #! /usr/bin/python2.7
 
 # comments API
-# https://www.googleapis.com/drive/v3/files/1-x74jkh4s5LEJLWqKUNcV_9EMQjQ4Gm4sV4YVJy9FJo/comments?fields=comments(anchor, content)
+# https://www.googleapis.com/drive/v3/files/1-x74jkh4s5LEJLWqKUNcV_9EMQjQ4Gm4sV4YVJy9FJo
+#                                             /comments?fields=comments(anchor, content)
 # &includeDeleted=true for metadata on deleted comments
 
+import ConfigParser
+import argparse
+import json
 import os
 import sys
-import json
-import ConfigParser
-from collections import namedtuple
-import argparse
 import urllib
+from collections import namedtuple
+
 import httplib2
-
 from googleapiclient.discovery import build
-
-from oauth2client.tools import run_flow, _CLIENT_SECRETS_MESSAGE, argparser as oargparser
-from oauth2client.file import Storage
 from oauth2client.client import flow_from_clientsecrets
+from oauth2client.file import Storage
+from oauth2client.tools import run_flow, _CLIENT_SECRETS_MESSAGE, argparser as oargparser
 
-import log2csv
 import csv2plain
+import log2csv
 import slide2plain
 
 # TODO:  video slide inserts
@@ -49,12 +49,12 @@ def choose_file(service, drive_type):
     for i, file_ in enumerate(files):
         print '{}: \t{}'.format(i, file_['title'])
 
-    choice = None
+    choice, file_id = None, None
     while choice is None:
         try:
             choice = int(raw_input('\nChoose a file:  '))
             file_id = files[choice]['id']
-        except Exception as e:
+        except KeyError:
             print('invalid choice')
             choice = None
 
@@ -65,7 +65,7 @@ def choose_file(service, drive_type):
     return str(file_id), max_rev
 
 
-def create_URL(file_id, start, end):
+def create_url(file_id, start, end):
     """Constructs URL to retrieve the changelog using google file ID, start/end revision number"""
 
     return REV_URL.format(file_id=file_id, start=start, end=end, drive=DRIVE)
@@ -100,10 +100,9 @@ def start_service():
 
     storage = Storage(tokens)
     credentials = storage.get()
-
     # run_flow requires a wrapped tools.argparse object to handle command line arguments
     flags = argparse.ArgumentParser(parents=[oargparser]).parse_args()
-    if credentials is None or credentials.invalid:
+    if credentials is None:  # or credentials.invalid:
         credentials = run_flow(flow, storage, flags)
     http = httplib2.Http()
     http = credentials.authorize(http)
@@ -376,7 +375,7 @@ def process_slide(log, service, file_id, start, end):
     slide2plain.write_objects(log, slide_images, path)
 
 
-def main(argv):
+def main():
     print 'Downloads the plain-text as of end revision as well as the images and comments ' \
           'associated with the file, even deleted images. \n*Presentations only support starting ' \
           'from revision 1.  \n\n'
@@ -392,7 +391,7 @@ def main(argv):
                 DRIVE = DRIVE_TYPE[choice]
             except KeyError:
                 raise
-        except (ValueError, KeyError) as e:
+        except (ValueError, KeyError):
             print('invalid choice\n')
             choice = None
 
@@ -416,7 +415,7 @@ def main(argv):
         except ValueError:
             print("invalid revision choice\n")
 
-    url = create_URL(file_id, start, end)
+    url = create_url(file_id, start, end)
     response, log = service._http.request(url)
     if response['status'] != '200':
         print 'Could not obtain log.  Check file_id, max revision number, and permission for file.'
@@ -432,4 +431,4 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()

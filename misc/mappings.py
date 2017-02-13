@@ -1,6 +1,6 @@
 # := unknown abbreviations
-import os
 import errno
+import os
 
 _MAPPINGS = {
     "ty": "type",
@@ -20,7 +20,6 @@ _MAPPINGS = {
     "SRev": "SRev",
     "sm": "style_mod",
     "mts": "multiset",
-    "sugid": "sug_id",
     "tbs_al": "table_aln",  #
     "tbs_of": "table_off",  #
     "das_a": "datasheet_anchor",
