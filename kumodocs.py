@@ -274,7 +274,6 @@ def get_doc_objects(flat_log):
     :return: list of comment_anchors, image_ids, drawing_ids, and a suggestions dictionary
     """
     # TODO break into one section for each object type and parallelize
-    comment_anchors = []
     image_ids = set()
     drawing_ids = []
     drawing = namedtuple('drawing', 'd_id width height')
@@ -287,12 +286,8 @@ def get_doc_objects(flat_log):
             if 'style_type' in line_dict:
                 if line_dict['style_type'] == 'doco_anchor':  # comment anchor
                     c_id = line_dict['style_mod']['datasheet_anchor']['cv']['opValue']
-                    if c_id:
-                        comment_anchors += c_id if type(c_id) == list else [c_id]
                 elif 'datasheet_anchor' in line_dict:  # data anchor for comment
                     c_id = line_dict['datasheet_anchor']['cv']['opValue']
-                    if c_id:
-                        comment_anchors += c_id if type(c_id) == list else [c_id]
             elif 'epm' in line_dict and 'ee_eo' in line_dict['epm']:
                 if 'img_cosmoId' in line_dict['epm']['ee_eo']:  # image located
                     image_ids.add(line_dict['epm']['ee_eo']['img_cosmoId'])
@@ -307,7 +302,7 @@ def get_doc_objects(flat_log):
         except ValueError:
             pass  # either chunked or changelog header without dict, no action needed
 
-    return comment_anchors, image_ids, drawing_ids, suggestions
+    return image_ids, drawing_ids, suggestions
 
 
 def mod_add_drawing(drawing, drawing_ids, line_dict):
@@ -355,10 +350,10 @@ def process_doc(log, service, file_id, start, end):
     """ Using google changelog, retrieves comments, suggestions, images, and drawings
     associated with that log and sends them to be outputted.  """
     flat_log = log2csv.get_flat_log(log)
-    comment_anchors, image_ids, drawing_ids, suggestions = get_doc_objects(flat_log)
+    image_ids, drawing_ids, suggestions = get_doc_objects(flat_log)
     plain_text = csv2plain.parse_log(flat_log)
 
-    comments = get_comments(comment_anchors, service, file_id)
+    comments = get_comments(service, file_id)
     images = get_images(image_ids, service, file_id)
     drawings = get_drawings(drawing_ids, service, file_id)
     docname = get_title(service, file_id)
