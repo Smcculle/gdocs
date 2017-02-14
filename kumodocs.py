@@ -248,7 +248,7 @@ def get_comments(service, file_id):
 
     contents = service.comments().list(fileId=file_id, includeDeleted=True,
                                        fields=comment_fields).execute()
-
+    contents = contents['items']
     # output templates for comments and replies
     comment_template = '{num}. comment: {content} \nauthor: {author[displayName]}, ' \
                        'status: {status}, created: {createdDate}, modified: {modifiedDate}, ' \
@@ -260,10 +260,10 @@ def get_comments(service, file_id):
     for i, comment in enumerate(contents):
         comment['num'] = i + 1
         comments.append(comment_template.format(**comment))
-        for j, reply in enumerate(contents['replies']):
+        for j, reply in enumerate(comment['replies']):
             reply['num'] = j + 1
             comments.append(reply_template.format(**reply))
-
+        comments.append('\n\n')
     return comments
 
 
@@ -283,12 +283,7 @@ def get_doc_objects(flat_log):
         try:
             i = line.index('{')
             line_dict = json.loads(line[i:])
-            if 'style_type' in line_dict:
-                if line_dict['style_type'] == 'doco_anchor':  # comment anchor
-                    c_id = line_dict['style_mod']['datasheet_anchor']['cv']['opValue']
-                elif 'datasheet_anchor' in line_dict:  # data anchor for comment
-                    c_id = line_dict['datasheet_anchor']['cv']['opValue']
-            elif 'epm' in line_dict and 'ee_eo' in line_dict['epm']:
+            if 'epm' in line_dict and 'ee_eo' in line_dict['epm']:
                 if 'img_cosmoId' in line_dict['epm']['ee_eo']:  # image located
                     image_ids.add(line_dict['epm']['ee_eo']['img_cosmoId'])
                 elif 'd_id' in line_dict['epm']['ee_eo']:  # drawing located
@@ -296,7 +291,7 @@ def get_doc_objects(flat_log):
             elif 'type' in line_dict:
                 if line_dict['type'] == 'iss':  # suggestions located
                     mod_insert_suggestion(line_dict, suggestions)
-                elif line_dict['type'] == 'dss' and 'sug_id' in line_dict:
+                elif line_dict['type'] == 'dss':
                     mod_delete_suggestion(line_dict, suggestions)
 
         except ValueError:
@@ -383,7 +378,7 @@ def write_doc(docname, plain_text, comments, images, drawings, start, end, sugge
 
     filename = base_dir + 'comments.txt'
     with open(filename, 'w') as f:
-        f.write(''.join(comments))
+        f.write('\n'.join(str(line) for line in comments))
 
     filename = base_dir + 'suggestions.txt'
     with open(filename, 'w') as f:

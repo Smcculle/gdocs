@@ -4,11 +4,10 @@ Usage: python log2csv.py <inputfiles>.    May use wildcards for file.
 Ex: python log2csv.py changelogs/*.txt
 """
 
+import glob
+import json
 import sys
 from collections import OrderedDict
-
-import json
-import glob
 
 import misc.mappings as mappings
 
@@ -75,13 +74,17 @@ def flatten_mts(entry, line_copy, line):
         except KeyError:
             mts_action = entry['ty']
 
+        # add action, action dictionary with descriptive keys
         new_line.append(mts_action)
-
-        # action dictionary with descriptive keys
         new_line.append(json.dumps(rename_keys(entry)))
         line_copy.append(new_line)
+
     else:
         for item in entry['mts']:
+            # fix missing sugid in multiset suggestion delete
+            if 'dss' in item['ty']:
+                sugid = (x['sugid'] for x in entry['mts'] if 'sugid' in x).next()
+                item['sugid'] = sugid
             flatten_mts(item, line_copy, line)
 
 
