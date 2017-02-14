@@ -309,22 +309,19 @@ def mod_add_drawing(drawing, drawing_ids, line_dict):
 
 
 def mod_delete_suggestion(line_dict, suggestions):
-    """ Modifies suggestions to delete text from the given suggestion from start to end index"""
+    """ Modifies suggestions to delete text from the given suggestion by adding \x7f in place
+    of a deletion.  """
+
     start_index = line_dict['start_index']
     end_index = line_dict['end_index']
-    try:
-        sug_id = line_dict['sug_id']
-    except KeyError:
-        print "key error in sugid"
-        print line_dict
-        sys.exit(2)
+    sug_id = line_dict['sug_id']
+    num_delete = end_index - start_index + 1
 
-    # remove later#
-    if sug_id not in suggestions:
-        print 'Trying to delete suggestion that does not exist'
-        raise
-    suggestions[sug_id] = csv2plain.delete(suggestions[sug_id],
-                                           start_index, end_index)
+    # replace deletes with ascii control delete char 127 (\x7f)
+    string = chr(127) * num_delete  # one deletion => si==ei
+
+    suggestions[sug_id] = csv2plain.insert(old_string=suggestions.get(sug_id, ''),
+                                           new_string=string, index=start_index)
 
 
 def mod_insert_suggestion(line_dict, suggestions):
@@ -333,12 +330,14 @@ def mod_insert_suggestion(line_dict, suggestions):
     ins_index = line_dict['ins_index']
     string = line_dict['string']
 
-    # check if suggestion exists, create otherwise
-    if sug_id in suggestions:
-        suggestions[sug_id] = csv2plain.insert(suggestions[sug_id],
-                                               string, ins_index)
-    else:
-        suggestions[sug_id] = string
+    # # check if suggestion exists, create otherwise
+    # if sug_id in suggestions:
+    #     suggestions[sug_id] = csv2plain.insert(suggestions[sug_id],
+    #                                            string, ins_index)
+    # else:
+    #     suggestions[sug_id] = string
+    suggestions[sug_id] = csv2plain.insert(old_string=suggestions.get(sug_id, ''),
+                                           new_string=string, index=ins_index)
 
 
 def process_doc(log, service, file_id, start, end):
