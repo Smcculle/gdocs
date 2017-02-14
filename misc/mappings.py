@@ -96,9 +96,9 @@ _MAPPINGS = {
     "sugid": "sug_id",
     "id": "id",
     "null": "null",
-    "msfd": "sug_add",
-    "usfd": "sug_rej",
-    "sas": "sug_acc",
+    "msfd": "sug_add",  # make suggestion field
+    "usfd": "sug_rej",  # undo suggestion field
+    "sas": "sug_adj_style",
     "rvrt": "revert",
     "de": "del_elem",
     "ae": "add_elem",

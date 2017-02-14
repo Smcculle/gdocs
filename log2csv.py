@@ -56,7 +56,7 @@ def ensure_path(filename):
     mappings.ensure_path(path)
 
 
-def flatten_mts(entry, line_copy, line):
+def flatten_mts(entry, line_copy, line, sug_id):
     """ Recursively flatten multiset entry.
 
   Args:
@@ -82,17 +82,16 @@ def flatten_mts(entry, line_copy, line):
     else:
         for item in entry['mts']:
             # fix missing sugid in multiset suggestion delete
-            if 'dss' in item['ty']:
-                sugid = (x['sugid'] for x in entry['mts'] if 'sugid' in x).next()
-                item['sugid'] = sugid
-            flatten_mts(item, line_copy, line)
+            if 'dss' in item['ty'] and 'sugid' not in item:
+                item['sugid'] = sug_id
+            flatten_mts(item, line_copy, line, sug_id)
 
 
 def parse_log(c_log, flat_log):
     """parses changelog part of log"""
 
     flat_log.append('changelog')
-
+    sug_id = None  # suggestion bandaid
     for entry in c_log:
         line = []
         # ignore None in last index, add dictionary in [0] at end
@@ -103,14 +102,16 @@ def parse_log(c_log, flat_log):
         # break up multiset into components
         if 'mts' in entry[0]:
             line_copy = []
-            flatten_mts(entry[0], line_copy, line)
+            flatten_mts(entry[0], line_copy, line, sug_id)
             for item in line_copy:
                 flat_log.append(DELIMITER.join(str(col) for col in item))
         else:
             action_type = mappings.remap(entry[0]['ty'])
+            if action_type == 'msfd':
+                sug_id = entry[0]['sugid']
             line.append(action_type)
             line.append(json.dumps(rename_keys(entry[0])))
-            flat_log.append(DELIMITER.join(str(entry) for entry in line))
+            flat_log.append(DELIMITER.join(str(item) for item in line))
 
 
 def parse_snapshot(snapshot, flat_log):

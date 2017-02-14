@@ -216,29 +216,6 @@ def get_images(image_ids, service, file_id):
     return images
 
 
-def get_comments_old(comment_anchors, service, file_id):
-    """ Gets comments and replies to those comments.  Deleted comments show up as blank"""
-    url = ''.join(('https://www.googleapis.com/drive/v2/files/',
-                   file_id,
-                   r'/comments?includeDeleted=true'
-                   r'&fields=items(anchor%2Ccontent%2Creplies%2Fcontent)'))
-    response, content = service._http.request(url)
-    content = json.loads(content)
-    comment_anchors = set(comment_anchors)
-
-    comments = []
-    for item in content['items']:
-        if item['anchor'] in comment_anchors:
-            comment = 'Comment: %s\n' % item['content']
-            comments.append(comment)
-            if item['replies']:
-                for reply in item['replies']:
-                    reply = '\t%s\n' % reply['content']
-                    comments.append(reply)
-
-    return comments
-
-
 def get_comments(service, file_id):
     """ Gets comments and replies to those comments, and metadata for deleted comments """
 
@@ -246,15 +223,16 @@ def get_comments(service, file_id):
     comment_fields = 'items(status, author, content, createdDate, modifiedDate, deleted, ' \
                      'replies({}))'.format(reply_fields)
 
-    contents = service.comments().list(fileId=file_id, includeDeleted=True,
-                                       fields=comment_fields).execute()
-    contents = contents['items']
     # output templates for comments and replies
     comment_template = '{num}. comment: {content} \nauthor: {author[displayName]}, ' \
                        'status: {status}, created: {createdDate}, modified: {modifiedDate}, ' \
                        'deleted: {deleted} \nreplies:'
     reply_template = '\n\t({num}) reply: {content} \n\tauthor: {author[displayName]}, ' \
                      'created: {createdDate}, modified: {modifiedDate}, deleted: {deleted}'
+
+    contents = service.comments().list(fileId=file_id, includeDeleted=True,
+                                       fields=comment_fields).execute()
+    contents = contents['items']
 
     comments = []
     for i, comment in enumerate(contents):
