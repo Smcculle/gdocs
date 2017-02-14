@@ -381,7 +381,7 @@ def write_doc(docname, plain_text, comments, images, drawings, start, end, sugge
 
     filename = base_dir + 'suggestions.txt'
     with open(filename, 'w') as f:
-        f.write(json.dumps(suggestions))
+        f.write(json.dumps(suggestions, ensure_ascii=False))
 
     print 'Finished with output in directory', base_dir
 
