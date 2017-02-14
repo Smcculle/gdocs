@@ -21,6 +21,7 @@ from oauth2client.tools import run_flow, _CLIENT_SECRETS_MESSAGE, argparser as o
 
 import csv2plain
 import log2csv
+import misc.gdoc_utils as gdoc_utils
 import slide2plain
 
 # TODO:  video slide inserts
@@ -44,6 +45,43 @@ def list_files(service, drive_type):
 
 
 def choose_file(service, drive_type):
+    files = [{'title': file_.get('title'),
+              'id': file_.get('id')} for file_ in list_files(service, drive_type)]
+
+    with gdoc_utils.temp_directory() as temp_dir:
+        _create_temp_files(temp_dir, files)
+        options = {'title': 'Choose a G Suite document', 'initialdir': temp_dir}
+        choice = gdoc_utils.choose_file_dialog(**options)
+        try:
+            file_id = choice.read()
+        except AttributeError:
+            print 'No file chosen. Exiting.'
+            sys.exit(1)
+        except IOError:
+            print 'Error reading file. Exiting'
+            sys.exit(2)
+        else:
+            choice.close()
+            title = gdoc_utils.strip_path_extension(choice.name)
+            print 'Chose file named {}'.format(title)
+
+    revisions = service.revisions().list(fileId=file_id).execute()
+    max_rev = revisions['items'][-1]['id']
+
+    return str(file_id), max_rev
+
+
+def _create_temp_files(temp_dir, files):
+    """ Creates a directory of empty temporary files for virtualization of drive contents """
+    for file_ in files:
+        # replace reserved characters in title to assure valid filename
+        filename = gdoc_utils.strip_invalid_characters(file_['title'])
+        filename = os.path.join(temp_dir, filename) + '.gdoc'
+        with open(filename, 'w') as f:
+            f.write(file_['id'])
+
+
+def choose_file_old(service, drive_type):
     files = list_files(service, drive_type)
     print '\nChoose a file from the list below'
     for i, file_ in enumerate(files):
@@ -178,7 +216,7 @@ def get_images(image_ids, service, file_id):
     return images
 
 
-def get_comments(comment_anchors, service, file_id):
+def get_comments_old(comment_anchors, service, file_id):
     """ Gets comments and replies to those comments.  Deleted comments show up as blank"""
     url = ''.join(('https://www.googleapis.com/drive/v2/files/',
                    file_id,
@@ -197,6 +235,34 @@ def get_comments(comment_anchors, service, file_id):
                 for reply in item['replies']:
                     reply = '\t%s\n' % reply['content']
                     comments.append(reply)
+
+    return comments
+
+
+def get_comments(service, file_id):
+    """ Gets comments and replies to those comments, and metadata for deleted comments """
+
+    reply_fields = 'author, content, createdDate, modifiedDate, deleted'
+    comment_fields = 'items(status, author, content, createdDate, modifiedDate, deleted, ' \
+                     'replies({}))'.format(reply_fields)
+
+    contents = service.comments().list(fileId=file_id, includeDeleted=True,
+                                       fields=comment_fields).execute()
+
+    # output templates for comments and replies
+    comment_template = '{num}. comment: {content} \nauthor: {author[displayName]}, ' \
+                       'status: {status}, created: {createdDate}, modified: {modifiedDate}, ' \
+                       'deleted: {deleted} \nreplies:'
+    reply_template = '\n\t({num}) reply: {content} \n\tauthor: {author[displayName]}, ' \
+                     'created: {createdDate}, modified: {modifiedDate}, deleted: {deleted}'
+
+    comments = []
+    for i, comment in enumerate(contents):
+        comment['num'] = i + 1
+        comments.append(comment_template.format(**comment))
+        for j, reply in enumerate(contents['replies']):
+            reply['num'] = j + 1
+            comments.append(reply_template.format(**reply))
 
     return comments
 
