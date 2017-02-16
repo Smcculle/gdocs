@@ -11,7 +11,9 @@ from contextlib import contextmanager
 
 def strip_invalid_characters(filename):
     """ Very conservative stripping of extraneous characters in filename """
-    return re.sub('[^\w\-_. ]', '_', filename)
+    filename = re.sub('[^\w\-_. ]', '_', filename)
+    filename = re.sub('__+', '_', filename)
+    return filename
 
 
 def strip_path_extension(path):
