@@ -1,6 +1,4 @@
 # := unknown abbreviations
-import errno
-import os
 
 _MAPPINGS = {
     "ty": "type",
@@ -22,7 +20,7 @@ _MAPPINGS = {
     "mts": "multiset",
     "tbs_al": "table_aln",  #
     "tbs_of": "table_off",  #
-    "das_a": "datasheet_anchor",
+    "das_a": "ds_anchor",
     "ps_ltr": "ps_ltr",  #
     "hs_nt": "heading_style_normal_text",
     "ds_pw": "page_width",
@@ -148,12 +146,3 @@ list insertion associated with epm: le_nb
 def remap(old_key):
     """ Remaps given key if present in mapping dictionary, or returns old_key otherwise """
     return _MAPPINGS.get(old_key, old_key)
-
-
-def ensure_path(path):
-    """ Attempts to make a directory and raises exception if there is an issue"""
-    try:
-        os.makedirs(path)
-    except OSError as exception:
-        if exception.errno != errno.EEXIST:  # ignore already exists error, raise otherwise
-            raise
