@@ -9,14 +9,14 @@ import json
 import sys
 from collections import OrderedDict
 
-import misc.mappings as mappings
+from misc import gdoc_utils, mappings
 
 CHUNKED_ORDER = ['si', 'ei', 'st']
 DELIMITER = '|'
 
 
 def rename_keys(log_dict):
-    """rename minified variables using mappings in mappings.py. preserves order"""
+    """rename minified variables using mappings in `mappings.py`. preserves order"""
     log_dict = OrderedDict(log_dict)
     for key in log_dict.keys():
         try:
@@ -53,7 +53,7 @@ def to_file(flat_log, filename):
 
 def ensure_path(filename):
     path = filename[:filename.rfind('/')]
-    mappings.ensure_path(path)
+    gdoc_utils.ensure_path(path)
 
 
 def flatten_mts(entry, line_copy, line, sug_id):
