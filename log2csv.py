@@ -56,7 +56,7 @@ def ensure_path(filename):
     gdoc_utils.ensure_path(path)
 
 
-def flatten_mts(entry, line_copy, line, sug_id):
+def flatten_mts(entry, line_copy, line):
     """ Recursively flatten multiset entry.
 
   Args:
@@ -68,49 +68,37 @@ def flatten_mts(entry, line_copy, line, sug_id):
   """
     if 'mts' not in entry:
         new_line = list(line)
+        mts_action = mappings.remap(entry['ty'])
 
-        try:
-            mts_action = mappings.remap(entry['ty'])
-        except KeyError:
-            mts_action = entry['ty']
-
-        # add action, action dictionary with descriptive keys
+        # add action & action dictionary with descriptive keys
         new_line.append(mts_action)
         new_line.append(json.dumps(rename_keys(entry)))
         line_copy.append(new_line)
 
     else:
         for item in entry['mts']:
-            # fix missing sugid in multiset suggestion delete
-            if 'dss' in item['ty'] and 'sugid' not in item:
-                item['sugid'] = sug_id
-            flatten_mts(item, line_copy, line, sug_id)
+            flatten_mts(item, line_copy, line)
 
 
 def parse_log(c_log, flat_log):
     """parses changelog part of log"""
 
     flat_log.append('changelog')
-    sug_id = None  # suggestion bandaid
     for entry in c_log:
-        line = []
-        # ignore None in last index, add dictionary in [0] at end
-        # for i in range(1, len(entry) - 1):
-        for item in entry[1:-1]:
-            line.append(item)
+        action_dict = entry[0]
+        ts_id_info = entry[1:-1]
+        line = ts_id_info
 
         # break up multiset into components
-        if 'mts' in entry[0]:
+        if 'mts' in action_dict:
             line_copy = []
-            flatten_mts(entry[0], line_copy, line, sug_id)
+            flatten_mts(action_dict, line_copy, line)
             for item in line_copy:
                 flat_log.append(DELIMITER.join(str(col) for col in item))
         else:
-            action_type = mappings.remap(entry[0]['ty'])
-            if action_type == 'msfd':
-                sug_id = entry[0]['sugid']
+            action_type = mappings.remap(action_dict['ty'])
             line.append(action_type)
-            line.append(json.dumps(rename_keys(entry[0])))
+            line.append(json.dumps(rename_keys(action_dict)))
             flat_log.append(DELIMITER.join(str(item) for item in line))
 
 
@@ -142,16 +130,11 @@ def get_snapshot_line(snapshot_entry):
     line = []
     for key in CHUNKED_ORDER:
         line.append(snapshot_entry[key])
-    try:
-        action_type = mappings.remap(snapshot_entry['ty'])
-        style_mod = json.dumps(rename_keys(snapshot_entry['sm']))
 
-    except KeyError:
-        # logging.warning('KeyError, %s missing', key)
-        pass
-    else:
-        line.append(action_type)
-        line.append(style_mod)
+    action_type = mappings.remap(snapshot_entry['ty'])
+    style_mod = json.dumps(rename_keys(snapshot_entry['sm']))
+    line.append(action_type)
+    line.append(style_mod)
 
     return line
 
