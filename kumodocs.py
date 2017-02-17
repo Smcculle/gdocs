@@ -34,6 +34,9 @@ DRIVE_TYPE = {0: 'document', 1: 'presentation'}
 TITLE_PATH = 'https://www.googleapis.com/drive/v2/files/{file_id}?fields=title'
 DRIVE = ''
 
+Suggestion = namedtuple('Suggestion', 'start, end, sug_id, content deleted')
+Drawing = namedtuple('Drawing', 'd_id width height')
+
 
 def list_files(service, drive_type):
     """ Lists files from the appropriate drive account"""
@@ -245,7 +248,7 @@ def get_comments(service, file_id):
     return comments
 
 
-def get_doc_objects(flat_log):
+def get_doc_objects_old(flat_log):
     """
     Discovers objects from flat_log in a single pass.
     :param flat_log: preprocessed version of google changelog
@@ -254,7 +257,6 @@ def get_doc_objects(flat_log):
     # TODO break into one section for each object type and parallelize
     image_ids = set()
     drawing_ids = []
-    drawing = namedtuple('drawing', 'd_id width height')
     suggestions = {}
 
     for line in flat_log:
@@ -265,11 +267,13 @@ def get_doc_objects(flat_log):
                 if 'img_cosmoId' in line_dict['epm']['ee_eo']:  # image located
                     image_ids.add(line_dict['epm']['ee_eo']['img_cosmoId'])
                 elif 'd_id' in line_dict['epm']['ee_eo']:  # drawing located
-                    mod_add_drawing(drawing, drawing_ids, line_dict)
+                    # mod_add_drawing(drawing, drawing_ids, line_dict)
+                    pass
             elif 'type' in line_dict:
                 if line_dict['type'] == 'iss':  # suggestions located
                     mod_insert_suggestion(line_dict, suggestions)
-                elif line_dict['type'] == 'dss':
+                    # TODO remove dss bandaid
+                elif line_dict['type'] == 'dss' and 'sug_id' in line_dict:
                     mod_delete_suggestion(line_dict, suggestions)
 
         except ValueError:
@@ -278,44 +282,98 @@ def get_doc_objects(flat_log):
     return image_ids, drawing_ids, suggestions
 
 
-def mod_add_drawing(drawing, drawing_ids, line_dict):
-    """ Modifies drawing_ids to add a drawing namedtuple containing id, width, and height """
+def get_doc_objects(flat_log):
+    """
+    Discovers objects from flat_log in a single pass.
+    :param flat_log: preprocessed version of google changelog
+    :return: list of comment_anchors, image_ids, drawing_ids, and a suggestions dictionary
+    """
+    # TODO break into one section for each object type and parallelize
+    image_ids = set()
+    drawing_ids = []
+    suggestions = {}
+
+    for line in flat_log:
+        try:
+            i = line.index('{')
+            line_dict = json.loads(line[i:])
+            if 'epm' in line_dict and 'ee_eo' in line_dict['epm']:
+                if 'img_cosmoId' in line_dict['epm']['ee_eo']:  # image located
+                    image_ids.add(line_dict['epm']['ee_eo']['img_cosmoId'])
+                elif 'd_id' in line_dict['epm']['ee_eo']:  # drawing located
+                    drawing_ids.append(new_drawing(line_dict))
+            elif 'type' in line_dict:
+                if line_dict['type'] == 'iss':  # suggestions located
+                    sug_id = line_dict['sug_id']
+                    if sug_id in suggestions:
+                        suggestions[sug_id] = ins_sugg_text(line_dict, suggestions[sug_id])
+                    else:
+                        suggestions[sug_id] = new_suggestion(line_dict)
+                elif line_dict['type'] == 'dss':
+                    suggestion = find_sugg_by_index(line_dict, suggestions)
+                    if suggestion:
+                        suggestions[suggestion.sug_id] = rm_sugg_text(line_dict, suggestion)
+
+        except ValueError:
+            pass  # either chunked or changelog header without dict, no action needed
+
+    return image_ids, drawing_ids, suggestions
+
+
+def new_drawing(line_dict):
+    """ Returns a new Drawing namedtuple containing id, width, and height """
     d_id = line_dict['epm']['ee_eo']['d_id']
     img_wth = line_dict['epm']['ee_eo']['img_wth']
     img_ht = line_dict['epm']['ee_eo']['img_ht']
-    drawing_ids.append(drawing(d_id, int(img_wth), int(img_ht)))
+    return Drawing(d_id, int(img_wth), int(img_ht))
 
 
-def mod_delete_suggestion(line_dict, suggestions):
-    """ Modifies suggestions to delete text from the given suggestion by adding \x7f in place
-    of a deletion.  """
-
-    start_index = line_dict['start_index']
-    end_index = line_dict['end_index']
+def new_suggestion(line_dict):
+    """ Returns a new Suggestion with sug_id, content, start index, end index, deleted chars"""
     sug_id = line_dict['sug_id']
-    num_delete = end_index - start_index + 1
-
-    # replace deletes with ascii control delete char 127 (\x7f)
-    string = chr(127) * num_delete  # one deletion => si==ei
-
-    suggestions[sug_id] = csv2plain.insert(old_string=suggestions.get(sug_id, ''),
-                                           new_string=string, index=start_index)
+    content = line_dict['string']
+    start = line_dict['ins_index']
+    end = start + len(content) - 1
+    return Suggestion(sug_id=sug_id, content=content, start=start, end=end, deleted=[])
 
 
-def mod_insert_suggestion(line_dict, suggestions):
-    """ Modifies suggestions to add text to a given suggestion at index"""
-    sug_id = line_dict['sug_id']
-    ins_index = line_dict['ins_index']
-    string = line_dict['string']
+def ins_sugg_text(line_dict, old_sugg):
+    """ Returns new Suggestion with text inserted at the appropriate index """
+    relative_index = line_dict['ins_index'] - old_sugg.start + 1  # index start @1 in log
+    new_text = csv2plain.insert(old_string=old_sugg.content, new_string=line_dict['string'],
+                                index=relative_index)
+    return Suggestion(sug_id=old_sugg.sug_id, content=new_text, start=old_sugg.start,
+                      end=old_sugg.end + len(line_dict['string']), deleted=old_sugg.deleted)
 
-    # # check if suggestion exists, create otherwise
-    # if sug_id in suggestions:
-    #     suggestions[sug_id] = csv2plain.insert(suggestions[sug_id],
-    #                                            string, ins_index)
-    # else:
-    #     suggestions[sug_id] = string
-    suggestions[sug_id] = csv2plain.insert(old_string=suggestions.get(sug_id, ''),
-                                           new_string=string, index=ins_index)
+
+def rm_sugg_text(line_dict, suggestion):
+    """ Returns new Suggestion with all deleted_chr appended to delete and removed from content """
+    # normalize indices
+    rm_start = line_dict['start_index'] - suggestion.start
+    rm_end = line_dict['end_index'] - suggestion.start + 1
+
+    deleted_chr = suggestion.content[rm_start:rm_end]
+    new_content = suggestion.content[:rm_start] + suggestion.content[rm_end:]
+    new_end = suggestion.end - len(deleted_chr)
+    suggestion.deleted.append(deleted_chr)
+
+    return Suggestion(sug_id=suggestion.sug_id, start=suggestion.start, end=new_end,
+                      content=new_content, deleted=suggestion.deleted)
+
+
+def find_sugg_by_index(line_dict, suggestions):
+    """ Searches for Suggestion that contains start_index in its [start,end] range """
+    suggestion = [s for s in suggestions.values() if s.start <= line_dict['start_index'] <= s.end]
+    if len(suggestion) == 1:
+        return suggestion[0]
+    elif len(suggestion) > 1:
+        print('too many suggestions')
+        return suggestion[0]
+    else:
+        print('could not find suggestion')
+        print('line dict=', line_dict)
+        print('suggestions=', suggestions)
+        return None
 
 
 def process_doc(log, service, file_id, start, end):
