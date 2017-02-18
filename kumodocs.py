@@ -24,8 +24,6 @@ import log2csv
 import misc.gdoc_utils as gdoc_utils
 import slide2plain
 
-# TODO:  video slide inserts
-
 DRAW_PATH = 'https://docs.google.com/drawings/d/{d_id}/image?w={w}&h={h}'
 REV_URL = 'https://docs.google.com/{drive}/d/{file_id}/revisions/load?id={file_id}' \
           '&start={start}&end={end}'
@@ -133,7 +131,7 @@ def start_service():
     client_secrets = config.get('gdrive', 'configurationfile')
 
     missing_client_secrets_message = _CLIENT_SECRETS_MESSAGE % os.path.join(
-        os.path.dirname(__file__), client_secrets)
+        os.path.dirname(os.path.realpath(__file__)), client_secrets)
 
     flow = flow_from_clientsecrets(client_secrets,
                                    scope='https://www.googleapis.com/auth/drive',
