@@ -22,6 +22,15 @@ def strip_path_extension(path):
     return os.path.splitext(basename)[0]
 
 
+def get_download_ext(html_response):
+    """Returns extension for downloaded resource"""
+    cdisp = html_response['content-disposition']
+    start_index = cdisp.index('.')
+    end_index = cdisp.index('"', start_index)
+    extension = cdisp[start_index:end_index]
+    return extension
+
+
 def choose_file_dialog(**options):
     """ Creates an open file dialog to choose a file, and returns a handle to that file """
     root = Tk.Tk()

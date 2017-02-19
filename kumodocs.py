@@ -36,18 +36,22 @@ Suggestion = namedtuple('Suggestion', 'start, end, sug_id, content deleted')
 Drawing = namedtuple('Drawing', 'd_id width height')
 
 
+# TODO:  video slide inserts, refactor into generic kumodocs with gdocs driver
+# TODO: add suggestion class to gdocs driver with associated functionality
+# TODO: create abstract base class to inherit driver modules from
+
+
 def list_files(service, drive_type):
     """ Lists files from the appropriate drive account"""
 
     search_param = {'document': "mimeType = 'application/vnd.google-apps.document'",
                     'presentation': "mimeType = 'application/vnd.google-apps.presentation'"}
-    files = service.files().list(q=search_param[drive_type]).execute()
+    files = service.files().list(q=search_param[drive_type], fields='items(title, id)').execute()
     return files['items']
 
 
 def choose_file(service, drive_type):
-    files = [{'title': file_.get('title'),
-              'id': file_.get('id')} for file_ in list_files(service, drive_type)]
+    files = list_files(service, drive_type)
 
     with gdoc_utils.temp_directory() as temp_dir:
         _create_temp_files(temp_dir, files)
@@ -64,9 +68,9 @@ def choose_file(service, drive_type):
         else:
             choice.close()
             title = gdoc_utils.strip_path_extension(choice.name)
-            print 'Chose file named {}'.format(title)
+            print 'Chose file: {}'.format(title)
 
-    revisions = service.revisions().list(fileId=file_id).execute()
+    revisions = service.revisions().list(fileId=file_id, fields='items(id)').execute()
     max_rev = revisions['items'][-1]['id']
 
     return str(file_id), max_rev
@@ -80,28 +84,6 @@ def _create_temp_files(temp_dir, files):
         filename = os.path.join(temp_dir, filename) + '.gdoc'
         with open(filename, 'w') as f:
             f.write(file_['id'])
-
-
-def choose_file_old(service, drive_type):
-    files = list_files(service, drive_type)
-    print '\nChoose a file from the list below'
-    for i, file_ in enumerate(files):
-        print '{}: \t{}'.format(i, file_['title'])
-
-    choice, file_id = None, None
-    while choice is None:
-        try:
-            choice = int(raw_input('\nChoose a file:  '))
-            file_id = files[choice]['id']
-        except KeyError:
-            print('invalid choice')
-            choice = None
-
-    print 'Chose file {}'.format(files[choice]['title'])
-
-    revisions = service.revisions().list(fileId=file_id).execute()
-    max_rev = revisions['items'][-1]['id']
-    return str(file_id), max_rev
 
 
 def create_url(file_id, start, end):
@@ -155,7 +137,7 @@ def get_drawings(drawing_ids, service, file_id):
         # url = DRAW_PATH.format(d_id=drawing_id[0], w=drawing_id[1], h=drawing_id[2])
         url = DRAW_PATH.format(d_id=drawing_id.d_id, w=drawing_id.width, h=drawing_id.height)
         response, content = service._http.request(url)
-        extension = get_extension(response)
+        extension = gdoc_utils.get_download_ext(response)
         drawings.append((content, extension))
 
     return drawings
@@ -194,16 +176,6 @@ def get_image_links(image_ids, service, file_id):
         print 'Unable to retrieve image resources'
 
 
-def get_extension(html_response):
-    """Returns extension for downloaded resource"""
-
-    cdisp = html_response['content-disposition']
-    start_index = cdisp.index('.')
-    end_index = cdisp.index('"', start_index)
-    extension = cdisp[start_index:end_index]
-    return extension
-
-
 def get_images(image_ids, service, file_id):
     """ Gets a list of links and resolves each one, returning a list of tuples containing
     (image, extension, img_id) for each image resource"""
@@ -211,7 +183,7 @@ def get_images(image_ids, service, file_id):
     links = get_image_links(image_ids, service, file_id)
     for url, img_id in links.itervalues():
         response, content = service._http.request(url)
-        extension = get_extension(response)
+        extension = gdoc_utils.get_download_ext(response)
         images.append((content, extension, img_id))
 
     return images
@@ -246,40 +218,6 @@ def get_comments(service, file_id):
     return comments
 
 
-def get_doc_objects_old(flat_log):
-    """
-    Discovers objects from flat_log in a single pass.
-    :param flat_log: preprocessed version of google changelog
-    :return: list of comment_anchors, image_ids, drawing_ids, and a suggestions dictionary
-    """
-    # TODO break into one section for each object type and parallelize
-    image_ids = set()
-    drawing_ids = []
-    suggestions = {}
-
-    for line in flat_log:
-        try:
-            i = line.index('{')
-            line_dict = json.loads(line[i:])
-            if 'epm' in line_dict and 'ee_eo' in line_dict['epm']:
-                if 'img_cosmoId' in line_dict['epm']['ee_eo']:  # image located
-                    image_ids.add(line_dict['epm']['ee_eo']['img_cosmoId'])
-                elif 'd_id' in line_dict['epm']['ee_eo']:  # drawing located
-                    # mod_add_drawing(drawing, drawing_ids, line_dict)
-                    pass
-            elif 'type' in line_dict:
-                if line_dict['type'] == 'iss':  # suggestions located
-                    mod_insert_suggestion(line_dict, suggestions)
-                    # TODO remove dss bandaid
-                elif line_dict['type'] == 'dss' and 'sug_id' in line_dict:
-                    mod_delete_suggestion(line_dict, suggestions)
-
-        except ValueError:
-            pass  # either chunked or changelog header without dict, no action needed
-
-    return image_ids, drawing_ids, suggestions
-
-
 def get_doc_objects(flat_log):
     """
     Discovers objects from flat_log in a single pass.
@@ -295,30 +233,59 @@ def get_doc_objects(flat_log):
         try:
             i = line.index('{')
             line_dict = json.loads(line[i:])
-            if 'epm' in line_dict and 'ee_eo' in line_dict['epm']:
-                if 'img_cosmoId' in line_dict['epm']['ee_eo']:  # image located
-                    image_ids.add(line_dict['epm']['ee_eo']['img_cosmoId'])
-                elif 'd_id' in line_dict['epm']['ee_eo']:  # drawing located
-                    drawing_ids.append(new_drawing(line_dict))
+        except ValueError:
+            pass  # either chunked or changelog header without dict, no action needed
+        else:
+            if has_element(line_dict):
+                elem_dict = line_dict['epm']['ee_eo']
+                if has_img(elem_dict):
+                    image_ids.add(elem_dict['img_cosmoId'])
+                elif has_drawing(elem_dict, drawing_ids):
+                    drawing_ids.append(new_drawing(elem_dict))
             elif 'type' in line_dict:
-                if line_dict['type'] == 'iss':  # suggestions located
+                if is_insert_suggestion(line_dict):
                     sug_id = line_dict['sug_id']
                     if sug_id in suggestions:
                         suggestions[sug_id] = ins_sugg_text(line_dict, suggestions[sug_id])
                     else:
                         suggestions[sug_id] = new_suggestion(line_dict)
-                elif line_dict['type'] == 'dss':
+                elif is_delete_suggestion(line_dict):
                     suggestion = find_sugg_by_index(line_dict, suggestions)
                     if suggestion:
                         suggestions[suggestion.sug_id] = rm_sugg_text(line_dict, suggestion)
 
-        except ValueError:
-            pass  # either chunked or changelog header without dict, no action needed
-
     return image_ids, drawing_ids, suggestions
 
 
-def new_drawing(line_dict):
+def is_insert_suggestion(line_dict):
+    return line_dict['type'] == 'iss'
+
+
+def is_delete_suggestion(line_dict):
+    return line_dict['type'] == 'dss'
+
+
+def has_drawing(elem_dict, drawing_ids):
+    """ True if elem_dict has drawing not contained in drawing_ids already """
+    return 'd_id' in elem_dict and not any(d for d in drawing_ids if d.d_id == elem_dict['d_id'])
+
+
+def has_element(line_dict):
+    return 'epm' in line_dict and 'ee_eo' in line_dict['epm']
+
+
+def has_img(elem_dict):
+    return 'img_cosmoId' in elem_dict
+
+
+def new_drawing(elem_dict):
+    """ Returns a new Drawing namedtuple containing id, width, and height """
+    drawing_keys = ('d_id', 'img_wth', 'img_ht')
+    d_id, img_wth, img_ht = (elem_dict[key] for key in drawing_keys)
+    return Drawing(d_id, int(img_wth), int(img_ht))
+
+
+def new_drawing_old(line_dict):
     """ Returns a new Drawing namedtuple containing id, width, and height """
     d_id = line_dict['epm']['ee_eo']['d_id']
     img_wth = line_dict['epm']['ee_eo']['img_wth']
@@ -328,9 +295,7 @@ def new_drawing(line_dict):
 
 def new_suggestion(line_dict):
     """ Returns a new Suggestion with sug_id, content, start index, end index, deleted chars"""
-    sug_id = line_dict['sug_id']
-    content = line_dict['string']
-    start = line_dict['ins_index']
+    sug_id, content, start = line_dict['sug_id'], line_dict['string'], line_dict['ins_index']
     end = start + len(content) - 1
     return Suggestion(sug_id=sug_id, content=content, start=start, end=end, deleted=[])
 
