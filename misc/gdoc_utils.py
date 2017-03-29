@@ -34,12 +34,12 @@ def get_download_ext(html_response):
 def choose_file_dialog(**options):
     """ Creates an open file dialog to choose files, and returns a handle to those file """
     root = Tk.Tk()
-    root.geometry('200x200+0+0')
+    root.geometry('0x0+400+400')
     root.wait_visibility()
     root.wm_attributes('-alpha', 0.0)
     root.lift()
     root.focus_force()
-    chosen_files = tkFileDialog.askopenfilenames(**options)
+    chosen_files = tkFileDialog.askopenfile(**options)
     root.destroy()
     return chosen_files
 
