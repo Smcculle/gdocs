@@ -11,13 +11,16 @@ import json
 import os
 import sys
 import urllib
+from collections import defaultdict
 from collections import namedtuple
 
 import httplib2
 from googleapiclient.discovery import build
+from googleapiclient import errors
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import run_flow, _CLIENT_SECRETS_MESSAGE, argparser as oargparser
+
 
 import csv2plain
 import log2csv
@@ -28,34 +31,69 @@ DRAW_PATH = 'https://docs.google.com/drawings/d/{d_id}/image?w={w}&h={h}'
 REV_URL = 'https://docs.google.com/{drive}/d/{file_id}/revisions/load?id={file_id}' \
           '&start={start}&end={end}'
 RENDER_URL = 'https://docs.google.com/{drive}/d/{file_id}/renderdata?id={file_id}'
-DRIVE_TYPE = {0: 'document', 1: 'presentation'}
+# DRIVE_TYPE = {0: 'document', 1: 'presentation'}
 TITLE_PATH = 'https://www.googleapis.com/drive/v2/files/{file_id}?fields=title'
-DRIVE = ''
-
+MIME_TYPE = "mimeType = 'application/vnd.google-apps.{}'"
+SERVICES = ['document', 'drawing', 'form', 'presentation', 'spreadsheet']
 Suggestion = namedtuple('Suggestion', 'start, end, sug_id, content deleted')
 Drawing = namedtuple('Drawing', 'd_id width height')
 
+'https://docs.google.com/drawings/d/1D5U_nYaUrXY-kuw246hECQSc-wE0kCL2A6Xao1YVY9U/'
+'https://docs.google.com/spreadsheets/d/1zzz4ZE6tIBvood5XAKgtXsg_lBFBdqoQvoZwPHLU1v8/'
+'https://docs.google.com/forms/d/1NRiR4gTFL1C-opeczrshrD_o_Qv1tfBPgYDft8OQZQk/'
 
 # TODO:  video slide inserts, refactor into generic kumodocs with gdocs driver
 # TODO: add suggestion class to gdocs driver with associated functionality
 # TODO: create abstract base class to inherit driver modules from
-
+# TODO ** namedtuple for file to replace file_id containing file_id, drive type  mod strip path ext to return path, titl
+# TODO *** solve forms auth issue, sheets revision=1
 
 def list_files(service, drive_type):
     """ Lists files from the appropriate drive account"""
 
-    search_param = {'document': "mimeType = 'application/vnd.google-apps.document'",
-                    'presentation': "mimeType = 'application/vnd.google-apps.presentation'"}
-    files = service.files().list(q=search_param[drive_type], fields='items(title, id)').execute()
+    # search_param = {'document': "mimeType = 'application/vnd.google-apps.document'",
+    #                 'presentation': "mimeType = 'application/vnd.google-apps.presentation'"}
+
+    files = service.files().list(q=MIME_TYPE.format(drive_type), fields='items(title, id)').execute()
     return files['items']
 
 
+def list_all_files(service):
+    """Retrieve a list of File resources.
+
+     Args:
+       service: Drive API service instance.
+     Returns:
+       List of File resources.
+     """
+
+    result = defaultdict(list)
+    page_token = None
+    for drive_type in SERVICES:
+        while True:
+            try:
+                param = {'q': MIME_TYPE.format(drive_type),
+                         'fields': 'items(title, id)'}
+                if page_token:
+                    param['pageToken'] = page_token
+                files = service.files().list(**param).execute()
+
+                result[drive_type].extend(files['items'])
+                page_token = files.get('nextPageToken')
+                if not page_token:
+                    break
+            except errors.HttpError, error:
+                print 'An error occurred: %s' % error
+                break
+    return result
+
+
 def choose_file(service, drive_type):
-    files = list_files(service, drive_type)
+    files = list_all_files(service)
 
     with gdoc_utils.temp_directory() as temp_dir:
         _create_temp_files(temp_dir, files)
-        options = {'title': 'Choose a G Suite document', 'initialdir': temp_dir}
+        options = {'title': 'Choose a G Suite file', 'initialdir': temp_dir}
         choice = gdoc_utils.choose_file_dialog(**options)
         try:
             file_id = choice.read()
@@ -67,29 +105,33 @@ def choose_file(service, drive_type):
             sys.exit(2)
         else:
             choice.close()
-            title = gdoc_utils.strip_path_extension(choice.name)
-            print 'Chose file: {}'.format(title)
+            title = choice.name
+            print 'Chose file: {}'.format(gdoc_utils.strip_path_extension(title))
 
     revisions = service.revisions().list(fileId=file_id, fields='items(id)').execute()
     max_rev = revisions['items'][-1]['id']
 
-    return str(file_id), max_rev
+    return str(file_id), title, max_rev
 
 
 def _create_temp_files(temp_dir, files):
     """ Creates a directory of empty temporary files for virtualization of drive contents """
-    for file_ in files:
-        # replace reserved characters in title to assure valid filename
-        filename = gdoc_utils.strip_invalid_characters(file_['title'])
-        filename = os.path.join(temp_dir, filename) + '.gdoc'
-        with open(filename, 'w') as f:
-            f.write(file_['id'])
+
+    for drive_type, drive_files in files.items():
+        folder_path = os.path.join(temp_dir, drive_type + '/')
+        os.mkdir(folder_path)
+        for file_ in drive_files:
+            # replace reserved characters in title to assure valid filename
+            filename = gdoc_utils.strip_invalid_characters(file_['title'])
+            filename = '{}.{}'.format(os.path.join(temp_dir, folder_path, filename), drive_type)
+            with open(filename, 'w') as f:
+                f.write(file_['id'])
 
 
-def create_url(file_id, start, end):
+def create_url(file_id, drive, start, end):
     """Constructs URL to retrieve the changelog using google file ID, start/end revision number"""
 
-    return REV_URL.format(file_id=file_id, start=start, end=end, drive=DRIVE)
+    return REV_URL.format(file_id=file_id, start=start, end=end, drive=drive)
 
 
 def get_title(service, file_id):
@@ -143,7 +185,7 @@ def get_drawings(drawing_ids, service, file_id):
     return drawings
 
 
-def get_render_request(image_ids, file_id):
+def get_render_request(image_ids, file_id, drive):
     """ Returns url request to retrieve images with image_ids contained in file with file_id"""
     image_ids = set(image_ids)
     data = {}
@@ -154,15 +196,15 @@ def get_render_request(image_ids, file_id):
     request_body = urllib.urlencode({'renderOps': data}).replace('+', '')
     my_headers = {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'}
 
-    render_url = RENDER_URL.format(drive=DRIVE, file_id=file_id)
+    render_url = RENDER_URL.format(drive=drive, file_id=file_id)
 
     return render_url, request_body, my_headers
 
 
-def get_image_links(image_ids, service, file_id):
+def get_image_links(image_ids, service, file_id, drive):
     """ Sends url request to google API which returns a link for each image resource, returns
     dictionary of tuples containing those links along with each image_id associated with link"""
-    render_url, request_body, my_headers = get_render_request(image_ids, file_id)
+    render_url, request_body, my_headers = get_render_request(image_ids, file_id, drive)
     try:
         response, content = service._http.request(render_url, method='POST',
                                                   body=request_body, headers=my_headers)
@@ -176,11 +218,11 @@ def get_image_links(image_ids, service, file_id):
         print 'Unable to retrieve image resources'
 
 
-def get_images(image_ids, service, file_id):
+def get_images(image_ids, service, file_id, drive):
     """ Gets a list of links and resolves each one, returning a list of tuples containing
     (image, extension, img_id) for each image resource"""
     images = []
-    links = get_image_links(image_ids, service, file_id)
+    links = get_image_links(image_ids, service, file_id, drive)
     for url, img_id in links.itervalues():
         response, content = service._http.request(url)
         extension = gdoc_utils.get_download_ext(response)
@@ -339,7 +381,7 @@ def find_sugg_by_index(line_dict, suggestions):
         return None
 
 
-def process_doc(log, service, file_id, start, end):
+def process_doc(log, service, file_id, start, end, drive):
     """ Using google changelog, retrieves comments, suggestions, images, and drawings
     associated with that log and sends them to be outputted.  """
     flat_log = log2csv.get_flat_log(log)
@@ -347,17 +389,17 @@ def process_doc(log, service, file_id, start, end):
     plain_text = csv2plain.parse_log(flat_log)
 
     comments = get_comments(service, file_id)
-    images = get_images(image_ids, service, file_id)
+    images = get_images(image_ids, service, file_id, drive)
     drawings = get_drawings(drawing_ids, service, file_id)
     docname = get_title(service, file_id)
 
-    write_doc(docname, plain_text, comments, images, drawings, start, end, suggestions)
+    write_doc(docname, plain_text, comments, images, drawings, start, end, suggestions, log, flat_log)
 
 
 # refactor for list(**args)
-def write_doc(docname, plain_text, comments, images, drawings, start, end, suggestions):
+def write_doc(docname, plain_text, comments, images, drawings, start, end, suggestions, log, flat_log):
     """ Writes all document objects retrieved from the log """
-    base_dir = './downloaded/gdocs/{}_{}-{}/'.format(docname, str(start), str(end))
+    base_dir = './downloaded/document/{}_{}-{}/'.format(docname, str(start), str(end))
     slide2plain.makedir(base_dir)
 
     for i, drawing in enumerate(drawings):
@@ -381,6 +423,20 @@ def write_doc(docname, plain_text, comments, images, drawings, start, end, sugge
     filename = base_dir + 'suggestions.txt'
     with open(filename, 'w') as f:
         f.write(json.dumps(suggestions, ensure_ascii=False))
+
+    filename = base_dir + 'revision-log.txt'
+    with open(filename, 'w') as f:
+        f.write('chunkedSnapshot')
+        for line in log['chunkedSnapshot']:
+            f.write(str(line) + '\n')
+        f.write('changelog')
+        for line in log['changelog']:
+            f.write(str(line) + '\n')
+
+    filename = base_dir + 'flat-log.txt'
+    with open(filename, 'w') as f:
+        for line in flat_log:
+            f.write(line + '\n')
 
     print 'Finished with output in directory', base_dir
 
@@ -410,11 +466,11 @@ def get_slide_objects(log):
     return image_ids
 
 
-def process_slide(log, service, file_id, start, end):
+def process_slide(log, service, file_id, start, end, drive):
     """ Processing for slides to retrieve all iamges and plain text from every box in each slide,
     outputs to a directory with a folder for each slide"""
     image_ids = get_slide_objects(log)
-    images = get_images(image_ids.keys(), service, file_id)
+    images = get_images(image_ids.keys(), service, file_id, drive)
 
     # index images by slide for printing
     slide_images = {}
@@ -429,30 +485,55 @@ def process_slide(log, service, file_id, start, end):
     slide2plain.write_objects(log, slide_images, path)
 
 
+def write_other(log, drive, max_revs, title):
+    base_dir = './downloaded/{}/{}_1-{}/'.format(drive, title, str(max_revs))
+    gdoc_utils.ensure_path(base_dir)
+
+
+
+def split_title(title):
+    ext_index = title.rfind('.')
+    drive = title[ext_index+1:]
+    title = gdoc_utils.strip_path_extension(title[:ext_index])
+    if drive in ['drawing', 'form', 'spreadsheet']:
+        drive += 's'
+        print('drive is now', drive)
+    return title, drive
+
+
 def main():
     print 'Downloads the plain-text as of end revision as well as the images and comments ' \
           'associated with the file, even deleted images. \n*Presentations only support starting ' \
           'from revision 1.  \n\n'
-    global DRIVE
 
-    choice = None
-    while choice is None:
-        try:
-            choice = int(raw_input('Enter ' + ', '.join(
-                '{} for {}'.format(index, service)
-                for index, service in DRIVE_TYPE.iteritems()) + ': '))
-            try:
-                DRIVE = DRIVE_TYPE[choice]
-            except KeyError:
-                raise
-        except (ValueError, KeyError):
-            print('invalid choice\n')
-            choice = None
-
+    # choice = None
+    # while choice is None:
+    #     try:
+    #         choice = int(raw_input('Enter ' + ', '.join(
+    #             '{} for {}'.format(index, service)
+    #             for index, service in DRIVE_TYPE.iteritems()) + ': '))
+    #         try:
+    #             DRIVE = DRIVE_TYPE[choice]
+    #         except KeyError:
+    #             raise
+    #     except (ValueError, KeyError):
+    #         print('invalid choice\n')
+    #         choice = None
+    print('Starting the Drive service and retrieving files, please wait...')
     service = start_service()
-    file_id, max_revs = choose_file(service, drive_type=DRIVE)
+    file_id, title, max_revs = choose_file(service, None)
+    title, drive = split_title(title)
+    print(file_id)
+    print(title)
+    print(drive)
+    print(max_revs)
     start, end = 0, 0
     max_revs = int(max_revs)
+    if drive != 'document':
+        start, end = 1, max_revs
+    elif drive == 'spreadsheet':
+        print('unsupported service')
+        sys.exit(2)
     while start < 1 or start >= max_revs:
         try:
             start = int(raw_input("Start from revision(max {}): ".format(max_revs)))
@@ -469,19 +550,26 @@ def main():
         except ValueError:
             print("invalid revision choice\n")
 
-    url = create_url(file_id, start, end)
+    url = create_url(file_id, drive, start, end)
     response, log = service._http.request(url)
     if response['status'] != '200':
         print 'Could not obtain log.  Check file_id, max revision number, and permission for file.'
         sys.exit(2)
 
-    log = json.loads(log[5:])
-    if type(log['changelog'][0][0]) == dict:
-        process_doc(log, service, file_id, start, end)
-    elif type(log['changelog'][0][0]) == list:
-        process_slide(log, service, file_id, start, end)
+    try:
+        log = json.loads(log[5:])
+    except ValueError:
+        write_other(log=log, drive=drive, max_revs=max_revs, title=title)
     else:
-        raise ValueError('Unexpected type %s in changelog' % type(log['changelog'][0][0]))
+        if drive == 'document':
+            process_doc(log, service, file_id, start, end, drive)
+        #if type(log['changelog'][0][0]) == dict:
+
+        elif drive == 'presentation': #type(log['changelog'][0][0]) == list:
+            process_slide(log, service, file_id, start, end, drive)
+        else:
+            write_other(log=log, drive=drive, max_revs=max_revs, title=title)
+        # raise ValueError('Unexpected type %s in changelog' % type(log['changelog'][0][0]))
 
 
 if __name__ == '__main__':
