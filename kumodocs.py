@@ -255,7 +255,11 @@ def get_comments(service, file_id):
         comments.append(comment_template.format(**comment))
         for j, reply in enumerate(comment['replies']):
             reply['num'] = j + 1
-            comments.append(reply_template.format(**reply))
+            if 'content' in reply.keys():
+                comments.append(reply_template.format(**reply))
+            else:
+                reply['content'] = ''
+                comments.append(reply_template.format(**reply))
         comments.append('\n\n')
     return comments
 
@@ -503,9 +507,7 @@ def split_title(title):
 
 def main():
     print 'Downloads the plain-text as of end revision as well as the images and comments ' \
-          'associated with the file, even deleted images. \n*Presentations only support starting ' \
-          'from revision 1.  \n\n'
-
+          'associated with the file, even deleted images.'
     # choice = None
     # while choice is None:
     #     try:
@@ -523,10 +525,6 @@ def main():
     service = start_service()
     file_id, title, max_revs = choose_file(service, None)
     title, drive = split_title(title)
-    print(file_id)
-    print(title)
-    print(drive)
-    print(max_revs)
     start, end = 0, 0
     max_revs = int(max_revs)
     if drive != 'document':
