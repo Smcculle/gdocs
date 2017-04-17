@@ -20,14 +20,13 @@ log = logging.getLogger(__name__)
 
 def strip_invalid_characters(filename):
     """
-    Replaces invalid characters with '_'.  More characters may be added to the first re.sub.
-    Finally concatenates multiple underscores to a single underscore.  
+    Very conservative stripping of extraneous characters in filename.  Characters and underscore allowed.
     :param filename: File name obtained from cloud service
     :return: 
     """
-    new_filename = re.sub('[^\w\-_. ]', '_', filename)
-    new_filename = re.sub('__+', '_', filename)
-    log.debug('Stripped invalid characters from filename: {} -> {}'.format(filename, new_filename))
+    new_filename_partial = re.sub('[^\w\-_. ]', '_', filename)
+    new_filename = re.sub('__+', '_', new_filename_partial)
+    log.debug('Stripped invalid characters from filename: {} -> {}'.format(filename.encode('utf-8'), new_filename))
     return new_filename
 
 
