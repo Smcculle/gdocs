@@ -36,20 +36,31 @@ class BaseDriver(object):
 
     @logger.setter
     def logger(self, value):
+        """ Defines a basic setter for logger property """
+        pass
+
+    @abstractproperty
+    def base_dir(self):
         """
-        Defines a setter for the logger property
-        :return: None
+        Defines base directory property for recovered objects
+        :return: base_directory
+        :rtype: str
         """
         pass
 
+    @base_dir.setter
+    def base_dir(self, value):
+        """ Defines a basic setter for base_dir property """
+        pass
+
     @abstractmethod
-    def get_log(self, file_id, start, end, **kwargs):
+    def get_log(self, start, end, **kwargs):
         """
-        Returns the native revision log for this driver's service. 
-        :param file_id: Some form of unique file identification required by specific service API 
+        Returns the native revision log for this driver's service.  
         :param start: Starting revision
         :param end: Ending revision
-        :param kwargs: Any additional information required to retrieve the log (extra credentials, resources, path, etc)
+        :param kwargs: Any additional information required to retrieve the log (extra credentials, file_id, resources, 
+        path, etc)
         :return: unparsed(native) revision log 
         """
         pass
@@ -68,7 +79,7 @@ class BaseDriver(object):
         """ Recovers plain-text from the flat (common) log, as well as any associated 
         objects (images, suggestions, comments, etc ).  
         
-        :param flat_log:  A native log that has been flattened using flatten_log 
+        :param flat_log:  A native log that has been flattened using flatten_log
         :return: None; outputs all recovered objects to the location specified by self.write_object
         """
         pass
@@ -92,17 +103,16 @@ class BaseDriver(object):
         :rtype: (int, int) 
         """
 
-    def write_object(self, kumoobj, base_dir='../downloaded'):
+    def write_object(self, kumoobj):
         """
         Writes object to disk at location specified in directory
         :param kumoobj: An object to write, containing originating service, file_name, start and end revision, 
-        as well as content and object type.  
-        :param base_dir: Base directory to append file path. 
+        as well as content and object type.   
         :return: None
         """
 
         path_format = '{base_dir}/{service}/{file_name}/{start}-{end}/{obj_name}'
-        outfile = os.path.realpath(path_format.format(base_dir, kumoobj.service, kumoobj.file_name, kumoobj.start,
+        outfile = os.path.realpath(path_format.format(self.base_dir, kumoobj.service, kumoobj.file_name, kumoobj.start,
                                                       kumoobj.end, kumoobj.type))
 
         try:

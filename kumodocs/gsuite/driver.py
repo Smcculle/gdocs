@@ -1,8 +1,8 @@
 import logging
 from collections import namedtuple
 
+import basedriver
 import gapiclient
-from kumodocs import basedriver
 
 
 class GSuiteDriver(basedriver.BaseDriver):
@@ -13,18 +13,27 @@ class GSuiteDriver(basedriver.BaseDriver):
 
     suggestion_content = namedtuple('content', 'added, deleted')
 
-    def __init__(self):
+    def __init__(self, base_dir='../downloaded'):
         self.client = gapiclient.Client(service='drive', scope='https://www.googleapis.com/auth/drive')
-        self.logger = logging.getLogger(__name__)
+        self._logger = logging.getLogger(__name__)
+        self._base_dir = base_dir
         self.choice = None
 
     @property
     def logger(self):
-        return self.logger
+        return self._logger
 
     @logger.setter
     def logger(self, value):
-        self.logger = value
+        self._logger = value
+
+    @property
+    def base_dir(self):
+        return self._base_dir
+
+    @base_dir.setter
+    def base_dir(self, value):
+        self._base_dir = value
 
     def choose_file(self):
         """
@@ -42,8 +51,8 @@ class GSuiteDriver(basedriver.BaseDriver):
             print('{} is not a supported service at this time')
             self.logger.debug('Unsupported service: {}'.format(self.choice.drive))
             raise SystemExit
-        elif self.choice.drive != 'presentation':
-            self.logger.debug('Non document drive - setting revision to 1, max_rev')
+        elif self.choice.drive == 'presentation':
+            self.logger.debug('Non document drive - setting revision to 1, max_revs')
             start, end = 1, self.choice.max_revs
             print('Partial revisions for {} are not supported. Setting start=1 and end=max'.format(self.choice.drive))
         else:
@@ -66,18 +75,25 @@ class GSuiteDriver(basedriver.BaseDriver):
 
         return start, end
 
-    def get_log(self, file_id, start, end, **kwargs):
-        try:
-            drive = kwargs['drive']
-        except KeyError:
-            self.logger.exception('No drive type found')
-            raise
-        pass
+    def get_log(self, start, end, **kwargs):
+        """
+        Gets log from the google api client using self.choice data along with starting and ending revision 
+        :param start: Starting revision
+        :param end: Ending revision
+        :param kwargs: Unused here.  
+        :return: Native revision log
+        """
+
+        log_url = self.client.create_log_url(start=start, end=end, choice=self.choice)
+        response, log = self.client.request(url=log_url)
+        return log
 
     def flatten_log(self, log):
+        print("flattening log")
         pass
 
     def recover_objects(self, flat_log):
+        print("recovering objects")
         pass
 
 
