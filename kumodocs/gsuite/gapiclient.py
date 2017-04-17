@@ -5,7 +5,7 @@ import argparse
 import logging
 import os
 import sys
-from collections import namedtuple, defaultdict
+from collections import defaultdict
 
 # noinspection PyPackageRequirements
 import googleapiclient.discovery
@@ -19,9 +19,8 @@ import oauth2client.tools as oa_tools
 import KIOutils
 import gsuite
 
-FileChoice = namedtuple('FileChoice', 'id, title, drive, max_rev')
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.NullHandler())
+log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 
 
 class Client(object):
@@ -39,7 +38,7 @@ class Client(object):
         :return: Google API client for making requests. 
         """
 
-        logger.info('Creating the client service')
+        log.info('Creating the client service')
         config = ConfigParser.ConfigParser()
         file_dir = os.path.dirname(__file__)
         config_fp = os.path.realpath(os.path.join(file_dir, *gsuite.REL_CONFIG_PATH))
@@ -62,30 +61,32 @@ class Client(object):
             http = credentials.authorize(httplib2.Http())
             client = googleapiclient.discovery.build(serviceName=service_name, version="v2", http=http)
         except Exception as e:
-            logger.error('Failed to create service', exc_info=True)
+            log.error('Failed to create service', exc_info=True)
             raise sys.exit(1)
         else:
-            logger.info('Created and authorized the client service')
+            log.info('Created and authorized the client service')
             return client
 
-    @staticmethod
-    def create_temp_files(temp_dir, files):
+    def request(self, url, **kwargs):
         """
-        Creates a directory of temporary files with file_id for virtualization of drive contents
-        :param temp_dir: A temp directory that will be deleted 
-        :param files: A file list resource returned from the API client list method
-        :return: None
+        Sends an http request using underlying authenticated httplib2 object from the google api client. 
+        :param url: URL to request 
+        :param kwargs: Optional request args such as header, body, etc. 
+        :return: Tuple consisting of response code and content 
         """
 
-        for drive_type, drive_files in files.items():
-            folder_path = os.path.join(temp_dir, drive_type + '/')
-            os.mkdir(folder_path)
-            for file_ in drive_files:
-                # replace reserved characters in title to assure valid filename
-                filename = KIOutils.strip_invalid_characters(file_['title'])
-                filename = '{}.{}'.format(os.path.join(temp_dir, folder_path, filename), drive_type)
-                with open(filename, 'w') as f:
-                    f.write(file_['id'])
+        try:
+            response, content = self.client._http.request(url, **kwargs)
+            if response['status'] != '200':
+                log.critical('gapiclient.request has non-200 response status, but not httperror exception')
+                log.debug('response = {}'.format(response))
+                log.debug('content = {}'.format(content))
+                raise googleapiclient.errors.HttpError
+        except googleapiclient.errors.HttpError:
+            log.exception('Could not obtain log. Check file_id, max revisions, and permission for file')
+        else:
+            return response, content
+
 
     def choose_file(self):
         """
@@ -101,21 +102,21 @@ class Client(object):
             try:
                 file_id = choice.read()
             except AttributeError:
-                logger.error('No file chosen. Exiting.', exc_info=True)
+                log.error('No file chosen. Exiting.', exc_info=True)
                 sys.exit(2)
             except IOError:
-                logger.error('Error reading file. Exiting', exc_info=True)
+                log.error('Error reading file. Exiting', exc_info=True)
                 sys.exit(3)
             else:
                 choice.close()
                 title, drive = KIOutils.split_title(choice.name)
-                logger.info('Chose file {} from service {}'.format(title, drive))
+                log.info('Chose file {} from service {}'.format(title, drive))
 
         revisions = self.client.revisions().list(fileId=file_id, fields='items(id)').execute()
-        max_rev = revisions['items'][-1]['id']
+        max_revs = revisions['items'][-1]['id']
 
-        choice = FileChoice(str(file_id), title, drive, int(max_rev))
-        logger.debug('Choice is {}'.format(choice))
+        choice = gsuite.FileChoice(str(file_id), title, drive, int(max_revs))
+        log.debug('Choice is {}'.format(choice))
         return choice
 
     def list_all_files(self):
@@ -136,7 +137,7 @@ class Client(object):
                 try:
                     files = self.client.files().list(**param).execute()
                 except googleapiclient.errors.HttpError, e:
-                    logger.error('Failed to retrieve list of files', exc_info=True)
+                    log.error('Failed to retrieve list of files', exc_info=True)
                     break
                 else:
                     result[drive_type].extend(files['items'])
@@ -144,6 +145,25 @@ class Client(object):
                     if not page_token:
                         break
         return result
+
+    @staticmethod
+    def create_temp_files(temp_dir, files):
+        """
+        Creates a directory of temporary files with file_id for virtualization of drive contents
+        :param temp_dir: A temp directory that will be deleted 
+        :param files: A file list resource returned from the API client list method
+        :return: None
+        """
+
+        for drive_type, drive_files in files.items():
+            folder_path = os.path.join(temp_dir, drive_type + '/')
+            os.mkdir(folder_path)
+            for file_ in drive_files:
+                # replace reserved characters in title to assure valid filename
+                filename = KIOutils.strip_invalid_characters(file_['title'])
+                filename = '{}.{}'.format(os.path.join(temp_dir, folder_path, filename), drive_type)
+                with open(filename, 'w') as f:
+                    f.write(file_['id'])
 
     @staticmethod
     def get_download_ext(html_response):
@@ -157,3 +177,9 @@ class Client(object):
         end_index = cdisp.index('"', start_index)
         extension = cdisp[start_index:end_index]
         return extension
+
+    @staticmethod
+    def create_log_url(start, end, choice):
+        params = gsuite.REV_PARAMS.format(start=start, end=end)
+        log_url = gsuite.API_BASE.format(drive=choice.drive, file_id=choice.file_id, params=params)
+        return log_url
