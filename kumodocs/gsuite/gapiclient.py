@@ -19,7 +19,7 @@ import oauth2client.tools as oa_tools
 import KIOutils
 import gsuite
 
-FileChoice = namedtuple('FileChoice', 'id, title, max_rev')
+FileChoice = namedtuple('FileChoice', 'id, title, drive, max_rev')
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
@@ -90,7 +90,7 @@ class Client(object):
     def choose_file(self):
         """
         Presents user with drive contents and prompts a choice.  
-        :return: FileChoice named tuple with id, title, and max revisions
+        :return: FileChoice named tuple with id, title, drive, and max revisions
         """
         files = self.list_all_files()
 
@@ -108,13 +108,15 @@ class Client(object):
                 sys.exit(3)
             else:
                 choice.close()
-                title = choice.name
-                logger.info('Chose file: {}'.format(KIOutils.strip_path_extension(title)))
+                title, drive = KIOutils.split_title(choice.name)
+                logger.info('Chose file {} from service {}'.format(title, drive))
 
         revisions = self.client.revisions().list(fileId=file_id, fields='items(id)').execute()
         max_rev = revisions['items'][-1]['id']
 
-        return FileChoice(str(file_id), title, max_rev)
+        choice = FileChoice(str(file_id), title, drive, int(max_rev))
+        logger.debug('Choice is {}'.format(choice))
+        return choice
 
     def list_all_files(self):
         """
@@ -142,3 +144,16 @@ class Client(object):
                     if not page_token:
                         break
         return result
+
+    @staticmethod
+    def get_download_ext(html_response):
+        """ 
+        Returns extension for downloaded resource as formatted for GSuite API html response
+        :param html_response:  GSuite API html response 
+        :return: Extension of downloaded resource (png, pdf, doc, etc)
+        """
+        cdisp = html_response['content-disposition']
+        start_index = cdisp.index('.')
+        end_index = cdisp.index('"', start_index)
+        extension = cdisp[start_index:end_index]
+        return extension
