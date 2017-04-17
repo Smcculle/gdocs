@@ -16,8 +16,8 @@ import oauth2client.client as oa_client
 import oauth2client.file as oa_file
 import oauth2client.tools as oa_tools
 
+import KIOutils
 import gsuite
-import kioutils
 
 FileChoice = namedtuple('FileChoice', 'id, title, max_rev')
 logger = logging.getLogger(__name__)
@@ -82,7 +82,7 @@ class Client(object):
             os.mkdir(folder_path)
             for file_ in drive_files:
                 # replace reserved characters in title to assure valid filename
-                filename = kioutils.strip_invalid_characters(file_['title'])
+                filename = KIOutils.strip_invalid_characters(file_['title'])
                 filename = '{}.{}'.format(os.path.join(temp_dir, folder_path, filename), drive_type)
                 with open(filename, 'w') as f:
                     f.write(file_['id'])
@@ -94,10 +94,10 @@ class Client(object):
         """
         files = self.list_all_files()
 
-        with kioutils.temp_directory() as temp_dir:
+        with KIOutils.temp_directory() as temp_dir:
             self.create_temp_files(temp_dir, files)
             options = {'title': 'Choose a G Suite file', 'initialdir': temp_dir}
-            choice = kioutils.choose_file_dialog(**options)
+            choice = KIOutils.choose_file_dialog(**options)
             try:
                 file_id = choice.read()
             except AttributeError:
@@ -109,7 +109,7 @@ class Client(object):
             else:
                 choice.close()
                 title = choice.name
-                logger.info('Chose file: {}'.format(kioutils.strip_path_extension(title)))
+                logger.info('Chose file: {}'.format(KIOutils.strip_path_extension(title)))
 
         revisions = self.client.revisions().list(fileId=file_id, fields='items(id)').execute()
         max_rev = revisions['items'][-1]['id']
