@@ -15,12 +15,35 @@ logging.basicConfig(level=logging.DEBUG,
                     filename='log.log',
                     filemode='w')
 
+log = logging.getLogger(__name__)
+
 
 def strip_invalid_characters(filename):
-    """ Very conservative stripping of extraneous characters in filename """
-    filename = re.sub('[^\w\-_. ]', '_', filename)
-    filename = re.sub('__+', '_', filename)
-    return filename
+    """
+    Replaces invalid characters with '_'.  More characters may be added to the first re.sub.
+    Finally concatenates multiple underscores to a single underscore.  
+    :param filename: File name obtained from cloud service
+    :return: 
+    """
+    new_filename = re.sub('[^\w\-_. ]', '_', filename)
+    new_filename = re.sub('__+', '_', filename)
+    log.debug('Stripped invalid characters from filename: {} -> {}'.format(filename, new_filename))
+    return new_filename
+
+
+def split_title(title):
+    """
+    Separates filename and drive type into a tuple. 
+    :param title: File title with drive extension
+    :return: A tuple of title, drive 
+    """
+    ext_index = title.rfind('.')
+    drive = title[ext_index + 1:]
+    title = strip_path_extension(title[:ext_index])
+    if drive in ['drawing', 'form', 'spreadsheet']:
+        drive += 's'
+        print('drive is now', drive)
+    return title, drive
 
 
 def strip_path_extension(path):
@@ -29,17 +52,8 @@ def strip_path_extension(path):
     return os.path.splitext(basename)[0]
 
 
-def get_download_ext(html_response):
-    """Returns extension for downloaded resource"""
-    cdisp = html_response['content-disposition']
-    start_index = cdisp.index('.')
-    end_index = cdisp.index('"', start_index)
-    extension = cdisp[start_index:end_index]
-    return extension
-
-
 def choose_file_dialog(**options):
-    """ Creates an open file dialog to choose files, and returns a handle to those file """
+    """ Creates an open file dialog to choose a file, and returns a handle to that file """
     root = Tk.Tk()
     root.geometry('0x0+400+400')
     root.wait_visibility()
@@ -56,8 +70,9 @@ def ensure_path(path):
     try:
         os.makedirs(path)
     except OSError as exception:
-        #  # if the directory exists, ignore error
+        # if the directory exists, ignore error
         if exception.errno != errno.EEXIST:
+            log.exception('I/O error creating directory at: {}'.format(path))
             raise
 
 
@@ -68,7 +83,7 @@ def remove_directory(path):
     except IOError as e:
         # if the directory does not exist, ignore error
         if e.errno != errno.ENOENT:
-            print 'I/O error removing temp files at {}'.format(path)
+            log.exception('I/O error removing temp files at: {}'.format(path))
             raise
 
 
