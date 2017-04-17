@@ -30,6 +30,7 @@ class BaseDriver(object):
         """
         Defines a logger property that must be provided in the derived class 
         :return: logger property
+        :rtype: Instance of logging.Logger
         """
         pass
 
@@ -42,13 +43,14 @@ class BaseDriver(object):
         pass
 
     @abstractmethod
-    def get_log(self, file_id, start, end):
+    def get_log(self, file_id, start, end, **kwargs):
         """
         Returns the native revision log for this driver's service. 
-        :param file_id: File ID 
+        :param file_id: Some form of unique file identification required by specific service API 
         :param start: Starting revision
         :param end: Ending revision
-        :return: unparsed revision log 
+        :param kwargs: Any additional information required to retrieve the log (extra credentials, resources, path, etc)
+        :return: unparsed(native) revision log 
         """
         pass
 
@@ -77,8 +79,18 @@ class BaseDriver(object):
         Lists drive options and prompts user for a file choice.  
         :return: Returns necessary information to retrieve the log of this file, such as any file_id, title, 
         and revisions available.  
+        :rtype: A namedtuple containing all necessary information (to be sent to get_log as **kwargs) 
         """
         pass
+
+    @abstractmethod
+    def prompt_rev_range(self):
+        """
+        Prompts the user for a start and end revision range.  Possible values depend upon driver implementation and 
+        service limitations.  
+        :return: A tuple (start, end) 
+        :rtype: (int, int) 
+        """
 
     def write_object(self, kumoobj, base_dir='../downloaded'):
         """
