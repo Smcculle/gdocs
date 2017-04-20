@@ -27,7 +27,7 @@ class Client(object):
     """ Wraps a googleapiclient service object with functionality needed by multiple GSuite modules """
 
     def __init__(self, service="drive", scope='https://www.googleapis.com/auth/drive'):
-        self.client = self.start(service, scope)
+        self.service = self.start(service, scope)
 
     @staticmethod
     def start(service_name, scope='https://www.googleapis.com/auth/drive'):
@@ -76,7 +76,7 @@ class Client(object):
         """
 
         try:
-            response, content = self.client._http.request(url, **kwargs)
+            response, content = self.service._http.request(url, **kwargs)
             if response['status'] != '200':
                 log.critical('gapiclient.request has non-200 response status, but not httperror exception')
                 log.debug('response = {}'.format(response))
@@ -86,7 +86,6 @@ class Client(object):
             log.exception('Could not obtain log. Check file_id, max revisions, and permission for file')
         else:
             return response, content
-
 
     def choose_file(self):
         """
@@ -112,7 +111,7 @@ class Client(object):
                 title, drive = KIOutils.split_title(choice.name)
                 log.info('Chose file {} from service {}'.format(title, drive))
 
-        revisions = self.client.revisions().list(fileId=file_id, fields='items(id)').execute()
+        revisions = self.service.revisions().list(fileId=file_id, fields='items(id)').execute()
         max_revs = revisions['items'][-1]['id']
 
         choice = gsuite.FileChoice(str(file_id), title, drive, int(max_revs))
@@ -135,7 +134,7 @@ class Client(object):
                     param['pageToken'] = page_token
 
                 try:
-                    files = self.client.files().list(**param).execute()
+                    files = self.service.files().list(**param).execute()
                 except googleapiclient.errors.HttpError, e:
                     log.error('Failed to retrieve list of files', exc_info=True)
                     break
