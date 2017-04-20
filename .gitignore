@@ -1,4 +1,4 @@
 *.pyc
 output/
-config/
+downloaded/*
 .idea
