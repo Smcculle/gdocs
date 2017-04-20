@@ -75,11 +75,12 @@ class BaseDriver(object):
         pass
 
     @abstractmethod
-    def recover_objects(self, flat_log):
+    def recover_objects(self, log, flat_log):
         """ Recovers plain-text from the flat (common) log, as well as any associated 
         objects (images, suggestions, comments, etc ).  
         
-        :param flat_log:  A native log that has been flattened using flatten_log
+        :param log:  Native log retrieved from get_log
+        :param flat_log:  Log that has been flattened using flatten_log
         :return: None; outputs all recovered objects to the location specified by self.write_object
         """
         pass
