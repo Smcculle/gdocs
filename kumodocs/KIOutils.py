@@ -12,7 +12,7 @@ from contextlib import contextmanager
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s: %(name) - %(levelname) - %(message)s',
                     datefmt='%m-%d %H:%M:%S',
-                    filename='log.log',
+                    filename='config/log.log',
                     filemode='w')
 
 log = logging.getLogger(__name__)
