@@ -10,7 +10,7 @@ import tkFileDialog
 from contextlib import contextmanager
 
 logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s: %(name) - %(levelname) - %(message)s',
+                    format='%(asctime)s: %(name)s - %(levelname)s - %(message)s',
                     datefmt='%m-%d %H:%M:%S',
                     filename='config/log.log',
                     filemode='w')

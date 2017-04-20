@@ -2,6 +2,7 @@
 
 import ConfigParser
 import argparse
+import json
 import logging
 import os
 import sys
@@ -29,8 +30,7 @@ class Client(object):
     def __init__(self, service="drive", scope='https://www.googleapis.com/auth/drive'):
         self.service = self.start(service, scope)
 
-    @staticmethod
-    def start(service_name, scope='https://www.googleapis.com/auth/drive'):
+    def start(self, service_name, scope='https://www.googleapis.com/auth/drive'):
         """
         Reads config file and initializes the GSuite API client with proper authentication
         :param service_name: Name of service to start, one of gsuite.SERVICES
@@ -43,18 +43,22 @@ class Client(object):
         file_dir = os.path.dirname(__file__)
         config_fp = os.path.realpath(os.path.join(file_dir, *gsuite.REL_CONFIG_PATH))
         config.read(config_fp)
-        tokens = config.get('gdrive', 'tokenfile')
-        client_secrets = config.get('gdrive', 'configurationfile')
+        tokens = config.get('gsuite', 'tokenfile')
+        client_secrets = config.get('gsuite', 'configurationfile')
 
         flow = oa_client.flow_from_clientsecrets(client_secrets,
                                                  scope=scope,
                                                  message=oa_tools.message_if_missing(client_secrets))
         storage = oa_file.Storage(tokens)
         credentials = storage.get()
+
         # run_flow requires a wrapped oa_tools.argparse object to handle command line arguments
         flags = argparse.ArgumentParser(parents=[oa_tools.argparser]).parse_args()
         if credentials is None:  # or credentials.invalid:
-            credentials = oa_tools.run_flow(flow, storage, flags)
+            if self.has_client_secrets(client_secrets):
+                credentials = oa_tools.run_flow(flow, storage, flags)
+            else:
+                raise NotImplementedError(oa_tools.message_if_missing(client_secrets))
 
         # noinspection PyBroadException
         try:
@@ -66,6 +70,15 @@ class Client(object):
         else:
             log.info('Created and authorized the client service')
             return client
+
+    def has_client_secrets(self, client_secrets):
+        """ Returns true if client_id and client_secrets set in file client_secrets"""
+        with open(client_secrets) as json_data:
+            secrets = json.load(json_data)['installed']
+
+        client_id = secrets['client_id']
+        client_secret = secrets['client_secret']
+        return not client_id.startswith('<GET') and not client_secret.startswith('<GET')
 
     def request(self, url, **kwargs):
         """
