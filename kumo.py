@@ -15,7 +15,9 @@ from collections import defaultdict
 from collections import namedtuple
 
 import httplib2
+# noinspection PyPackageRequirements
 from googleapiclient.discovery import build
+# noinspection PyPackageRequirements
 from googleapiclient import errors
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
@@ -42,11 +44,14 @@ Drawing = namedtuple('Drawing', 'd_id width height')
 'https://docs.google.com/spreadsheets/d/1zzz4ZE6tIBvood5XAKgtXsg_lBFBdqoQvoZwPHLU1v8/'
 'https://docs.google.com/forms/d/1NRiR4gTFL1C-opeczrshrD_o_Qv1tfBPgYDft8OQZQk/'
 
-# TODO:  video slide inserts, refactor into generic kumodocs with gdocs driver
-# TODO: add suggestion class to gdocs driver with associated functionality
+# TODO:  video slide inserts, refactor into generic kumodocs with gsuite driver
+# TODO: add suggestion class to gsuite driver with associated functionality
 # TODO: create abstract base class to inherit driver modules from
 # TODO ** namedtuple for file to replace file_id containing file_id, drive type  mod strip path ext to return path, titl
 # TODO *** solve forms auth issue, sheets revision=1
+
+def get_out():
+    pass
 
 def list_files(service, drive_type):
     """ Lists files from the appropriate drive account"""
