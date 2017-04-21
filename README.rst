@@ -1,6 +1,7 @@
 --------
-Kumodocs
+[INACTIVE] Kumodocs 
 --------
+This project is continued at https://github.com/kumofx/kumodocs
 
 A tool for GSuite acquisition and analysis that can be easily extended through module creation to other services.
 Kumodocs retrieves cloud-native artifacts, internal data structures that maintain SaaS/web app state information.
